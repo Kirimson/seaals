@@ -1,0 +1,129 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"Tag": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Seal": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"slug": {
+						"type": "string"
+					},
+					"tags": {
+						"items": {
+							"$ref": "#/components/schemas/Tag"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"slug",
+					"tags"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "seaals",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/seals/{sealId}": {
+			"get": {
+				"operationId": "GetSeal",
+				"responses": {
+					"200": {
+						"description": "Data for a Seal",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Seal"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a Specific Seal",
+				"security": [],
+				"parameters": [
+					{
+						"description": "Id of a seal",
+						"in": "path",
+						"name": "sealId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/tags/{tagId}": {
+			"get": {
+				"operationId": "GetTag",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Tag"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "tagId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
