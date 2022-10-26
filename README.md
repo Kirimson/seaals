@@ -1,4 +1,4 @@
-# SEaa(L)S. SEals as a Service
+# SEaa(L)S 🦭 SEals as a Service
 
 A simple API/application, similar in spirit to `Cataas`. Just with seals instead.
 
