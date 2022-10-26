@@ -20,7 +20,15 @@ export class SealService {
         tags: true
       }
     })
+    if (!seal) return {} as Seal;
     return seal as Seal
+  }
+
+  async getByTag(tag:string) {
+    return this.get(undefined, undefined, [tag])
+  }
+  async getByTags(tag:string[]) {
+    return this.get(undefined, undefined, tag)
   }
 
   async getRandom(): Promise<Seal> {

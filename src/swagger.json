@@ -60,7 +60,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/seals/{sealId}": {
+		"/seal/id/{id}": {
 			"get": {
 				"operationId": "GetSeal",
 				"responses": {
@@ -81,7 +81,7 @@
 					{
 						"description": "Id of a seal",
 						"in": "path",
-						"name": "sealId",
+						"name": "id",
 						"required": true,
 						"schema": {
 							"format": "double",
@@ -91,7 +91,7 @@
 				]
 			}
 		},
-		"/seals": {
+		"/seal": {
 			"get": {
 				"operationId": "GetRandomSeal",
 				"responses": {
@@ -128,6 +128,36 @@
 							"items": {
 								"type": "string"
 							}
+						}
+					}
+				]
+			}
+		},
+		"/seal/{tag}": {
+			"get": {
+				"operationId": "GetSealByTag",
+				"responses": {
+					"200": {
+						"description": "Data for a Seal",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Seal"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a Seal with tag",
+				"security": [],
+				"parameters": [
+					{
+						"description": "tag of a seal",
+						"in": "path",
+						"name": "tag",
+						"required": true,
+						"schema": {
+							"type": "string"
 						}
 					}
 				]
