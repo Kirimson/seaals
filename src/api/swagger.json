@@ -140,7 +140,7 @@
 				},
 				"description": "Get a Specific Seal",
 				"tags": [
-					"Seals"
+					"Seals API"
 				],
 				"security": [],
 				"parameters": [
@@ -172,7 +172,7 @@
 				},
 				"description": "Delete a Seal",
 				"tags": [
-					"Seals"
+					"Seals API"
 				],
 				"security": [],
 				"parameters": [
@@ -206,7 +206,7 @@
 				},
 				"description": "Get all Seals",
 				"tags": [
-					"Seals"
+					"Seals API"
 				],
 				"security": [],
 				"parameters": [
@@ -285,7 +285,7 @@
 				},
 				"description": "Create a seal",
 				"tags": [
-					"Seals"
+					"Seals API"
 				],
 				"security": [],
 				"parameters": [],
@@ -332,7 +332,7 @@
 				},
 				"description": "Get a Seal with tag",
 				"tags": [
-					"Seals"
+					"Seals API"
 				],
 				"security": [],
 				"parameters": [

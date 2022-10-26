@@ -10,15 +10,15 @@ import {
   FormField,
   Delete,
 } from "tsoa";
-import { Seals, Seal } from "./sealModel";
+import { Seals, Seal } from "./sealApiModel";
 import {
   SealCreationParams,
   SealError,
   SealResponse,
-  SealService,
-} from "./sealService";
+  SealApiService,
+} from "./sealApiService";
 @Route("/api/seals")
-@Tags("Seals")
+@Tags("Seals API")
 export class SealAPIController extends Controller {
   /**
    * Get a Specific Seal
@@ -27,7 +27,7 @@ export class SealAPIController extends Controller {
    */
   @Get("/id/{id}")
   public async getSeal(@Path() id: number): Promise<Seal> {
-    return new SealService().getById(id);
+    return new SealApiService().getById(id);
   }
 
   /**
@@ -37,7 +37,7 @@ export class SealAPIController extends Controller {
    */
   @Delete("/id/{id}")
   public async deleteSeal(@Path() id: number): Promise<SealResponse> {
-    return new SealService().deleteById(id);
+    return new SealApiService().deleteById(id);
   }
 
   /**
@@ -54,7 +54,7 @@ export class SealAPIController extends Controller {
     @Query() slug?: string,
     @Query() tags?: string[]
   ): Promise<Seals> {
-    return new SealService().getAll(offset, limit, id, slug, tags);
+    return new SealApiService().getAll(offset, limit, id, slug, tags);
   }
 
   /**
@@ -64,7 +64,7 @@ export class SealAPIController extends Controller {
    */
   @Get("/tag/{tag}")
   public async getSealByTag(@Path() tag: string): Promise<Seal> {
-    return new SealService().getByTag(tag);
+    return new SealApiService().getByTag(tag);
   }
 
   /**
@@ -78,9 +78,10 @@ export class SealAPIController extends Controller {
     @UploadedFile() file: Express.Multer.File
   ): Promise<Seal | SealError> {
     const params: SealCreationParams = {
+      filename: file.originalname,
       file: file.buffer,
       tags: tags.split(",").map((tag) => tag.trim()),
     };
-    return new SealService().create(params);
+    return new SealApiService().create(params);
   }
 }

@@ -1,4 +1,4 @@
-import { Seals, Seal } from "./sealModel";
+import { Seals, Seal } from "./sealApiModel";
 import { prisma } from "app";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
@@ -8,6 +8,7 @@ import fs from "fs";
 
 export type SealCreationParams = {
   file: Buffer;
+  filename: string;
   tags: string[];
 };
 
@@ -35,7 +36,7 @@ export interface SealResponse {
   message: string;
 }
 
-export class SealService {
+export class SealApiService {
   async getById(id: number): Promise<Seal> {
     return this.get(id, undefined, undefined);
   }
@@ -119,7 +120,9 @@ export class SealService {
 
   async create(sealData: SealCreationParams): Promise<Seal | SealError> {
     const hasher = crypto.createHash("md5");
-    const slug = hasher.update(sealData.file).digest("hex");
+    const fileHash = hasher.update(sealData.file).digest("hex");
+    const extension = path.extname(sealData.filename);
+    const slug = `${fileHash}${extension}`;
     try {
       // Create the seal, and all the tags for it as well
       const newSeal = await prisma.seal.create({
