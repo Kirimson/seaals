@@ -1,4 +1,4 @@
-import { Controller, Get, Path, Query, Route, Tags } from "tsoa";
+import { Controller, Get, Path, Route, Tags } from "tsoa";
 import { Tag } from "./tagModel";
 import { TagService } from "./tagService";
 
