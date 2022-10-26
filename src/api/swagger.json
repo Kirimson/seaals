@@ -196,6 +196,54 @@
 						}
 					}
 				]
+			},
+			"post": {
+				"operationId": "CreateSeal",
+				"responses": {
+					"200": {
+						"description": "Data for a Seal",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Seal"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a seal",
+				"tags": [
+					"Seals"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"title": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"file": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"title",
+									"description",
+									"file"
+								]
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/seals/tag/{tag}": {

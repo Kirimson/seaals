@@ -8,6 +8,8 @@ import { SealAPIController } from './seals/sealController';
 import { TagController } from './tags/tagController';
 import type { RequestHandler } from 'express';
 import * as express from 'express';
+const multer = require('multer');
+const upload = multer({"dest":"src/resources/seals"});
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
@@ -125,6 +127,35 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.getSealByTag.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/seals',
+            upload.single('file'),
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController)),
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController.prototype.createSeal)),
+
+            function SealAPIController_createSeal(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    title: {"in":"formData","name":"title","required":true,"dataType":"string"},
+                    description: {"in":"formData","name":"description","required":true,"dataType":"string"},
+                    file: {"in":"formData","name":"file","required":true,"dataType":"file"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new SealAPIController();
+
+
+              const promise = controller.createSeal.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

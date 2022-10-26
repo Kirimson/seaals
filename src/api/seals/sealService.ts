@@ -79,4 +79,8 @@ export class SealService {
     });
     return seal as Seal;
   }
+
+  async create(): Promise<Seal> {
+    return {} as Seal;
+  }
 }

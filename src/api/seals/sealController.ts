@@ -1,4 +1,15 @@
-import { Controller, Get, Path, Query, Tags, Route } from "tsoa";
+import {
+  Controller,
+  Get,
+  Post,
+  Path,
+  Query,
+  Tags,
+  Route,
+  UploadedFile,
+  FormField,
+  Request,
+} from "tsoa";
 import { Seals, Seal } from "./sealModel";
 import { SealService } from "./sealService";
 
@@ -40,5 +51,21 @@ export class SealAPIController extends Controller {
   @Get("/tag/{tag}")
   public async getSealByTag(@Path() tag: string): Promise<Seal> {
     return new SealService().getByTag(tag);
+  }
+
+  /**
+   * Create a seal
+   * @param tag tag of a seal
+   * @returns {Seal} Data for a Seal
+   */
+  @Post("/")
+  public async createSeal(
+    @Request() request: Express.Request,
+    @FormField() title: string,
+    @FormField() description: string,
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<Seal> {
+    console.log(file);
+    return new SealService().create();
   }
 }
