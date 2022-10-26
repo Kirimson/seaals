@@ -2,6 +2,8 @@ import { Seals, Seal } from "./sealModel";
 import { prisma } from "app";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
+import { config } from "config";
+import fs from "fs";
 
 export type SealCreationParams = {
   file: Buffer;
@@ -96,11 +98,8 @@ export class SealService {
   }
 
   async create(sealData: SealCreationParams): Promise<Seal | SealError> {
-    console.log(sealData);
-
     const hasher = crypto.createHash("md5");
     const slug = hasher.update(sealData.file).digest("hex");
-
     try {
       // Create the seal, and all the tags for it as well
       const newSeal = await prisma.seal.create({
@@ -118,14 +117,15 @@ export class SealService {
           },
         },
       });
+      // Save the seal to file from the sealData
+      fs.writeFileSync(config.sealDir, sealData.file);
 
       return newSeal as Seal;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        console.log(e.code);
         if (e.code == "P2002") {
           return {
-            message: "This seal already exists",
+            message: "This Seal already exists",
             error: e.code,
           };
         } else {
