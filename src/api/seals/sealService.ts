@@ -10,9 +10,28 @@ export type SealCreationParams = {
   tags: string[];
 };
 
+/**
+ * Response when something goes wrong
+ */
 export interface SealError {
+  /**
+   * Message detailing the error, if the error is known
+   */
   message: string;
+  /**
+   * Error code for the error. Usually a Prisma error
+   */
   error: string;
+}
+
+/**
+ * Generic response message
+ */
+export interface SealResponse {
+  /**
+   * Message providing information about the response
+   */
+  message: string;
 }
 
 export class SealService {
@@ -138,5 +157,21 @@ export class SealService {
     }
 
     return {} as SealError;
+  }
+
+  async deleteById(id: number): Promise<SealResponse> {
+    const sealToDelete = await prisma.seal.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (sealToDelete) {
+      prisma.seal.delete({
+        where: sealToDelete,
+      });
+      return { message: `Deleted Seal with ID ${sealToDelete.id}` };
+    }
+    return { message: `Seal with ID ${id} not found` };
   }
 }

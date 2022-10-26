@@ -47,6 +47,20 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"SealResponse": {
+				"description": "Generic response message",
+				"properties": {
+					"message": {
+						"type": "string",
+						"description": "Message providing information about the response"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Seals": {
 				"properties": {
 					"count": {
@@ -78,12 +92,15 @@
 				"additionalProperties": false
 			},
 			"SealError": {
+				"description": "Response when something goes wrong",
 				"properties": {
 					"message": {
-						"type": "string"
+						"type": "string",
+						"description": "Message detailing the error, if the error is known"
 					},
 					"error": {
-						"type": "string"
+						"type": "string",
+						"description": "Error code for the error. Usually a Prisma error"
 					}
 				},
 				"required": [
@@ -129,6 +146,38 @@
 				"parameters": [
 					{
 						"description": "Id of a seal",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteSeal",
+				"responses": {
+					"200": {
+						"description": "Data for a Seal",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SealResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete a Seal",
+				"tags": [
+					"Seals"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Id of a seal to delete",
 						"in": "path",
 						"name": "id",
 						"required": true,

@@ -8,9 +8,15 @@ import {
   Route,
   UploadedFile,
   FormField,
+  Delete,
 } from "tsoa";
 import { Seals, Seal } from "./sealModel";
-import { SealCreationParams, SealError, SealService } from "./sealService";
+import {
+  SealCreationParams,
+  SealError,
+  SealResponse,
+  SealService,
+} from "./sealService";
 @Route("/api/seals")
 @Tags("Seals")
 export class SealAPIController extends Controller {
@@ -22,6 +28,16 @@ export class SealAPIController extends Controller {
   @Get("/id/{id}")
   public async getSeal(@Path() id: number): Promise<Seal> {
     return new SealService().getById(id);
+  }
+
+  /**
+   * Delete a Seal
+   * @param id Id of a seal to delete
+   * @returns {SealResponse} Data for a Seal
+   */
+  @Delete("/id/{id}")
+  public async deleteSeal(@Path() id: number): Promise<SealResponse> {
+    return new SealService().deleteById(id);
   }
 
   /**
