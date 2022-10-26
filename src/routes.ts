@@ -3,7 +3,9 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse, fetchMiddlewares } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { SealController } from './seals/sealController';
+import { APIController } from './api/apiController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { SealAPIController } from './seals/sealController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TagController } from './tags/tagController';
 import type { RequestHandler } from 'express';
@@ -31,6 +33,17 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Seals": {
+        "dataType": "refObject",
+        "properties": {
+            "count": {"dataType":"double","required":true},
+            "offset": {"dataType":"double","required":true},
+            "limit": {"dataType":"double","required":true},
+            "seals": {"dataType":"array","array":{"dataType":"refObject","ref":"Seal"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -41,11 +54,11 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.get('/seal/id/:id',
-            ...(fetchMiddlewares<RequestHandler>(SealController)),
-            ...(fetchMiddlewares<RequestHandler>(SealController.prototype.getSeal)),
+        app.get('/api/seal/id/:id',
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController)),
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController.prototype.getSeal)),
 
-            function SealController_getSeal(request: any, response: any, next: any) {
+            function SealAPIController_getSeal(request: any, response: any, next: any) {
             const args = {
                     id: {"in":"path","name":"id","required":true,"dataType":"double"},
             };
@@ -56,7 +69,7 @@ export function RegisterRoutes(app: express.Router) {
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
 
-                const controller = new SealController();
+                const controller = new SealAPIController();
 
 
               const promise = controller.getSeal.apply(controller, validatedArgs as any);
@@ -66,12 +79,17 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/seal',
-            ...(fetchMiddlewares<RequestHandler>(SealController)),
-            ...(fetchMiddlewares<RequestHandler>(SealController.prototype.getRandomSeal)),
+        app.get('/api/seal',
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController)),
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController.prototype.getAllSeals)),
 
-            function SealController_getRandomSeal(request: any, response: any, next: any) {
+            function SealAPIController_getAllSeals(request: any, response: any, next: any) {
             const args = {
+                    offset: {"default":0,"in":"query","name":"offset","dataType":"double"},
+                    limit: {"default":20,"in":"query","name":"limit","dataType":"double"},
+                    id: {"in":"query","name":"id","dataType":"double"},
+                    slug: {"in":"query","name":"slug","dataType":"string"},
+                    tags: {"in":"query","name":"tags","dataType":"array","array":{"dataType":"string"}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -80,21 +98,21 @@ export function RegisterRoutes(app: express.Router) {
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
 
-                const controller = new SealController();
+                const controller = new SealAPIController();
 
 
-              const promise = controller.getRandomSeal.apply(controller, validatedArgs as any);
+              const promise = controller.getAllSeals.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/seal/:tag',
-            ...(fetchMiddlewares<RequestHandler>(SealController)),
-            ...(fetchMiddlewares<RequestHandler>(SealController.prototype.getSealByTag)),
+        app.get('/api/seal/tag/:tag',
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController)),
+            ...(fetchMiddlewares<RequestHandler>(SealAPIController.prototype.getSealByTag)),
 
-            function SealController_getSealByTag(request: any, response: any, next: any) {
+            function SealAPIController_getSealByTag(request: any, response: any, next: any) {
             const args = {
                     tag: {"in":"path","name":"tag","required":true,"dataType":"string"},
             };
@@ -105,7 +123,7 @@ export function RegisterRoutes(app: express.Router) {
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
 
-                const controller = new SealController();
+                const controller = new SealAPIController();
 
 
               const promise = controller.getSealByTag.apply(controller, validatedArgs as any);

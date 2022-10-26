@@ -46,6 +46,36 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"Seals": {
+				"properties": {
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"seals": {
+						"items": {
+							"$ref": "#/components/schemas/Seal"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"count",
+					"offset",
+					"limit",
+					"seals"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -60,7 +90,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/seal/id/{id}": {
+		"/api/seal/id/{id}": {
 			"get": {
 				"operationId": "GetSeal",
 				"responses": {
@@ -69,7 +99,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Seal"
+									"$ref": "#/components/schemas/Seals"
 								}
 							}
 						}
@@ -77,7 +107,7 @@
 				},
 				"description": "Get a Specific Seal",
 				"tags": [
-					"Seal"
+					"Seals"
 				],
 				"security": [],
 				"parameters": [
@@ -94,30 +124,81 @@
 				]
 			}
 		},
-		"/seal": {
+		"/api/seal": {
 			"get": {
-				"operationId": "GetRandomSeal",
+				"operationId": "GetAllSeals",
 				"responses": {
 					"200": {
 						"description": "Data for a Seal",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Seal"
+									"$ref": "#/components/schemas/Seals"
 								}
 							}
 						}
 					}
 				},
-				"description": "Get a random Seal",
+				"description": "Get all Seals",
 				"tags": [
-					"Seal"
+					"Seals"
 				],
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"description": "Offset to start at",
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"default": 0,
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Amount to seals to get. Defaults to 20",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"default": 20,
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "slug",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "tags",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				]
 			}
 		},
-		"/seal/{tag}": {
+		"/api/seal/tag/{tag}": {
 			"get": {
 				"operationId": "GetSealByTag",
 				"responses": {
@@ -134,7 +215,7 @@
 				},
 				"description": "Get a Seal with tag",
 				"tags": [
-					"Seal"
+					"Seals"
 				],
 				"security": [],
 				"parameters": [

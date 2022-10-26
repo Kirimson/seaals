@@ -1,27 +1,35 @@
-import { Controller, Get, Path, Tags, Route } from "tsoa";
-import { Seal } from "./sealModel";
+import { Controller, Get, Path, Query, Tags, Route } from "tsoa";
+import { Seals, Seal } from "./sealModel";
 import { SealService } from "./sealService";
 
-@Route("seal")
-@Tags("Seal")
-export class SealController extends Controller {
+@Route("/api/seal")
+@Tags("Seals")
+export class SealAPIController extends Controller {
   /**
    * Get a Specific Seal
    * @param id Id of a seal
-   * @returns {Seal} Data for a Seal
+   * @returns {Seals} Data for a Seal
    */
   @Get("/id/{id}")
-  public async getSeal(@Path() id?: number): Promise<Seal> {
-    return new SealService().get(id);
+  public async getSeal(@Path() id?: number): Promise<Seals> {
+    return new SealService().getAll((id = id));
   }
 
   /**
-   * Get a random Seal
-   * @returns {Seal} Data for a Seal
+   * Get all Seals
+   * @param offset Offset to start at
+   * @param limit Amount to seals to get. Defaults to 20
+   * @returns {Seal[]} Data for a Seal
    */
   @Get("/")
-  public async getRandomSeal(): Promise<Seal> {
-    return new SealService().getRandom();
+  public async getAllSeals(
+    @Query() offset = 0,
+    @Query() limit = 20,
+    @Query() id?: number,
+    @Query() slug?: string,
+    @Query() tags?: string[]
+  ): Promise<Seals> {
+    return new SealService().getAll(offset, limit, id, slug, tags);
   }
 
   /**
@@ -29,8 +37,8 @@ export class SealController extends Controller {
    * @param tag tag of a seal
    * @returns {Seal} Data for a Seal
    */
-   @Get("/{tag}")
-   public async getSealByTag(@Path() tag: string): Promise<Seal> {
-     return new SealService().getByTag(tag);
-   }
+  @Get("/tag/{tag}")
+  public async getSealByTag(@Path() tag: string): Promise<Seal> {
+    return new SealService().getByTag(tag);
+  }
 }
