@@ -90,7 +90,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/api/seal/id/{id}": {
+		"/api/seals/id/{id}": {
 			"get": {
 				"operationId": "GetSeal",
 				"responses": {
@@ -124,7 +124,7 @@
 				]
 			}
 		},
-		"/api/seal": {
+		"/api/seals": {
 			"get": {
 				"operationId": "GetAllSeals",
 				"responses": {
@@ -198,7 +198,7 @@
 				]
 			}
 		},
-		"/api/seal/tag/{tag}": {
+		"/api/seals/tag/{tag}": {
 			"get": {
 				"operationId": "GetSealByTag",
 				"responses": {

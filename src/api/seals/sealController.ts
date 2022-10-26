@@ -2,7 +2,7 @@ import { Controller, Get, Path, Query, Tags, Route } from "tsoa";
 import { Seals, Seal } from "./sealModel";
 import { SealService } from "./sealService";
 
-@Route("/api/seal")
+@Route("/api/seals")
 @Tags("Seals")
 export class SealAPIController extends Controller {
   /**

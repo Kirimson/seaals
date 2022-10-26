@@ -52,7 +52,7 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.get('/api/seal/id/:id',
+        app.get('/api/seals/id/:id',
             ...(fetchMiddlewares<RequestHandler>(SealAPIController)),
             ...(fetchMiddlewares<RequestHandler>(SealAPIController.prototype.getSeal)),
 
@@ -77,7 +77,7 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/seal',
+        app.get('/api/seals',
             ...(fetchMiddlewares<RequestHandler>(SealAPIController)),
             ...(fetchMiddlewares<RequestHandler>(SealAPIController.prototype.getAllSeals)),
 
@@ -106,7 +106,7 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/seal/tag/:tag',
+        app.get('/api/seals/tag/:tag',
             ...(fetchMiddlewares<RequestHandler>(SealAPIController)),
             ...(fetchMiddlewares<RequestHandler>(SealAPIController.prototype.getSealByTag)),
 
