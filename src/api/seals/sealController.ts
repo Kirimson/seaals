@@ -1,4 +1,3 @@
-import { Tag } from "api/tags/tagModel";
 import {
   Controller,
   Get,
@@ -9,7 +8,6 @@ import {
   Route,
   UploadedFile,
   FormField,
-  Request,
 } from "tsoa";
 import { Seals, Seal } from "./sealModel";
 import { SealCreationParams, SealError, SealService } from "./sealService";
