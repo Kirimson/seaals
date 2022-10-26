@@ -22,8 +22,8 @@ export class SealAPIController extends Controller {
    * @returns {Seals} Data for a Seal
    */
   @Get("/id/{id}")
-  public async getSeal(@Path() id?: number): Promise<Seals> {
-    return new SealService().getAll((id = id));
+  public async getSeal(@Path() id: number): Promise<Seal> {
+    return new SealService().getById(id);
   }
 
   /**
@@ -63,8 +63,6 @@ export class SealAPIController extends Controller {
     @FormField() tags: string,
     @UploadedFile() file: Express.Multer.File
   ): Promise<Seal | SealError> {
-    console.log(file.mimetype);
-
     const params: SealCreationParams = {
       file: file.buffer,
       tags: tags.split(",").map((tag) => tag.trim()),

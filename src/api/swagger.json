@@ -115,7 +115,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Seals"
+									"$ref": "#/components/schemas/Seal"
 								}
 							}
 						}

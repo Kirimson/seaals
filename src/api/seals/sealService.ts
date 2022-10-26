@@ -14,6 +14,10 @@ export interface SealError {
 }
 
 export class SealService {
+  async getById(id: number): Promise<Seal> {
+    return this.get(id, undefined, undefined);
+  }
+
   async get(id?: number, slug?: string, tags?: string[]): Promise<Seal> {
     const seal = await prisma.seal.findFirst({
       where: {
@@ -98,6 +102,7 @@ export class SealService {
     const slug = hasher.update(sealData.file).digest("hex");
 
     try {
+      // Create the seal, and all the tags for it as well
       const newSeal = await prisma.seal.create({
         data: {
           slug: slug,
@@ -113,6 +118,7 @@ export class SealService {
           },
         },
       });
+
       return newSeal as Seal;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
