@@ -13,9 +13,10 @@ by setting your PORT environment variable.
 
 1. Clone the repo
 2. Install dependencies with `npm i`
-3. Setup the .env file with `echo 'DATABASE_URL="file:./dev.db"' > .env` or change `dev.db` to whatever you want
-4. Init the DB with `npx prisma migrate dev`
-5. Run the application with `npm run dev`
+3. Setup the .env file, using the defaults from .env.example
+4. Ensure that your chosen seal directory exists. Default is in src/resources/seals
+5. Init the DB with `npx prisma migrate dev`
+6. Run the application with `npm run dev`
 
 If you want to deploy this in a production environment, make some more production appropriate choices, E.G:
 
