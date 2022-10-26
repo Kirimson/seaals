@@ -1,4 +1,4 @@
-import { Seals, Seal } from "seals/sealModel";
+import { Seals, Seal } from "./sealModel";
 import { prisma } from "app";
 export type SealCreationParams = Pick<Seal, "slug" | "tags">;
 

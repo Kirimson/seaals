@@ -1,5 +1,5 @@
 import express, { json, urlencoded } from "express";
-import { RegisterRoutes } from "routes";
+import { RegisterRoutes } from "api/routes";
 import { PrismaClient } from "@prisma/client";
 
 export const app = express();
