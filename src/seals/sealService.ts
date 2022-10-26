@@ -22,4 +22,17 @@ export class SealService {
     })
     return seal as Seal
   }
+
+  async getRandom(): Promise<Seal> {
+    const sealCount = await prisma.seal.count()
+    const skip = Math.floor(Math.random() * sealCount);
+    const seal = await prisma.seal.findFirst({
+      take: 1,
+      skip: skip,
+      orderBy: {
+        slug: 'desc'
+      }
+    })
+    return seal as Seal
+  }
 }

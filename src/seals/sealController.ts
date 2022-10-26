@@ -22,6 +22,9 @@ export class SealController extends Controller {
    */
   @Get("/")
   public async getRandomSeal(@Query() slug?: string, @Query() tags?: string[]): Promise<Seal> {
+    if (!slug && !tags) {
+      return new SealService().getRandom();
+    }
     return new SealService().get(undefined, slug, tags);
   }
 }
