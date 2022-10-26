@@ -3,6 +3,7 @@ import { prisma } from "app";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { config } from "config";
+import path from "path";
 import fs from "fs";
 
 export type SealCreationParams = {
@@ -137,7 +138,7 @@ export class SealService {
         },
       });
       // Save the seal to file from the sealData
-      fs.writeFileSync(config.sealDir, sealData.file);
+      fs.writeFileSync(path.join(config.sealDir, slug), sealData.file);
 
       return newSeal as Seal;
     } catch (e) {
