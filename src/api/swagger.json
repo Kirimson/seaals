@@ -231,7 +231,7 @@
 				]
 			}
 		},
-		"/tag/{id}": {
+		"/api/tags/{id}": {
 			"get": {
 				"operationId": "GetTag",
 				"responses": {
@@ -248,7 +248,7 @@
 				},
 				"description": "Get a Specific Tag",
 				"tags": [
-					"Tag"
+					"Tags"
 				],
 				"security": [],
 				"parameters": [
