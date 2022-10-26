@@ -1,6 +1,6 @@
 import { app } from "./app";
 import swaggerUi from "swagger-ui-express";
-import swaggerDoc from "swagger.json";
+import swaggerDoc from "api/swagger.json";
 import favicon from "serve-favicon";
 import path from "path";
 
