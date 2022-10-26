@@ -66,6 +66,32 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/seals',
+            ...(fetchMiddlewares<RequestHandler>(SealController)),
+            ...(fetchMiddlewares<RequestHandler>(SealController.prototype.getRandomSeal)),
+
+            function SealController_getRandomSeal(request: any, response: any, next: any) {
+            const args = {
+                    slug: {"in":"query","name":"slug","dataType":"string"},
+                    tags: {"in":"query","name":"tags","dataType":"array","array":{"dataType":"string"}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new SealController();
+
+
+              const promise = controller.getRandomSeal.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/tags/:tagId',
             ...(fetchMiddlewares<RequestHandler>(TagController)),
             ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTag)),

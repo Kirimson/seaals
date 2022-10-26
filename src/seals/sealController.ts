@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Get,
-  Path,
-  Query,
-  Route,
-} from "tsoa";
+import { Controller, Get, Path, Query, Route } from "tsoa";
 import { Seal } from "./sealModel";
 import { SealService } from "./sealService";
 
@@ -16,9 +10,18 @@ export class SealController extends Controller {
    * @returns {Seal} Data for a Seal
    */
   @Get("{sealId}")
-  public async getSeal(
-    @Path() sealId?: number,
-  ): Promise<Seal> {
+  public async getSeal(@Path() sealId?: number): Promise<Seal> {
     return new SealService().get(sealId);
+  }
+
+  /**
+   * Get a random Seal
+   * @param slug name of a seal
+   * @param tags tags of a seal
+   * @returns {Seal} Data for a Seal
+   */
+  @Get("/")
+  public async getRandomSeal(@Query() slug?: string, @Query() tags?: string[]): Promise<Seal> {
+    return new SealService().get(undefined, slug, tags);
   }
 }

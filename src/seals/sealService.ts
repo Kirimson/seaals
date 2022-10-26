@@ -3,11 +3,18 @@ import { prisma } from "app";
 export type SealCreationParams = Pick<Seal, "slug" | "tags">
 
 export class SealService {
-  async get(id?: number, slug?: string): Promise<Seal> {
+  async get(id?: number, slug?: string, tags?: string[]): Promise<Seal> {
     const seal = await prisma.seal.findFirst({
       where: {
         id: id,
-        slug: slug
+        slug: slug,
+        tags: {
+          some: {
+            name: {
+              in: tags
+            }
+          }
+        }
       },
       include: {
         tags: true

@@ -91,6 +91,48 @@
 				]
 			}
 		},
+		"/seals": {
+			"get": {
+				"operationId": "GetRandomSeal",
+				"responses": {
+					"200": {
+						"description": "Data for a Seal",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Seal"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a random Seal",
+				"security": [],
+				"parameters": [
+					{
+						"description": "name of a seal",
+						"in": "query",
+						"name": "slug",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "tags of a seal",
+						"in": "query",
+						"name": "tags",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				]
+			}
+		},
 		"/tags/{tagId}": {
 			"get": {
 				"operationId": "GetTag",
