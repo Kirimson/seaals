@@ -7,6 +7,7 @@ import path from "path";
 const port = process.env.PORT || 3000;
 
 const swaggerOptions = {
+  customCss: ".swagger-ui .topbar { display: none }",
   customSiteTitle: "SEaa(L)S API",
   customfavIcon: "/favicon.ico",
 };
