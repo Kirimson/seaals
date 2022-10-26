@@ -76,6 +76,9 @@
 					}
 				},
 				"description": "Get a Specific Seal",
+				"tags": [
+					"Seal"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -107,30 +110,11 @@
 					}
 				},
 				"description": "Get a random Seal",
+				"tags": [
+					"Seal"
+				],
 				"security": [],
-				"parameters": [
-					{
-						"description": "name of a seal",
-						"in": "query",
-						"name": "slug",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"description": "tags of a seal",
-						"in": "query",
-						"name": "tags",
-						"required": false,
-						"schema": {
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
-						}
-					}
-				]
+				"parameters": []
 			}
 		},
 		"/seal/{tag}": {
@@ -149,6 +133,9 @@
 					}
 				},
 				"description": "Get a Seal with tag",
+				"tags": [
+					"Seal"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -163,12 +150,12 @@
 				]
 			}
 		},
-		"/tags/{tagId}": {
+		"/tag/{id}": {
 			"get": {
 				"operationId": "GetTag",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Data for a Tag",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -178,11 +165,16 @@
 						}
 					}
 				},
+				"description": "Get a Specific Tag",
+				"tags": [
+					"Tag"
+				],
 				"security": [],
 				"parameters": [
 					{
+						"description": "Id of a tag",
 						"in": "path",
-						"name": "tagId",
+						"name": "id",
 						"required": true,
 						"schema": {
 							"format": "double",

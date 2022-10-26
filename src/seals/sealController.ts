@@ -1,8 +1,9 @@
-import { Controller, Get, Path, Query, Route } from "tsoa";
+import { Controller, Get, Path, Tags, Route } from "tsoa";
 import { Seal } from "./sealModel";
 import { SealService } from "./sealService";
 
 @Route("seal")
+@Tags("Seal")
 export class SealController extends Controller {
   /**
    * Get a Specific Seal

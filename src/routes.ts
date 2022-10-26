@@ -72,8 +72,6 @@ export function RegisterRoutes(app: express.Router) {
 
             function SealController_getRandomSeal(request: any, response: any, next: any) {
             const args = {
-                    slug: {"in":"query","name":"slug","dataType":"string"},
-                    tags: {"in":"query","name":"tags","dataType":"array","array":{"dataType":"string"}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -117,13 +115,13 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/tags/:tagId',
+        app.get('/tag/:id',
             ...(fetchMiddlewares<RequestHandler>(TagController)),
             ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTag)),
 
             function TagController_getTag(request: any, response: any, next: any) {
             const args = {
-                    tagId: {"in":"path","name":"tagId","required":true,"dataType":"double"},
+                    id: {"in":"path","name":"id","required":true,"dataType":"double"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
