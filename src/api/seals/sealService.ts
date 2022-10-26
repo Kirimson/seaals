@@ -1,6 +1,17 @@
 import { Seals, Seal } from "./sealModel";
 import { prisma } from "app";
-export type SealCreationParams = Pick<Seal, "slug" | "tags">;
+import { Prisma } from "@prisma/client";
+import crypto from "crypto";
+
+export type SealCreationParams = {
+  file: Buffer;
+  tags: string[];
+};
+
+export interface SealError {
+  message: string;
+  error: string;
+}
 
 export class SealService {
   async get(id?: number, slug?: string, tags?: string[]): Promise<Seal> {
@@ -80,7 +91,46 @@ export class SealService {
     return seal as Seal;
   }
 
-  async create(): Promise<Seal> {
-    return {} as Seal;
+  async create(sealData: SealCreationParams): Promise<Seal | SealError> {
+    console.log(sealData);
+
+    const hasher = crypto.createHash("md5");
+    const slug = hasher.update(sealData.file).digest("hex");
+
+    try {
+      const newSeal = await prisma.seal.create({
+        data: {
+          slug: slug,
+          tags: {
+            connectOrCreate: sealData.tags.map((tag) => ({
+              where: {
+                name: tag,
+              },
+              create: {
+                name: tag,
+              },
+            })),
+          },
+        },
+      });
+      return newSeal as Seal;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        console.log(e.code);
+        if (e.code == "P2002") {
+          return {
+            message: "This seal already exists",
+            error: e.code,
+          };
+        } else {
+          return {
+            message: "Unknown error from the deep sea",
+            error: e.code,
+          };
+        }
+      }
+    }
+
+    return {} as SealError;
   }
 }

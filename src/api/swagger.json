@@ -76,6 +76,22 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"SealError": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message",
+					"error"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -205,7 +221,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Seal"
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/Seal"
+										},
+										{
+											"$ref": "#/components/schemas/SealError"
+										}
+									]
 								}
 							}
 						}
@@ -224,11 +247,9 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"title": {
-										"type": "string"
-									},
-									"description": {
-										"type": "string"
+									"tags": {
+										"type": "string",
+										"description": "comma delimited tags for the seal"
 									},
 									"file": {
 										"type": "string",
@@ -236,8 +257,7 @@
 									}
 								},
 								"required": [
-									"title",
-									"description",
+									"tags",
 									"file"
 								]
 							}

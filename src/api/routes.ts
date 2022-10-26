@@ -9,7 +9,7 @@ import { TagController } from './tags/tagController';
 import type { RequestHandler } from 'express';
 import * as express from 'express';
 const multer = require('multer');
-const upload = multer({"dest":"src/resources/seals"});
+const upload = multer();
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
@@ -40,6 +40,15 @@ const models: TsoaRoute.Models = {
             "offset": {"dataType":"double","required":true},
             "limit": {"dataType":"double","required":true},
             "seals": {"dataType":"array","array":{"dataType":"refObject","ref":"Seal"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "SealError": {
+        "dataType": "refObject",
+        "properties": {
+            "message": {"dataType":"string","required":true},
+            "error": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -140,9 +149,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function SealAPIController_createSeal(request: any, response: any, next: any) {
             const args = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    title: {"in":"formData","name":"title","required":true,"dataType":"string"},
-                    description: {"in":"formData","name":"description","required":true,"dataType":"string"},
+                    tags: {"in":"formData","name":"tags","required":true,"dataType":"string"},
                     file: {"in":"formData","name":"file","required":true,"dataType":"file"},
             };
 

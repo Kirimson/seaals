@@ -1,3 +1,4 @@
+import { Tag } from "api/tags/tagModel";
 import {
   Controller,
   Get,
@@ -11,8 +12,7 @@ import {
   Request,
 } from "tsoa";
 import { Seals, Seal } from "./sealModel";
-import { SealService } from "./sealService";
-
+import { SealCreationParams, SealError, SealService } from "./sealService";
 @Route("/api/seals")
 @Tags("Seals")
 export class SealAPIController extends Controller {
@@ -55,17 +55,20 @@ export class SealAPIController extends Controller {
 
   /**
    * Create a seal
-   * @param tag tag of a seal
+   * @param tags comma delimited tags for the seal
    * @returns {Seal} Data for a Seal
    */
   @Post("/")
   public async createSeal(
-    @Request() request: Express.Request,
-    @FormField() title: string,
-    @FormField() description: string,
+    @FormField() tags: string,
     @UploadedFile() file: Express.Multer.File
-  ): Promise<Seal> {
-    console.log(file);
-    return new SealService().create();
+  ): Promise<Seal | SealError> {
+    console.log(file.mimetype);
+
+    const params: SealCreationParams = {
+      file: file.buffer,
+      tags: tags.split(",").map((tag) => tag.trim()),
+    };
+    return new SealService().create(params);
   }
 }

@@ -8,8 +8,5 @@
   },
   "routes": {
     "routesDir": "src/api"
-  },
-  "multerOpts": {
-    "dest": "src/resources/seals"
   }
 }

@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Seal {
-  id   Int   @id @default(autoincrement())
+  id   Int    @id @default(autoincrement())
   slug String @unique
   tags Tag[]
 }
