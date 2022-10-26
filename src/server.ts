@@ -14,6 +14,4 @@ const swaggerOptions = {
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
-app.listen(port, () =>
-  console.log(`Example app listening at http://localhost:${port}`)
-);
+app.listen(port, () => console.log(`SEaa(L)S listening on port ${port}`));
