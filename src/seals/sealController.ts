@@ -16,12 +16,10 @@ export class SealController extends Controller {
 
   /**
    * Get a random Seal
-   * @param slug name of a seal
-   * @param tags tags of a seal
    * @returns {Seal} Data for a Seal
    */
   @Get("/")
-  public async getRandomSeal(@Query() slug?: string, @Query() tags?: string[]): Promise<Seal> {
+  public async getRandomSeal(): Promise<Seal> {
     return new SealService().getRandom();
   }
 
