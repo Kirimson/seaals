@@ -167,8 +167,8 @@ export class SealService {
     });
 
     if (sealToDelete) {
-      prisma.seal.delete({
-        where: sealToDelete,
+      await prisma.seal.delete({
+        where: { id: sealToDelete.id },
       });
       return { message: `Deleted Seal with ID ${sealToDelete.id}` };
     }
