@@ -65,7 +65,6 @@ const models: TsoaRoute.Models = {
     "Tags": {
         "dataType": "refObject",
         "properties": {
-            "count": {"dataType":"double","required":true},
             "offset": {"dataType":"double","required":true},
             "limit": {"dataType":"double","required":true},
             "tags": {"dataType":"array","array":{"dataType":"refObject","ref":"Tag"},"required":true},

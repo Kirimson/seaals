@@ -23,7 +23,7 @@
 							"$ref": "#/components/schemas/Tag"
 						},
 						"type": "array",
-						"description": "List of tags the Seal is associated with"
+						"description": "Tags associated with this Seal"
 					}
 				},
 				"required": [
@@ -35,19 +35,23 @@
 				"additionalProperties": false
 			},
 			"Tag": {
+				"description": "Model describing a Tag",
 				"properties": {
 					"id": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "ID of the Tag"
 					},
 					"name": {
-						"type": "string"
+						"type": "string",
+						"description": "Name of the Tag"
 					},
 					"seals": {
 						"items": {
 							"$ref": "#/components/schemas/Seal"
 						},
-						"type": "array"
+						"type": "array",
+						"description": "Seals associated with this Tag"
 					}
 				},
 				"required": [
@@ -127,28 +131,27 @@
 				"additionalProperties": false
 			},
 			"Tags": {
+				"description": "Model containing multiple Tags",
 				"properties": {
-					"count": {
-						"type": "number",
-						"format": "double"
-					},
 					"offset": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Offset started from"
 					},
 					"limit": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "The limit that was set on the request"
 					},
 					"tags": {
 						"items": {
 							"$ref": "#/components/schemas/Tag"
 						},
-						"type": "array"
+						"type": "array",
+						"description": "List of Tag objects"
 					}
 				},
 				"required": [
-					"count",
 					"offset",
 					"limit",
 					"tags"
