@@ -1,6 +1,6 @@
 import { Tag, Tags } from "./tagModel";
 import { prisma } from "app";
-import { SealResponse } from "../seals/sealApiService";
+import { SealResponse } from "../seals/sealApiModel";
 export type TagCreationParams = Pick<Tag, "name">;
 
 export class TagService {

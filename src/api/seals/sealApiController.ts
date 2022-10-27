@@ -11,13 +11,14 @@ import {
   Delete,
   Put,
 } from "tsoa";
-import { Seals, Seal } from "./sealApiModel";
 import {
+  Seals,
+  Seal,
   SealCreationParams,
   SealError,
   SealResponse,
-  SealApiService,
-} from "./sealApiService";
+} from "./sealApiModel";
+import { SealApiService } from "./sealApiService";
 @Route("/api/seals")
 @Tags("Seals API")
 export class SealAPIController extends Controller {

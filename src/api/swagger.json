@@ -7,19 +7,23 @@
 		"responses": {},
 		"schemas": {
 			"Seal": {
+				"description": "Model describing a Seal",
 				"properties": {
 					"id": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "ID of the Seal"
 					},
 					"slug": {
-						"type": "string"
+						"type": "string",
+						"description": "Slug for the Seal's filename"
 					},
 					"tags": {
 						"items": {
 							"$ref": "#/components/schemas/Tag"
 						},
-						"type": "array"
+						"type": "array",
+						"description": "List of tags the Seal is associated with"
 					}
 				},
 				"required": [
@@ -69,24 +73,29 @@
 				"additionalProperties": false
 			},
 			"Seals": {
+				"description": "Model containing multiple Seals",
 				"properties": {
 					"count": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Amount of Seals returned"
 					},
 					"offset": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Offset started from"
 					},
 					"limit": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "The limit that was set on the request"
 					},
 					"seals": {
 						"items": {
 							"$ref": "#/components/schemas/Seal"
 						},
-						"type": "array"
+						"type": "array",
+						"description": "List of Seal objects"
 					}
 				},
 				"required": [

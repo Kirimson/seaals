@@ -1,4 +1,4 @@
-import { SealResponse } from "../seals/sealApiService";
+import { SealResponse } from "../seals/sealApiModel";
 import {
   Controller,
   Delete,

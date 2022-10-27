@@ -1,40 +1,16 @@
-import { Seals, Seal } from "./sealApiModel";
+import {
+  Seals,
+  Seal,
+  SealCreationParams,
+  SealResponse,
+  SealError,
+} from "./sealApiModel";
 import { prisma } from "app";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { config } from "config";
 import path from "path";
 import fs from "fs";
-
-export type SealCreationParams = {
-  file: Buffer;
-  filename: string;
-  tags: string[];
-};
-
-/**
- * Response when something goes wrong
- */
-export interface SealError {
-  /**
-   * Message detailing the error, if the error is known
-   */
-  message: string;
-  /**
-   * Error code for the error. Usually a Prisma error
-   */
-  error: string;
-}
-
-/**
- * Generic response message
- */
-export interface SealResponse {
-  /**
-   * Message providing information about the response
-   */
-  message: string;
-}
 
 export class SealApiService {
   async getById(id: number): Promise<Seal> {
