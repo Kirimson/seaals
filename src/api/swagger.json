@@ -6,23 +6,6 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"Tag": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"name": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"id",
-					"name"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"Seal": {
 				"properties": {
 					"id": {
@@ -43,6 +26,30 @@
 					"id",
 					"slug",
 					"tags"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Tag": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"seals": {
+						"items": {
+							"$ref": "#/components/schemas/Seal"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"seals"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -315,7 +322,7 @@
 				}
 			}
 		},
-		"/api/tags/{id}": {
+		"/api/tags/id/{id}": {
 			"get": {
 				"operationId": "GetTag",
 				"responses": {
@@ -330,7 +337,7 @@
 						}
 					}
 				},
-				"description": "Get a Specific Tag",
+				"description": "Get a Specific Tag by ID",
 				"tags": [
 					"Tags"
 				],
@@ -344,6 +351,57 @@
 						"schema": {
 							"format": "double",
 							"type": "number"
+						}
+					},
+					{
+						"description": "Boolean to include associated Seals",
+						"in": "query",
+						"name": "includeSeals",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
+		"/api/tags/tag/{name}": {
+			"get": {
+				"operationId": "GetTagByName",
+				"responses": {
+					"200": {
+						"description": "Data for a Tag",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Tag"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a Specific Tag by ID",
+				"tags": [
+					"Tags"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Name of a tag",
+						"in": "path",
+						"name": "name",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Boolean to include associated Seals",
+						"in": "query",
+						"name": "includeSeals",
+						"required": false,
+						"schema": {
+							"type": "boolean"
 						}
 					}
 				]
