@@ -62,13 +62,6 @@ export class SealApiService {
     return seal as Seal;
   }
 
-  async getByTag(tag: string) {
-    return this.get(undefined, undefined, [tag]);
-  }
-  async getByTags(tag: string[]) {
-    return this.get(undefined, undefined, tag);
-  }
-
   async getAll(
     offset = 0,
     limit = 20,
@@ -115,6 +108,25 @@ export class SealApiService {
         slug: "desc",
       },
     });
+    return seal as Seal;
+  }
+
+  async getRandomByTag(tag: string): Promise<Seal> {
+    // Get seals with that tag
+    const seals = await prisma.seal.findMany({
+      where: {
+        tags: {
+          some: {
+            name: tag,
+          },
+        },
+      },
+      orderBy: {
+        slug: "desc",
+      },
+    });
+    // Get a random one from the result
+    const seal = seals[Math.floor(Math.random() * seals.length)];
     return seal as Seal;
   }
 

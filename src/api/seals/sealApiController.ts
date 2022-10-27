@@ -58,16 +58,6 @@ export class SealAPIController extends Controller {
   }
 
   /**
-   * Get a Seal with tag
-   * @param tag tag of a seal
-   * @returns {Seal} Data for a Seal
-   */
-  @Get("/tag/{tag}")
-  public async getSealByTag(@Path() tag: string): Promise<Seal> {
-    return new SealApiService().getByTag(tag);
-  }
-
-  /**
    * Create a seal
    * @param tags comma delimited tags for the seal
    * @returns {Seal} Data for a Seal

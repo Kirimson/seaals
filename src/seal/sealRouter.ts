@@ -17,7 +17,7 @@ sealRouter.get("/", async (req, res, next) => {
  * Get a random Seal by tag
  */
 sealRouter.get("/:tag", async (req, res, next) => {
-  const seal = await new SealApiService().getByTag(req.params.tag);
+  const seal = await new SealApiService().getRandomByTag(req.params.tag);
   const sealPath = path.join(config.sealDir, seal.slug);
   res.sendFile(sealPath);
 });

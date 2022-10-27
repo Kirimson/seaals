@@ -315,39 +315,6 @@
 				}
 			}
 		},
-		"/api/seals/tag/{tag}": {
-			"get": {
-				"operationId": "GetSealByTag",
-				"responses": {
-					"200": {
-						"description": "Data for a Seal",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Seal"
-								}
-							}
-						}
-					}
-				},
-				"description": "Get a Seal with tag",
-				"tags": [
-					"Seals API"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"description": "tag of a seal",
-						"in": "path",
-						"name": "tag",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
 		"/api/tags/{id}": {
 			"get": {
 				"operationId": "GetTag",
