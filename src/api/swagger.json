@@ -625,15 +625,24 @@
 				},
 				"description": "Get a random Seal image",
 				"tags": [
-					"Seal"
+					"Seals"
 				],
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "query",
+						"name": "html",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
 			}
 		},
-		"/seal/{tag}": {
+		"/seal/tag/{tag}": {
 			"get": {
-				"operationId": "GetRandomSealWithTag",
+				"operationId": "GetRandomSealByTag",
 				"responses": {
 					"204": {
 						"description": "No content"
@@ -641,16 +650,44 @@
 				},
 				"description": "Get a random Seal image with a set tag",
 				"tags": [
-					"Seal"
+					"Seals"
 				],
 				"security": [],
 				"parameters": [
 					{
+						"description": "Type of seal to get",
 						"in": "path",
 						"name": "tag",
 						"required": true,
 						"schema": {
 							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/seal/id/{id}": {
+			"get": {
+				"operationId": "GetSealById",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "Get a random Seal image with a set tag",
+				"tags": [
+					"Seals"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "ID of seal to get",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
 						}
 					}
 				]

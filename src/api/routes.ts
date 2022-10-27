@@ -7,7 +7,7 @@ import { SealAPIController } from './seals/sealApiController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TagController } from './tags/tagController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { TestController } from './../seal/sealController';
+import { SealController } from './../seal/sealController';
 import type { RequestHandler } from 'express';
 import * as express from 'express';
 const multer = require('multer');
@@ -346,12 +346,13 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/seal',
-            ...(fetchMiddlewares<RequestHandler>(TestController)),
-            ...(fetchMiddlewares<RequestHandler>(TestController.prototype.getRandomSeal)),
+            ...(fetchMiddlewares<RequestHandler>(SealController)),
+            ...(fetchMiddlewares<RequestHandler>(SealController.prototype.getRandomSeal)),
 
-            function TestController_getRandomSeal(request: any, response: any, next: any) {
+            function SealController_getRandomSeal(request: any, response: any, next: any) {
             const args = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    html: {"in":"query","name":"html","dataType":"boolean"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -360,7 +361,7 @@ export function RegisterRoutes(app: express.Router) {
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
 
-                const controller = new TestController();
+                const controller = new SealController();
 
 
               const promise = controller.getRandomSeal.apply(controller, validatedArgs as any);
@@ -370,11 +371,11 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/seal/:tag',
-            ...(fetchMiddlewares<RequestHandler>(TestController)),
-            ...(fetchMiddlewares<RequestHandler>(TestController.prototype.getRandomSealWithTag)),
+        app.get('/seal/tag/:tag',
+            ...(fetchMiddlewares<RequestHandler>(SealController)),
+            ...(fetchMiddlewares<RequestHandler>(SealController.prototype.getRandomSealByTag)),
 
-            function TestController_getRandomSealWithTag(request: any, response: any, next: any) {
+            function SealController_getRandomSealByTag(request: any, response: any, next: any) {
             const args = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     tag: {"in":"path","name":"tag","required":true,"dataType":"string"},
@@ -386,10 +387,36 @@ export function RegisterRoutes(app: express.Router) {
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
 
-                const controller = new TestController();
+                const controller = new SealController();
 
 
-              const promise = controller.getRandomSealWithTag.apply(controller, validatedArgs as any);
+              const promise = controller.getRandomSealByTag.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/seal/id/:id',
+            ...(fetchMiddlewares<RequestHandler>(SealController)),
+            ...(fetchMiddlewares<RequestHandler>(SealController.prototype.getSealById)),
+
+            function SealController_getSealById(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    id: {"in":"path","name":"id","required":true,"dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new SealController();
+
+
+              const promise = controller.getSealById.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
