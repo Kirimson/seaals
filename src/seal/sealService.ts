@@ -13,10 +13,10 @@ export class SealService {
     this.handleSeal(res, seal, html);
   }
 
-  async getRandomByTag(res: express.Response, tag: string) {
+  async getRandomByTag(res: express.Response, tag: string, html?: boolean) {
     // Get a random Seal model using the underlying Seal API and get the path for it
     const seal = await new SealApiService().getRandomByTag(tag);
-    this.handleSeal(res, seal);
+    this.handleSeal(res, seal, html);
   }
 
   async getById(res: express.Response, id: number) {

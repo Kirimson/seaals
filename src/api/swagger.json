@@ -630,6 +630,7 @@
 				"security": [],
 				"parameters": [
 					{
+						"description": "Render the seal in a HTML document",
 						"in": "query",
 						"name": "html",
 						"required": false,
@@ -661,6 +662,15 @@
 						"required": true,
 						"schema": {
 							"type": "string"
+						}
+					},
+					{
+						"description": "Render the seal in a HTML document",
+						"in": "query",
+						"name": "html",
+						"required": false,
+						"schema": {
+							"type": "boolean"
 						}
 					}
 				]

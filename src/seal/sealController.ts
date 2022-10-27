@@ -7,6 +7,7 @@ import { SealService } from "./sealService";
 export class SealController extends Controller {
   /**
    * Get a random Seal image
+   * @param html Render the seal in a HTML document
    * @returns Image of a seal
    */
   @Get("/")
@@ -22,16 +23,18 @@ export class SealController extends Controller {
   /**
    * Get a random Seal image with a set tag
    * @param tag Type of seal to get
+   * @param html Render the seal in a HTML document
    * @returns Image of a seal
    */
   @Get("/tag/{tag}")
   public async getRandomSealByTag(
     @Request() request: express.Request,
-    @Path() tag: string
+    @Path() tag: string,
+    @Query() html?: boolean
   ) {
     // Some silly any casting so we can make ourselves a express.Response instance
     let res = (<any>request).res as express.Response;
-    return new SealService().getRandomByTag(res, tag);
+    return new SealService().getRandomByTag(res, tag, html);
   }
 
   /**

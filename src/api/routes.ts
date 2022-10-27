@@ -379,6 +379,7 @@ export function RegisterRoutes(app: express.Router) {
             const args = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     tag: {"in":"path","name":"tag","required":true,"dataType":"string"},
+                    html: {"in":"query","name":"html","dataType":"boolean"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
