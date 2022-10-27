@@ -4,7 +4,6 @@ import { Tag, ManyTags } from "./tagModel";
 import { TagService } from "./tagService";
 
 @Route("/api/tags")
-// Named TsoaTags here due to name conflict with the Tags Model. Renaming the Tags model causes tsoa to fail
 @Tags("Tags API")
 export class TagController extends Controller {
   /**
