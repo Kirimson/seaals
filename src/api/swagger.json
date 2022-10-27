@@ -290,7 +290,7 @@
 						}
 					}
 				},
-				"description": "Create a seal",
+				"description": "Create a new seal",
 				"tags": [
 					"Seals API"
 				],
@@ -320,6 +320,50 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/seals/{id}": {
+			"put": {
+				"operationId": "UpdateSeal",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Seal"
+								}
+							}
+						}
+					}
+				},
+				"description": "Updates a Seal's tags",
+				"tags": [
+					"Seals API"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "tags",
+						"required": true,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				]
 			}
 		},
 		"/api/tags/id/{id}": {

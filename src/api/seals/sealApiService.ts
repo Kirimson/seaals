@@ -175,6 +175,30 @@ export class SealApiService {
     return {} as SealError;
   }
 
+  async update(id: number, tags: string[]): Promise<Seal> {
+    const updatedSeal = await prisma.seal.update({
+      where: {
+        id: id,
+      },
+      data: {
+        tags: {
+          connectOrCreate: tags.map((tag) => ({
+            where: {
+              name: tag,
+            },
+            create: {
+              name: tag,
+            },
+          })),
+        },
+      },
+      include: {
+        tags: true,
+      },
+    });
+    return updatedSeal as Seal;
+  }
+
   async deleteById(id: number): Promise<SealResponse> {
     const sealToDelete = await prisma.seal.findUnique({
       where: {

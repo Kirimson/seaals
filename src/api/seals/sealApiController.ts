@@ -9,6 +9,7 @@ import {
   UploadedFile,
   FormField,
   Delete,
+  Put,
 } from "tsoa";
 import { Seals, Seal } from "./sealApiModel";
 import {
@@ -58,7 +59,7 @@ export class SealAPIController extends Controller {
   }
 
   /**
-   * Create a seal
+   * Create a new seal
    * @param tags comma delimited tags for the seal
    * @returns {Seal} Data for a Seal
    */
@@ -73,5 +74,13 @@ export class SealAPIController extends Controller {
       tags: tags.split(",").map((tag) => tag.trim()),
     };
     return new SealApiService().create(params);
+  }
+
+  /**
+   * Updates a Seal's tags
+   */
+  @Put("/{id}")
+  public async updateSeal(@Path() id: number, @Query() tags: string[]) {
+    return new SealApiService().update(id, tags);
   }
 }
