@@ -12,7 +12,7 @@ import {
   Put,
 } from "tsoa";
 import {
-  Seals,
+  ManySeals,
   Seal,
   SealCreationParams,
   SealError,
@@ -25,7 +25,7 @@ export class SealAPIController extends Controller {
   /**
    * Get a Specific Seal
    * @param id Id of a seal
-   * @returns {Seals} Data for a Seal
+   * @returns {ManySeals} Data for a Seal
    */
   @Get("/id/{id}")
   public async getSeal(@Path() id: number): Promise<Seal> {
@@ -58,7 +58,7 @@ export class SealAPIController extends Controller {
     @Query() id?: number,
     @Query() slug?: string,
     @Query() tags?: string[]
-  ): Promise<Seals> {
+  ): Promise<ManySeals> {
     return new SealApiService().getAll(offset, limit, id, slug, tags);
   }
 

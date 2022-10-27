@@ -21,7 +21,7 @@ export interface Seal {
 /**
  * Model containing multiple Seals
  */
-export interface Seals {
+export interface ManySeals {
   /**
    * Amount of Seals returned
    */

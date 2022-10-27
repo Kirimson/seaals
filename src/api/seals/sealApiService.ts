@@ -1,5 +1,5 @@
 import {
-  Seals,
+  ManySeals,
   Seal,
   SealCreationParams,
   SealResponse,
@@ -44,7 +44,7 @@ export class SealApiService {
     id?: number,
     slug?: string,
     tags?: string[]
-  ): Promise<Seals> {
+  ): Promise<ManySeals> {
     const seals = await prisma.seal.findMany({
       take: limit,
       skip: offset,
@@ -69,7 +69,7 @@ export class SealApiService {
       offset: offset,
       limit: limit,
       seals: seals as Seal[],
-    } as Seals;
+    } as ManySeals;
 
     return allSeals;
   }

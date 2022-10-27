@@ -76,7 +76,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Seals": {
+			"ManySeals": {
 				"description": "Model containing multiple Seals",
 				"properties": {
 					"count": {
@@ -130,7 +130,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Tags": {
+			"ManyTags": {
 				"description": "Model containing multiple Tags",
 				"properties": {
 					"offset": {
@@ -247,7 +247,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Seals"
+									"$ref": "#/components/schemas/ManySeals"
 								}
 							}
 						}
@@ -420,13 +420,16 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Tags"
+									"$ref": "#/components/schemas/ManyTags"
 								}
 							}
 						}
 					}
 				},
 				"description": "Get all Tags",
+				"tags": [
+					"Tags API"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -478,6 +481,9 @@
 					}
 				},
 				"description": "Get a Specific Tag by ID",
+				"tags": [
+					"Tags API"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -516,6 +522,9 @@
 					}
 				},
 				"description": "Delete a Tag by ID",
+				"tags": [
+					"Tags API"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -547,6 +556,9 @@
 					}
 				},
 				"description": "Get a Specific Tag by ID",
+				"tags": [
+					"Tags API"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -586,6 +598,9 @@
 					}
 				},
 				"description": "Delete a Tag by Name",
+				"tags": [
+					"Tags API"
+				],
 				"security": [],
 				"parameters": [
 					{

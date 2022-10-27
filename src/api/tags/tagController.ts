@@ -1,19 +1,11 @@
 import { SealResponse } from "../seals/sealApiModel";
-import {
-  Controller,
-  Delete,
-  Get,
-  Path,
-  Query,
-  Route,
-  Tags as TsoaTags,
-} from "tsoa";
-import { Tag, Tags } from "./tagModel";
+import { Controller, Delete, Get, Path, Query, Route, Tags } from "tsoa";
+import { Tag, ManyTags } from "./tagModel";
 import { TagService } from "./tagService";
 
 @Route("/api/tags")
 // Named TsoaTags here due to name conflict with the Tags Model. Renaming the Tags model causes tsoa to fail
-@TsoaTags("Tags")
+@Tags("Tags API")
 export class TagController extends Controller {
   /**
    * Get all Tags
@@ -27,7 +19,7 @@ export class TagController extends Controller {
     @Query() offset = 0,
     @Query() limit = 20,
     @Query() includeSeals?: boolean
-  ): Promise<Tags> {
+  ): Promise<ManyTags> {
     return new TagService().getAll(offset, limit, includeSeals);
   }
 

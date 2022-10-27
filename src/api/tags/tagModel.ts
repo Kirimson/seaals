@@ -21,7 +21,7 @@ export interface Tag {
 /**
  * Model containing multiple Tags
  */
-export interface Tags {
+export interface ManyTags {
   /**
    * Amount of Tags returned
    */

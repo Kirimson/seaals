@@ -1,4 +1,4 @@
-import { Tag, Tags } from "./tagModel";
+import { Tag, ManyTags } from "./tagModel";
 import { prisma } from "app";
 import { SealResponse } from "../seals/sealApiModel";
 export type TagCreationParams = Pick<Tag, "name">;
@@ -17,7 +17,11 @@ export class TagService {
     return tag as Tag;
   }
 
-  async getAll(offset = 0, limit = 20, includeSeals?: boolean): Promise<Tags> {
+  async getAll(
+    offset = 0,
+    limit = 20,
+    includeSeals?: boolean
+  ): Promise<ManyTags> {
     const tags = await prisma.tag.findMany({
       take: limit,
       skip: offset,
@@ -31,7 +35,7 @@ export class TagService {
       offset: offset,
       limit: limit,
       tags: tags as Tag[],
-    } as Tags;
+    } as ManyTags;
 
     return allTags;
   }

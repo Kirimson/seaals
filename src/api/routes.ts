@@ -42,7 +42,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Seals": {
+    "ManySeals": {
         "dataType": "refObject",
         "properties": {
             "count": {"dataType":"double","required":true},
@@ -62,7 +62,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Tags": {
+    "ManyTags": {
         "dataType": "refObject",
         "properties": {
             "offset": {"dataType":"double","required":true},
