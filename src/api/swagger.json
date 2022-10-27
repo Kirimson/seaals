@@ -116,6 +116,36 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"Tags": {
+				"properties": {
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"tags": {
+						"items": {
+							"$ref": "#/components/schemas/Tag"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"count",
+					"offset",
+					"limit",
+					"tags"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -167,7 +197,7 @@
 				"operationId": "DeleteSeal",
 				"responses": {
 					"200": {
-						"description": "Data for a Seal",
+						"description": "Deletion confirmation",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -240,6 +270,7 @@
 						}
 					},
 					{
+						"description": "ID of a seal to get",
 						"in": "query",
 						"name": "id",
 						"required": false,
@@ -249,6 +280,7 @@
 						}
 					},
 					{
+						"description": "Slug to identify seal with",
 						"in": "query",
 						"name": "slug",
 						"required": false,
@@ -257,6 +289,7 @@
 						}
 					},
 					{
+						"description": "Tags to search for",
 						"in": "query",
 						"name": "tags",
 						"required": false,
@@ -366,6 +399,57 @@
 				]
 			}
 		},
+		"/api/tags": {
+			"get": {
+				"operationId": "GetAllSeals",
+				"responses": {
+					"200": {
+						"description": "Data for a Seal",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Tags"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all Tags",
+				"security": [],
+				"parameters": [
+					{
+						"description": "Offset to start at",
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"default": 0,
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Amount to seals to get. Defaults to 20\nInclude associated Seals with response",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"default": 20,
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "includeSeals",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
 		"/api/tags/id/{id}": {
 			"get": {
 				"operationId": "GetTag",
@@ -382,9 +466,6 @@
 					}
 				},
 				"description": "Get a Specific Tag by ID",
-				"tags": [
-					"Tags"
-				],
 				"security": [],
 				"parameters": [
 					{
@@ -407,6 +488,35 @@
 						}
 					}
 				]
+			},
+			"delete": {
+				"operationId": "DeleteTag",
+				"responses": {
+					"200": {
+						"description": "Deletion confirmation",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SealResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete a Tag by ID",
+				"security": [],
+				"parameters": [
+					{
+						"description": "Id of a tag to delete",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/api/tags/tag/{name}": {
@@ -425,9 +535,6 @@
 					}
 				},
 				"description": "Get a Specific Tag by ID",
-				"tags": [
-					"Tags"
-				],
 				"security": [],
 				"parameters": [
 					{
@@ -446,6 +553,36 @@
 						"required": false,
 						"schema": {
 							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
+		"/api/tags/name/{name}": {
+			"delete": {
+				"operationId": "DeleteTagByName",
+				"responses": {
+					"200": {
+						"description": "Deletion confirmation",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SealResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete a Tag by Name",
+				"security": [],
+				"parameters": [
+					{
+						"description": "Id of a tag to delete",
+						"in": "path",
+						"name": "name",
+						"required": true,
+						"schema": {
+							"type": "string"
 						}
 					}
 				]

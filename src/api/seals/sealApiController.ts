@@ -34,7 +34,7 @@ export class SealAPIController extends Controller {
   /**
    * Delete a Seal
    * @param id Id of a seal to delete
-   * @returns {SealResponse} Data for a Seal
+   * @returns {SealResponse} Deletion confirmation
    */
   @Delete("/id/{id}")
   public async deleteSeal(@Path() id: number): Promise<SealResponse> {
@@ -45,6 +45,9 @@ export class SealAPIController extends Controller {
    * Get all Seals
    * @param offset Offset to start at
    * @param limit Amount to seals to get. Defaults to 20
+   * @param id ID of a seal to get
+   * @param slug Slug to identify seal with
+   * @param tags Tags to search for
    * @returns {Seal[]} Data for a Seal
    */
   @Get("/")

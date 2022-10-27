@@ -5,3 +5,10 @@ export interface Tag {
   name: string;
   seals: Seal[];
 }
+
+export interface Tags {
+  count: number;
+  offset: number;
+  limit: number;
+  tags: Tag[];
+}
