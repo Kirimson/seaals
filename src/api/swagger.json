@@ -614,6 +614,47 @@
 					}
 				]
 			}
+		},
+		"/seal": {
+			"get": {
+				"operationId": "GetRandomSeal",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "Get a random Seal image",
+				"tags": [
+					"Seal"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/seal/{tag}": {
+			"get": {
+				"operationId": "GetRandomSealWithTag",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "Get a random Seal image with a set tag",
+				"tags": [
+					"Seal"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "tag",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
 		}
 	},
 	"servers": [

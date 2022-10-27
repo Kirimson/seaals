@@ -1,7 +1,6 @@
 import express, { json, urlencoded } from "express";
 import { RegisterRoutes } from "api/routes";
 import { PrismaClient } from "@prisma/client";
-import { sealRouter } from "seal/sealRouter";
 
 export const app = express();
 export const prisma = new PrismaClient();
@@ -14,4 +13,3 @@ app.use(
 app.use(json());
 
 RegisterRoutes(app);
-app.use("/seal", sealRouter);

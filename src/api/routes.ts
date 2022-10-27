@@ -6,6 +6,8 @@ import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, H
 import { SealAPIController } from './seals/sealApiController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TagController } from './tags/tagController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { TestController } from './../seal/sealController';
 import type { RequestHandler } from 'express';
 import * as express from 'express';
 const multer = require('multer');
@@ -337,6 +339,57 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.deleteTagByName.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/seal',
+            ...(fetchMiddlewares<RequestHandler>(TestController)),
+            ...(fetchMiddlewares<RequestHandler>(TestController.prototype.getRandomSeal)),
+
+            function TestController_getRandomSeal(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TestController();
+
+
+              const promise = controller.getRandomSeal.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/seal/:tag',
+            ...(fetchMiddlewares<RequestHandler>(TestController)),
+            ...(fetchMiddlewares<RequestHandler>(TestController.prototype.getRandomSealWithTag)),
+
+            function TestController_getRandomSealWithTag(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    tag: {"in":"path","name":"tag","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TestController();
+
+
+              const promise = controller.getRandomSealWithTag.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
