@@ -13,7 +13,7 @@ export interface Seal {
    */
   slug: string;
   /**
-   * List of tags the Seal is associated with
+   * Tags associated with this Seal
    */
   tags: Tag[];
 }
