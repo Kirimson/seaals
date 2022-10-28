@@ -111,8 +111,10 @@ export class SealApiService {
     const hasher = crypto.createHash("md5");
     const fileHash = hasher.update(sealData.file.buffer).digest("hex");
     const extension = path.extname(sealData.file.originalname);
+    // Concat the file hash and the original file extension
     const slug = `${fileHash}${extension}`;
 
+    // Ensure the file is of a valid MIME type
     if (!config.validMimes.includes(sealData.file.mimetype)) {
       return { message: "Invalid File Type" } as SealError;
     }

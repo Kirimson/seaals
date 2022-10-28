@@ -23,3 +23,17 @@ If you want to deploy this in a production environment, make some more productio
 
 1. Change Prisma's DB provider to something other than SQLite in `prisma/prisma.schema`
 2. Use `migrate deploy` rather than `migrate dev`
+
+## Troubleshooting
+
+### Why is [insert image type] not uploading?
+
+By default the following MIME types are accepted by SEaa(L)S
+
+- image/png
+- image/jpeg
+- image/jpg
+- image/webp
+- image/gif
+
+If you want more, less, or different MIMEs, add `VALID_MIMES` to your .env file as a comma delimited list
