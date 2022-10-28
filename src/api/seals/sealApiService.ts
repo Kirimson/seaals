@@ -112,6 +112,11 @@ export class SealApiService {
     const fileHash = hasher.update(sealData.file.buffer).digest("hex");
     const extension = path.extname(sealData.file.originalname);
     const slug = `${fileHash}${extension}`;
+
+    if (!config.validMimes.includes(sealData.file.mimetype)) {
+      return { message: "Invalid File Type" } as SealError;
+    }
+
     try {
       // Create the seal, and all the tags for it as well
       const newSeal = await prisma.seal.create({
