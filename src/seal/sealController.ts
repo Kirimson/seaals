@@ -38,7 +38,7 @@ export class SealController extends Controller {
   }
 
   /**
-   * Get a random Seal image with a set tag
+   * Get a Seal with a specific ID
    * @param id ID of seal to get
    * @returns Image of a seal
    */

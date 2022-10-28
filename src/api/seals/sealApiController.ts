@@ -35,7 +35,7 @@ export class SealAPIController extends Controller {
   /**
    * Delete a Seal
    * @param id Id of a seal to delete
-   * @returns {SealResponse} Deletion confirmation
+   * @returns {SeaalsResponse} Deletion confirmation
    */
   @Delete("/id/{id}")
   public async deleteSeal(@Path() id: number): Promise<SealResponse> {
@@ -85,6 +85,6 @@ export class SealAPIController extends Controller {
    */
   @Put("/{id}")
   public async updateSeal(@Path() id: number, @Query() tags: string[]) {
-    return new SealApiService().update(id, tags);
+    return new SealApiService().update({ id, tags });
   }
 }

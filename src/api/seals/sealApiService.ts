@@ -4,6 +4,7 @@ import {
   SealCreationParams,
   SealResponse,
   SealError,
+  SealEdit,
 } from "./sealApiModel";
 import { prisma } from "app";
 import { Prisma } from "@prisma/client";
@@ -151,14 +152,14 @@ export class SealApiService {
     return {} as SealError;
   }
 
-  async update(id: number, tags: string[]): Promise<Seal> {
+  async update(editData: SealEdit): Promise<Seal> {
     const updatedSeal = await prisma.seal.update({
       where: {
-        id: id,
+        id: editData.id,
       },
       data: {
         tags: {
-          connectOrCreate: tags.map((tag) => ({
+          connectOrCreate: editData.tags.map((tag) => ({
             where: {
               name: tag,
             },

@@ -684,7 +684,7 @@
 						"description": "No content"
 					}
 				},
-				"description": "Get a random Seal image with a set tag",
+				"description": "Get a Seal with a specific ID",
 				"tags": [
 					"Seals"
 				],

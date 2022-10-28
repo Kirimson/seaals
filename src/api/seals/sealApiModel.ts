@@ -40,11 +40,16 @@ export interface ManySeals {
   seals: Seal[];
 }
 
-export type SealCreationParams = {
+export interface SealCreationParams {
   file: Buffer;
   filename: string;
   tags: string[];
-};
+}
+
+export interface SealEdit {
+  id: number;
+  tags: string[];
+}
 
 /**
  * Response when something goes wrong

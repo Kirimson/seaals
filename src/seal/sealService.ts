@@ -49,7 +49,7 @@ export class SealService {
         });
       }
     } else {
-      res.json({ message: "No Seal found" } as SealResponse);
+      res.json({ message: "No Seal found" } as SealResponse).status(404);
     }
   }
 }

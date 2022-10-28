@@ -11,6 +11,7 @@ Why not?
 Here's how to serve your own seals in a development environment. By default SEaa(L)S listens on port 3000. Override this
 by setting your PORT environment variable.
 
+0. Install node/npm: `brew install node`/`choco install nodejs`
 1. Clone the repo
 2. Install dependencies with `npm i`
 3. Setup the .env file, using the defaults from .env.example
