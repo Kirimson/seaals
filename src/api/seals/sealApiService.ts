@@ -169,7 +169,7 @@ export class SealApiService {
     let extraTags: string[] = [];
     // If the file is a GIF, add the gif tag
     if (file.mimetype == "image/gif") extraTags.push("gif");
-    return [];
+    return extraTags;
   }
 
   async update(editData: SealEdit): Promise<Seal> {
