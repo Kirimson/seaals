@@ -119,6 +119,12 @@ export class SealApiService {
       return { message: "Invalid File Type" } as SealError;
     }
 
+    // Auto add more tags to file based on fileinfo
+    const autoTags = this.autoTag(sealData.file);
+    sealData.tags.push(
+      ...autoTags.filter((tag) => !sealData.tags.includes(tag))
+    );
+
     try {
       // Create the seal, and all the tags for it as well
       const newSeal = await prisma.seal.create({
@@ -157,6 +163,13 @@ export class SealApiService {
     }
 
     return {} as SealError;
+  }
+
+  autoTag(file: Express.Multer.File): string[] {
+    let extraTags: string[] = [];
+    // If the file is a GIF, add the gif tag
+    if (file.mimetype == "image/gif") extraTags.push("gif");
+    return [];
   }
 
   async update(editData: SealEdit): Promise<Seal> {
