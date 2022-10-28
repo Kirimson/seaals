@@ -109,8 +109,8 @@ export class SealApiService {
 
   async create(sealData: SealCreationParams): Promise<Seal | SealError> {
     const hasher = crypto.createHash("md5");
-    const fileHash = hasher.update(sealData.file).digest("hex");
-    const extension = path.extname(sealData.filename);
+    const fileHash = hasher.update(sealData.file.buffer).digest("hex");
+    const extension = path.extname(sealData.file.originalname);
     const slug = `${fileHash}${extension}`;
     try {
       // Create the seal, and all the tags for it as well
@@ -130,7 +130,7 @@ export class SealApiService {
         },
       });
       // Save the seal to file from the sealData
-      fs.writeFileSync(path.join(config.sealDir, slug), sealData.file);
+      fs.writeFileSync(path.join(config.sealDir, slug), sealData.file.buffer);
 
       return newSeal as Seal;
     } catch (e) {

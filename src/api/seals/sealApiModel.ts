@@ -41,8 +41,7 @@ export interface ManySeals {
 }
 
 export interface SealCreationParams {
-  file: Buffer;
-  filename: string;
+  file: Express.Multer.File;
   tags: string[];
 }
 

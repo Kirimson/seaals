@@ -73,8 +73,7 @@ export class SealAPIController extends Controller {
     @UploadedFile() file: Express.Multer.File
   ): Promise<Seal | SealError> {
     const params: SealCreationParams = {
-      filename: file.originalname,
-      file: file.buffer,
+      file: file,
       tags: tags.split(",").map((tag) => tag.trim()),
     };
     return new SealApiService().create(params);
