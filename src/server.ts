@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 const swaggerOptions = {
   customCss: ".swagger-ui .topbar { display: none }",
-  customSiteTitle: "SEaa(L)S API",
+  customSiteTitle: "SEaa(L)S API Documentation",
   customfavIcon: "/favicon.ico",
 };
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
