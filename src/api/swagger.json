@@ -191,7 +191,11 @@
 				"tags": [
 					"Seals API"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"description": "Id of a seal",

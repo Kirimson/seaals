@@ -10,6 +10,7 @@ import {
   FormField,
   Delete,
   Put,
+  Security
 } from "tsoa";
 import {
   ManySeals,
@@ -28,6 +29,7 @@ export class SealAPIController extends Controller {
    * @returns {ManySeals} Data for a Seal
    */
   @Get("/id/{id}")
+  @Security("jwt")
   public async getSeal(@Path() id: number): Promise<Seal> {
     return new SealApiService().getById(id);
   }
