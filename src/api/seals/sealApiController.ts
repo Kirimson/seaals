@@ -10,6 +10,7 @@ import {
   FormField,
   Delete,
   Put,
+  Security
 } from "tsoa";
 import {
   ManySeals,
@@ -38,6 +39,7 @@ export class SealAPIController extends Controller {
    * @returns {SeaalsResponse} Deletion confirmation
    */
   @Delete("/id/{id}")
+  @Security("jwt", ["ADMIN"])
   public async deleteSeal(@Path() id: number): Promise<SealResponse> {
     return new SealApiService().deleteById(id);
   }
@@ -68,6 +70,7 @@ export class SealAPIController extends Controller {
    * @returns {Seal} Data for a Seal
    */
   @Post("/")
+  @Security("jwt", ["ADMIN"])
   public async createSeal(
     @FormField() tags: string,
     @UploadedFile() file: Express.Multer.File
@@ -83,6 +86,7 @@ export class SealAPIController extends Controller {
    * Updates a Seal's tags
    */
   @Put("/{id}")
+  @Security("jwt", ["ADMIN"])
   public async updateSeal(@Path() id: number, @Query() tags: string[]) {
     return new SealApiService().update({ id, tags });
   }

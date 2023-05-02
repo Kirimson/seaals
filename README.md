@@ -24,6 +24,15 @@ If you want to deploy this in a production environment, make some more productio
 1. Change Prisma's DB provider to something other than SQLite in `prisma/prisma.schema`
 2. Use `migrate deploy` rather than `migrate dev`
 
+## Development
+
+Mainly so I don't forget...
+
+### Updating DB Schema
+
+1. Update `prisma/schema.prisma`
+2. Run `npx prisma migrate dev --name <Migration Name>`
+
 ## Troubleshooting
 
 ### Why is [insert image type] not uploading?

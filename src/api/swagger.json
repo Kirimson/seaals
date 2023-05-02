@@ -158,6 +158,40 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"TokenInfo": {
+				"properties": {
+					"username": {
+						"type": "string",
+						"description": "Name of the new user"
+					},
+					"token": {
+						"type": "string",
+						"description": "A JWT for this user"
+					}
+				},
+				"required": [
+					"username",
+					"token"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AuthError": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message",
+					"error"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -223,7 +257,13 @@
 				"tags": [
 					"Seals API"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"ADMIN"
+						]
+					}
+				],
 				"parameters": [
 					{
 						"description": "Id of a seal to delete",
@@ -339,7 +379,13 @@
 				"tags": [
 					"Seals API"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"ADMIN"
+						]
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -386,7 +432,13 @@
 				"tags": [
 					"Seals API"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"ADMIN"
+						]
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -607,6 +659,84 @@
 						"description": "Id of a tag to delete",
 						"in": "path",
 						"name": "name",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/auth/register": {
+			"post": {
+				"operationId": "SignUp",
+				"responses": {
+					"200": {
+						"description": "Authentication for the user",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/TokenInfo"
+										},
+										{
+											"$ref": "#/components/schemas/AuthError"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new User",
+				"tags": [
+					"Auth API"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "header",
+						"name": "authorization",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/auth/token": {
+			"post": {
+				"operationId": "SignIn",
+				"responses": {
+					"200": {
+						"description": "Authentication for the user",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/TokenInfo"
+										},
+										{
+											"$ref": "#/components/schemas/AuthError"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"description": "Request a token for an existing User",
+				"tags": [
+					"Auth API"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "header",
+						"name": "authorization",
 						"required": true,
 						"schema": {
 							"type": "string"
