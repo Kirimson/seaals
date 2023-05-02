@@ -3,11 +3,15 @@ import {
   Post,
   Tags,
   Route,
-  Header
+  Header,
+  Security,
+  Request,
+  SuccessResponse
 } from "tsoa";
 
-import { TokenInfo, AuthError } from "./authModel";
+import { TokenInfo, AuthResponse } from "./authModel";
 import { AuthService } from "./authService";
+import express from "express";
 
 @Route("/api/auth")
 @Tags("Auth API")
@@ -18,8 +22,8 @@ export class AuthController extends Controller {
    */
     @Post("/register")
     public async signUp(
-      @Header('authorization') basicAuth: string
-    ): Promise<TokenInfo | AuthError> {  
+      @Header('authorization') basicAuth: string,
+    ): Promise<AuthResponse> {  
       return new AuthService().create({basicAuth: basicAuth})
     }
 
@@ -28,9 +32,10 @@ export class AuthController extends Controller {
    * @returns {TokenInfo} Authentication for the user
    */
     @Post("/token")
+    @Security("basic")
     public async signIn(
-      @Header('authorization') basicAuth: string
-    ): Promise<TokenInfo | AuthError> {  
-      return new AuthService().signIn({basicAuth: basicAuth})
+      @Request() request: any
+    ): Promise<TokenInfo | AuthResponse> {
+      return Promise.resolve(request.user)
     }
 }

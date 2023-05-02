@@ -6,6 +6,22 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"AuthResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"success": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"message",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"TokenInfo": {
 				"properties": {
 					"username": {
@@ -20,22 +36,6 @@
 				"required": [
 					"username",
 					"token"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"AuthError": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"error": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"message",
-					"error"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -215,14 +215,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"anyOf": [
-										{
-											"$ref": "#/components/schemas/TokenInfo"
-										},
-										{
-											"$ref": "#/components/schemas/AuthError"
-										}
-									]
+									"$ref": "#/components/schemas/AuthResponse"
 								}
 							}
 						}
@@ -259,7 +252,7 @@
 											"$ref": "#/components/schemas/TokenInfo"
 										},
 										{
-											"$ref": "#/components/schemas/AuthError"
+											"$ref": "#/components/schemas/AuthResponse"
 										}
 									]
 								}
@@ -271,17 +264,12 @@
 				"tags": [
 					"Auth API"
 				],
-				"security": [],
-				"parameters": [
+				"security": [
 					{
-						"in": "header",
-						"name": "authorization",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
+						"basic": []
 					}
-				]
+				],
+				"parameters": []
 			}
 		},
 		"/api/seals/id/{id}": {

@@ -16,23 +16,6 @@ app.use(
 );
 app.use(json());
 
-interface IUser {
-  username: string
-}
-
-function generateAccessToken(username:IUser) {
-  if (process.env.TOKEN_SECRET) {
-    return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
-  }
-  return ""
-}
-
-app.post('/api/createNewUser', (req, res) => {
-  const token = generateAccessToken({ username: req.body.username });
-  res.json(token);
-});
-
-
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 RegisterRoutes(app);
