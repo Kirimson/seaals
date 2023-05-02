@@ -6,6 +6,7 @@ import { TokenExpiredError } from "jsonwebtoken";
 
 type SealToken = {
   username: string
+  role: string
   iat: number
   exp: number
 }
@@ -31,13 +32,8 @@ export async function expressAuthentication(
       
       // If a role is needed, go and check it. Else just resolve
       if (roles) {
-        const user = await prisma.user.findUnique({
-          where: {
-            username: decoded.username
-          }
-        })
         // If user is not part of one of the required roles, reject
-        if (!roles.includes(user?.role||"")) reject(new Error("Incorrect Role"));
+        if (!roles.includes(decoded.role||"")) reject(new Error("Incorrect Role"));
       }
       resolve(decoded)
     // If decoding fails
