@@ -52,10 +52,7 @@ export class AuthService {
         }
       });
       if (user) {
-        const passwordIsValid = bcrypt.compareSync(
-          password,
-          user.password
-        );
+        const passwordIsValid = bcrypt.compareSync(password, user.password);
 
         if (!passwordIsValid) {
           return {
@@ -63,13 +60,10 @@ export class AuthService {
             error: "P2001",
           };
         }
-
-          const token = jwt.sign({ username: user.username }, config.jwtSecret, {
-            expiresIn: 86400, // 24 hours
-          });
-
-          return {username: user.username, token: token}
-
+        const tokenData = { username: user.username, role: user.role };
+        const tokenOptions = { expiresIn: 86400 }
+        const token = jwt.sign(tokenData, config.jwtSecret, tokenOptions);
+        return {username: user.username, token: token}
       } else {
         return {
           message: "This User does not exist",
