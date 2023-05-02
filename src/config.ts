@@ -15,4 +15,5 @@ export const config = {
   validMimes:
     process.env.VALID_MIMES?.split(",").map((mime) => mime.trim()) ||
     defaultMimes,
+  jwtSecret: process.env.VALID_MIMES || "pleasechangeme"
 };

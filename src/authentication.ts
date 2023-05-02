@@ -1,39 +1,57 @@
 import * as express from "express";
 import * as jwt from "jsonwebtoken";
+import { config } from "config";
+import { prisma } from "app";
+import { TokenExpiredError } from "jsonwebtoken";
 
-export function expressAuthentication(
+type SealToken = {
+  username: string
+  iat: number
+  exp: number
+}
+
+export async function expressAuthentication(
   request: express.Request,
   securityName: string,
-  scopes?: string[]
+  roles?: string[]
 ): Promise<any> {
-  if (securityName === "jwt") {
-    const token =
-      request.body.token ||
-      request.query.token ||
-      request.headers["authorization"]?.split("Bearer ")[1];
+  if (securityName != "jwt") return new Promise((res, rej) => rej(new Error("Only jwt authentication is allowed!")));
+  // Try and grab a token from some places
+  const token =
+    request.body.token ||
+    request.query.token ||
+    request.headers["authorization"]?.split("Bearer ")[1];
     
-    return new Promise((resolve, reject) => {
-      if (!token) {
-        reject(new Error("No token provided"));
-      }
-      if (process.env.TOKEN_SECRET) {
-        jwt.verify(token, process.env.TOKEN_SECRET, function (err: any, decoded: any) {
-          if (err) {
-            reject(err);
-          } else {
-            // Check if JWT contains all required scopes
-            if (scopes) {
-              for (let scope of scopes) {
-                if (!decoded.scopes.includes(scope)) {
-                  reject({"status": 403, "msg": "unauthorised"});
-                }
-              }
-              resolve(decoded);
-            }
+  return new Promise(async (resolve, reject) => {
+    // If no token was found, return right away
+    if (!token) reject(new Error("No token provided!"));
+    try {
+      // Try and decode the JWT with the secret from config
+      const decoded = jwt.verify(token, config.jwtSecret) as SealToken;
+      
+      // If a role is needed, go and check it. Else just resolve
+      if (roles) {
+        const user = await prisma.user.findUnique({
+          where: {
+            username: decoded.username
           }
-        });
+        })
+        // If user is not part of one of the required roles, reject
+        if (!roles.includes(user?.role||"")) reject(new Error("Incorrect Role"));
       }
-    });
-  }
-  return new Promise((res, rej) => rej("No valid security name provided"));
+      resolve(decoded)
+    // If decoding fails
+    } catch (e) {
+      // If token has expired, it will fail
+      if (e instanceof TokenExpiredError) {
+        reject(new Error(e.message));
+      // Some other token error
+      } else if (e instanceof jwt.JsonWebTokenError) {
+        reject(new Error(e.message));
+      // Something else entirely
+      } else {
+        reject(new Error("Bad Token"));
+      }
+    }
+  })
 }
