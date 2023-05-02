@@ -16,7 +16,7 @@ export interface TokenInfo {
   token: string;
 }
 
-export interface AuthError {
+export interface AuthResponse {
   message: string
-  error: string
+  success: boolean
 }
