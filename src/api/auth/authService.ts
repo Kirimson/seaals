@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import bcrypt from 'bcryptjs';
-import jwt from "jsonwebtoken";
 
 import { prisma } from "app";
 import { UserAuthParams, AuthResponse } from "./authModel";
