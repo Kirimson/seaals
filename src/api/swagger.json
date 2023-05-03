@@ -192,6 +192,18 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"Partial_Pick_User.username-or-role__": {
+				"properties": {
+					"username": {
+						"type": "string"
+					},
+					"role": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
 			}
 		},
 		"securitySchemes": {}
@@ -748,7 +760,7 @@
 				},
 				"description": "Delete an existing User by ID",
 				"tags": [
-					"Auth API"
+					"User API"
 				],
 				"security": [
 					{
@@ -768,6 +780,86 @@
 						}
 					}
 				]
+			},
+			"get": {
+				"operationId": "GetByID",
+				"responses": {
+					"200": {
+						"description": "Response if user is deleted",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Get an Existing User by ID",
+				"tags": [
+					"User API"
+				],
+				"security": [
+					{
+						"jwt": [
+							"ADMIN"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"patch": {
+				"operationId": "PatchByID",
+				"responses": {
+					"200": {
+						"description": "Response if user is deleted",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Update an Existing User by ID",
+				"tags": [
+					"User API"
+				],
+				"security": [
+					{
+						"jwt": [
+							"ADMIN"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_Pick_User.username-or-role__"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/user/username/{username}": {
@@ -783,9 +875,9 @@
 						}
 					}
 				},
-				"description": "Delete an existing User by IName",
+				"description": "Delete an existing User by Username",
 				"tags": [
-					"Auth API"
+					"User API"
 				],
 				"security": [
 					{
@@ -804,6 +896,84 @@
 						}
 					}
 				]
+			},
+			"get": {
+				"operationId": "GetByName",
+				"responses": {
+					"200": {
+						"description": "Response if user is deleted",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Get an Existing User by name",
+				"tags": [
+					"User API"
+				],
+				"security": [
+					{
+						"jwt": [
+							"ADMIN"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"patch": {
+				"operationId": "PatchByName",
+				"responses": {
+					"200": {
+						"description": "Response if user is deleted",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Update an Existing User by ID",
+				"tags": [
+					"User API"
+				],
+				"security": [
+					{
+						"jwt": [
+							"ADMIN"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_Pick_User.username-or-role__"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/seal": {
