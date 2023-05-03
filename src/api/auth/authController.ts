@@ -6,12 +6,10 @@ import {
   Header,
   Security,
   Request,
-  SuccessResponse
 } from "tsoa";
 
 import { TokenInfo, AuthResponse } from "./authModel";
 import { AuthService } from "./authService";
-import express from "express";
 
 @Route("/api/auth")
 @Tags("Auth API")
