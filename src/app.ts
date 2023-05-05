@@ -3,6 +3,7 @@ import { RegisterRoutes } from "api/routes";
 import { PrismaClient } from "@prisma/client";
 import path from "path";
 import { ValidateError } from "tsoa";
+import cors from "cors";
 
 import jwt from "jsonwebtoken";
 
@@ -15,6 +16,7 @@ app.use(
   })
 );
 app.use(json());
+app.use(cors());
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
