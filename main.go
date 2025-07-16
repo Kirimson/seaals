@@ -16,7 +16,7 @@ func setupRouter() *gin.Engine {
 	r.GET("/seal", func(c *gin.Context) {
 		sm := NewSealMagick()
 		// Load the image
-		sm.Mw.ReadImage(seaals.GetRandomSeal())
+		sm.SealMW.ReadImage(seaals.GetRandomSeal())
 
 		so := seaals.ParseQueryOpts(c)
 		sm.ApplyEffects(so)
@@ -33,12 +33,11 @@ func setupRouter() *gin.Engine {
 		so := seaals.ParseQueryOpts(c)
 
 		// Load the image
-		sm.Mw.ReadImage(seaals.GetRandomSeal())
+		sm.SealMW.ReadImage(seaals.GetRandomSeal())
+		sm.ApplyEffects(so)
+
 		// Draw text
 		sm.ThickOutline(text, "Adwaita-Mono", so.Gravity)
-		sm.DrawCurrent()
-
-		sm.ApplyEffects(so)
 
 		// Get bytes and return
 		b := sm.GetImageBytes()
