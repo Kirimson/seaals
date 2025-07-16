@@ -8,8 +8,6 @@ import (
 	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
-var db = make(map[string]string)
-
 func setupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
@@ -27,10 +25,13 @@ func setupRouter() *gin.Engine {
 	r.GET("/seal/says/:text", func(c *gin.Context) {
 		sm := NewSealMagick()
 		text := c.Params.ByName("text")
+
+		so := seaals.ParseOpts(c)
+
 		// Load the image
 		sm.Mw.ReadImage(seaals.GetRandomSeal())
 		// Draw text
-		sm.ThickOutline(text, "Adwaita-Mono", imagick.GRAVITY_SOUTH)
+		sm.ThickOutline(text, "Adwaita-Mono", so.Gravity)
 		sm.DrawCurrent()
 		// Get bytes and return
 		b := sm.GetImageBytes()

@@ -44,19 +44,20 @@ func (sm *SealMagick) ThickOutline(text string, font string, position imagick.Gr
 	sm.Pw.SetColor("none")
 	sm.Dw.SetStrokeColor(sm.Pw)
 	sm.Dw.Annotation(0, 65, text)
+	// Reset gravity
+	sm.Dw.SetGravity(imagick.GRAVITY_FORGET)
 }
 
+// Draw the current stack from DrawingWand to the MagickWand
 func (sm *SealMagick) DrawCurrent() {
 	sm.Mw.DrawImage(sm.Dw)
 }
 
 func (sm *SealMagick) GetImageBytes() []byte {
-
 	// imagick really likes files, likely as we're interfacing with C
 	// Make a temp file, read into memory, delete the file, then return
 	// TODO: Can this be better?
 	id := uuid.New()
-	fmt.Println(id.String())
 	filename := fmt.Sprintf("tmp/%s.jpg", id.String())
 	sm.Mw.WriteImage(filename)
 	file, err := os.ReadFile(filename)
