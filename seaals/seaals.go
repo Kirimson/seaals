@@ -8,12 +8,13 @@ import (
 )
 
 type SealOpts struct {
-	Position string `form:"position"`
+	Position string `form:"position" json:"position"`
+	Filter   string `form:"filter" json:"filter"`
 	// Parsed from user provided Position
 	Gravity imagick.GravityType
 }
 
-func ParseOpts(c *gin.Context) *SealOpts {
+func ParseQueryOpts(c *gin.Context) *SealOpts {
 	var so SealOpts
 	c.ShouldBind(&so)
 	so.parsePosition()

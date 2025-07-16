@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"seaals-api/seaals"
+	"strings"
 
 	"github.com/google/uuid"
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -46,6 +48,16 @@ func (sm *SealMagick) ThickOutline(text string, font string, position imagick.Gr
 	sm.Dw.Annotation(0, 65, text)
 	// Reset gravity
 	sm.Dw.SetGravity(imagick.GRAVITY_FORGET)
+}
+
+func (sm *SealMagick) ApplyEffects(so *seaals.SealOpts) {
+	if strings.ToLower(so.Filter) == "monochrome" {
+		sm.Monochrome()
+	}
+}
+
+func (sm *SealMagick) Monochrome() {
+	sm.Mw.SetImageType(imagick.IMAGE_TYPE_GRAYSCALE)
 }
 
 // Draw the current stack from DrawingWand to the MagickWand
