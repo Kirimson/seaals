@@ -16,6 +16,7 @@ type SealMagick struct {
 	// MagickWand instance for the main Seal image
 	SealMW *imagick.MagickWand
 	Dw     *imagick.DrawingWand
+	opts   *seaals.SealOpts
 }
 
 func NewSealMagick() *SealMagick {
@@ -25,41 +26,47 @@ func NewSealMagick() *SealMagick {
 	}
 }
 
-func (sm *SealMagick) ThickOutline(text string, font string, position imagick.GravityType) {
+func (sm *SealMagick) DrawText(text string) {
 	defer sm.Dw.Clear()
 	textPW := imagick.NewPixelWand()
 	// Set up a 72 point white font
-	textPW.SetColor("white")
+	textPW.SetColor(sm.opts.FontColor)
 	sm.Dw.SetFillColor(textPW)
-	sm.Dw.SetFont(font)
-	sm.Dw.SetFontSize(72)
+	sm.Dw.SetFont("Adwaita-Mono")
+	sm.Dw.SetFontSize(sm.opts.FontSize)
 
 	// Add a black outline to the text
-	textPW.SetColor("black")
+	textPW.SetColor(sm.opts.BorderColor)
 	sm.Dw.SetStrokeColor(textPW)
-	sm.Dw.SetStrokeWidth(8)
+	sm.Dw.SetStrokeWidth(sm.opts.BorderStroke)
 
 	// Now draw the text, with gravity set to south
-	sm.Dw.SetGravity(position)
-	sm.Dw.Annotation(0, 65, text)
+	sm.Dw.SetGravity(sm.opts.Gravity)
+	sm.Dw.Annotation(0, 0, text)
 
 	// Redraw the text, with border colour set to none to 'remove' the inside border
 	textPW.SetColor("none")
 	sm.Dw.SetStrokeColor(textPW)
-	sm.Dw.Annotation(0, 65, text)
+	sm.Dw.Annotation(0, 0, text)
 	sm.SealMW.DrawImage(sm.Dw)
 }
 
-func (sm *SealMagick) ApplyEffects(so *seaals.SealOpts) {
-	if strings.ToLower(so.Filter) == "monochrome" {
+func (sm *SealMagick) ApplyEffects() {
+	if strings.ToLower(sm.opts.Filter) == "monochrome" {
 		sm.FilterMonochrome()
-	} else if strings.ToLower(so.Filter) == "funky" {
+	} else if strings.ToLower(sm.opts.Filter) == "funky" {
 		sm.FilterFunky()
+	} else if strings.ToLower(sm.opts.Filter) == "invert" {
+		sm.FilterInvert()
 	}
 }
 
 func (sm *SealMagick) FilterMonochrome() {
 	sm.SealMW.SetImageType(imagick.IMAGE_TYPE_GRAYSCALE)
+}
+
+func (sm *SealMagick) FilterInvert() {
+	sm.SealMW.NegateImage(false)
 }
 
 func (sm *SealMagick) FilterFunky() {
