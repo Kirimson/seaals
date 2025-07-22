@@ -64,5 +64,5 @@ func (so *SealOpts) parsePosition() {
 
 func GetRandomSeal() string {
 	// TODO: Actually make it do something
-	return "seal.jpeg"
+	return "snow.gif"
 }

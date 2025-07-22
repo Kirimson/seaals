@@ -3,26 +3,32 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
+	"regexp"
 	"seaals-api/seaals"
 	"strings"
 
-	"github.com/google/uuid"
 	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
 type SealMagick struct {
 	// MagickWand instance for the main Seal image
-	SealMW *imagick.MagickWand
-	Dw     *imagick.DrawingWand
-	opts   *seaals.SealOpts
+	SealMW  *imagick.MagickWand
+	Details ImageDetails
+	Dw      *imagick.DrawingWand
+	opts    *seaals.SealOpts
+	aw      *imagick.MagickWand
+}
+
+type ImageDetails struct {
+	MimeType  string
+	Extension string
 }
 
 func NewSealMagick() *SealMagick {
 	return &SealMagick{
 		SealMW: imagick.NewMagickWand(),
 		Dw:     imagick.NewDrawingWand(),
+		aw:     imagick.NewMagickWand(),
 	}
 }
 
@@ -48,7 +54,11 @@ func (sm *SealMagick) DrawText(text string) {
 	textPW.SetColor("none")
 	sm.Dw.SetStrokeColor(textPW)
 	sm.Dw.Annotation(0, 0, text)
-	sm.SealMW.DrawImage(sm.Dw)
+
+	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+		sm.SealMW.SetIteratorIndex(i)
+		sm.SealMW.DrawImage(sm.Dw)
+	}
 }
 
 func (sm *SealMagick) ApplyEffects() {
@@ -62,11 +72,17 @@ func (sm *SealMagick) ApplyEffects() {
 }
 
 func (sm *SealMagick) FilterMonochrome() {
-	sm.SealMW.SetImageType(imagick.IMAGE_TYPE_GRAYSCALE)
+	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+		sm.SealMW.SetIteratorIndex(i)
+		sm.SealMW.SetImageType(imagick.IMAGE_TYPE_GRAYSCALE)
+	}
 }
 
 func (sm *SealMagick) FilterInvert() {
-	sm.SealMW.NegateImage(false)
+	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+		sm.SealMW.SetIteratorIndex(i)
+		sm.SealMW.NegateImage(false)
+	}
 }
 
 func (sm *SealMagick) FilterFunky() {
@@ -108,20 +124,35 @@ func (sm *SealMagick) FilterFunky() {
 	}
 
 	// Apply the CLUT to the base image
-	sm.SealMW.ClutImage(gradientMW, imagick.INTERPOLATE_PIXEL_AVERAGE)
+	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+		sm.SealMW.SetIteratorIndex(i)
+		sm.SealMW.ClutImage(gradientMW, imagick.INTERPOLATE_PIXEL_AVERAGE)
+	}
 }
 
-func (sm *SealMagick) GetImageBytes() []byte {
-	// imagick really likes files, likely as we're interfacing with C
-	// Make a temp file, read into memory, delete the file, then return
-	// TODO: Can this be better?
-	id := uuid.New()
-	filename := fmt.Sprintf("tmp/%s.jpg", id.String())
-	sm.SealMW.WriteImage(filename)
-	file, err := os.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err.Error())
+func (sm *SealMagick) LoadImage(image string) {
+	sm.SealMW.ReadImage(image)
+	sm.Details = sm.IdentifyImage()
+	fmt.Printf("%+v\n", sm.Details)
+}
+
+func (sm *SealMagick) IdentifyImage() ImageDetails {
+	identifyString := sm.SealMW.IdentifyImage()
+	mimeRegexp, _ := regexp.Compile("Mime type: ([a-z]+/([a-z]+))")
+	mimeMatch := mimeRegexp.FindStringSubmatch(identifyString)
+
+	mime := ""
+	ext := ""
+	if len(mimeMatch) == 3 {
+		mime = mimeMatch[1]
+		ext = mimeMatch[2]
 	}
-	os.Remove(filename)
-	return file
+	return ImageDetails{
+		MimeType:  mime,
+		Extension: ext,
+	}
+}
+
+func (sm *SealMagick) GetImageBytes() ([]byte, error) {
+	return sm.SealMW.GetImagesBlob()
 }

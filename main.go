@@ -13,22 +13,28 @@ func setupRouter() *gin.Engine {
 
 	r.GET("/seal", func(c *gin.Context) {
 		sm := NewSealMagick()
-		sm.SealMW.ReadImage(seaals.GetRandomSeal())
+		sm.LoadImage(seaals.GetRandomSeal())
 		sm.opts = seaals.ParseQueryOpts(c)
 		sm.ApplyEffects()
-		b := sm.GetImageBytes()
-		c.Data(http.StatusOK, "image/jpeg", b)
+		b, err := sm.GetImageBytes()
+		if err != nil {
+			c.AbortWithError(500, err)
+		}
+		c.Data(http.StatusOK, sm.Details.MimeType, b)
 	})
 
 	r.GET("/seal/says/:text", func(c *gin.Context) {
 		sm := NewSealMagick()
 		text := c.Params.ByName("text")
 		sm.opts = seaals.ParseQueryOpts(c)
-		sm.SealMW.ReadImage(seaals.GetRandomSeal())
+		sm.LoadImage(seaals.GetRandomSeal())
 		sm.ApplyEffects()
 		sm.DrawText(text)
-		b := sm.GetImageBytes()
-		c.Data(http.StatusOK, "image/jpeg", b)
+		b, err := sm.GetImageBytes()
+		if err != nil {
+			c.AbortWithError(500, err)
+		}
+		c.Data(http.StatusOK, sm.Details.MimeType, b)
 	})
 
 	return r
