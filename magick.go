@@ -20,8 +20,7 @@ type SealMagick struct {
 }
 
 type ImageDetails struct {
-	MimeType  string
-	Extension string
+	MimeType string
 }
 
 func NewSealMagick() *SealMagick {
@@ -142,14 +141,11 @@ func (sm *SealMagick) IdentifyImage() ImageDetails {
 	mimeMatch := mimeRegexp.FindStringSubmatch(identifyString)
 
 	mime := ""
-	ext := ""
 	if len(mimeMatch) == 3 {
 		mime = mimeMatch[1]
-		ext = mimeMatch[2]
 	}
 	return ImageDetails{
-		MimeType:  mime,
-		Extension: ext,
+		MimeType: mime,
 	}
 }
 
