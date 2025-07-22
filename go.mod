@@ -4,7 +4,6 @@ go 1.24.5
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/google/uuid v1.6.0
 	gopkg.in/gographics/imagick.v3 v3.7.2
 )
 
