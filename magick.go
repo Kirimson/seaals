@@ -2,7 +2,6 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 	"seaals-api/seaals"
 	"strings"
@@ -73,7 +72,7 @@ func (sm *SealMagick) ApplyEffects() {
 func (sm *SealMagick) FilterMonochrome() {
 	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
 		sm.SealMW.SetIteratorIndex(i)
-		sm.SealMW.SetImageType(imagick.IMAGE_TYPE_GRAYSCALE)
+		sm.SealMW.TransformImageColorspace(imagick.COLORSPACE_GRAY)
 	}
 }
 
@@ -132,7 +131,6 @@ func (sm *SealMagick) FilterFunky() {
 func (sm *SealMagick) LoadImage(image string) {
 	sm.SealMW.ReadImage(image)
 	sm.Details = sm.IdentifyImage()
-	fmt.Printf("%+v\n", sm.Details)
 }
 
 func (sm *SealMagick) IdentifyImage() ImageDetails {
