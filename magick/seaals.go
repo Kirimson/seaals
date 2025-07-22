@@ -1,9 +1,8 @@
-package seaals
+package magick
 
 import (
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
@@ -32,9 +31,7 @@ func defaultString(value string, defVal string) string {
 	return value
 }
 
-func ParseQueryOpts(c *gin.Context) *SealOpts {
-	var so SealOpts
-	c.ShouldBind(&so)
+func DefaultOpts(so SealOpts) *SealOpts {
 	so.parsePosition()
 	so.FontSize = defaultFloat(so.FontSize, 48)
 	so.FontColor = defaultString(so.FontColor, "white")
@@ -60,9 +57,4 @@ func (so *SealOpts) parsePosition() {
 	} else if strings.ToLower(so.Position) == "right" {
 		so.Gravity = imagick.GRAVITY_EAST
 	}
-}
-
-func GetRandomSeal() string {
-	// TODO: Actually make it do something
-	return "snow.gif"
 }

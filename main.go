@@ -1,48 +1,43 @@
 package main
 
 import (
-	"net/http"
-	"seaals-api/seaals"
+	"seaals-api/controller"
+	"seaals-api/models"
+	"seaals-api/service"
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/gographics/imagick.v3/imagick"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/seal", func(c *gin.Context) {
-		sm := NewSealMagick()
-		sm.LoadImage(seaals.GetRandomSeal())
-		sm.opts = seaals.ParseQueryOpts(c)
-		sm.ApplyEffects()
-		b, err := sm.GetImageBytes()
-		if err != nil {
-			c.AbortWithError(500, err)
-		}
-		c.Data(http.StatusOK, sm.Details.MimeType, b)
-	})
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
 
-	r.GET("/seal/says/:text", func(c *gin.Context) {
-		sm := NewSealMagick()
-		text := c.Params.ByName("text")
-		sm.opts = seaals.ParseQueryOpts(c)
-		sm.LoadImage(seaals.GetRandomSeal())
-		sm.ApplyEffects()
-		sm.DrawText(text)
-		b, err := sm.GetImageBytes()
-		if err != nil {
-			c.AbortWithError(500, err)
-		}
-		c.Data(http.StatusOK, sm.Details.MimeType, b)
-	})
+	// Migrate schemas
+	db.AutoMigrate(&models.Seal{}, &models.Tag{})
+
+	// Service interfaces with the database
+	sealService := service.NewSealService(db)
+	// Controller implements routes, and calls the service
+	sealController := controller.NewSealController(sealService)
+
+	r.GET("/seal", sealController.GetSeal)
+	r.GET("/seal/says/:text", sealController.GetSealSaying)
 
 	return r
 }
 
 func main() {
+	// Setup ImageMagick
 	imagick.Initialize()
 	defer imagick.Terminate()
+
 	r := setupRouter()
 	r.Run(":8080")
 }

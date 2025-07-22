@@ -1,9 +1,7 @@
-// Port of http://members.shaw.ca/el.supremo/MagickWand/trans_paint.htm to Go
-package main
+package magick
 
 import (
 	"regexp"
-	"seaals-api/seaals"
 	"strings"
 
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -19,7 +17,7 @@ type SealMagick struct {
 	// a MagickWand's image
 	Dw      *imagick.DrawingWand
 	Details ImageDetails
-	opts    *seaals.SealOpts
+	opts    *SealOpts
 	aw      *imagick.MagickWand
 }
 
@@ -27,11 +25,14 @@ type ImageDetails struct {
 	MimeType string
 }
 
-func NewSealMagick() *SealMagick {
+func NewSealMagick(opts SealOpts) *SealMagick {
+	otps := DefaultOpts(opts)
+
 	return &SealMagick{
 		SealMW: imagick.NewMagickWand(),
 		Dw:     imagick.NewDrawingWand(),
 		aw:     imagick.NewMagickWand(),
+		opts:   otps,
 	}
 }
 
