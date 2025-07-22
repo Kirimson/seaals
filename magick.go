@@ -11,9 +11,14 @@ import (
 
 type SealMagick struct {
 	// MagickWand instance for the main Seal image
-	SealMW  *imagick.MagickWand
-	Details ImageDetails
+	// It holds the actual image data. Multiple MagickWands
+	// can be used during operations, but should always be
+	// ultimately applied to the SealMW
+	SealMW *imagick.MagickWand
+	// The DrawingWand is the 'tool' to add things to
+	// a MagickWand's image
 	Dw      *imagick.DrawingWand
+	Details ImageDetails
 	opts    *seaals.SealOpts
 	aw      *imagick.MagickWand
 }
@@ -32,7 +37,10 @@ func NewSealMagick() *SealMagick {
 
 func (sm *SealMagick) DrawText(text string) {
 	defer sm.Dw.Clear()
+	// PixelWands are the properties of a DrawingWand
+	// controlling the colour/alpha of what is drawn
 	textPW := imagick.NewPixelWand()
+
 	// Set up a 72 point white font
 	textPW.SetColor(sm.opts.FontColor)
 	sm.Dw.SetFillColor(textPW)
@@ -44,7 +52,6 @@ func (sm *SealMagick) DrawText(text string) {
 	sm.Dw.SetStrokeColor(textPW)
 	sm.Dw.SetStrokeWidth(sm.opts.BorderStroke)
 
-	// Now draw the text, with gravity set to south
 	sm.Dw.SetGravity(sm.opts.Gravity)
 	sm.Dw.Annotation(0, 0, text)
 
