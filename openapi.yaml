@@ -1,0 +1,70 @@
+openapi: "3.1.0"
+info:
+  version: 1.0.0
+  title: Minimal seaals API server
+paths:
+  /seal:
+    get:
+      summary: Get a random Seal
+      parameters:
+        - $ref: "#/components/parameters/tagParam"
+        - $ref: "#/components/parameters/filterParam"
+      responses:
+        "200":
+          description: Image of a seal
+          content:
+            image/*:
+              type: string
+              format: binary
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seal"
+  /seal/says/{text}:
+    get:
+      summary: Get a random Seal saying something
+      parameters:
+        - in: path
+          name: text
+          schema:
+            type: string
+          required: true
+        - $ref: "#/components/parameters/tagParam"
+        - $ref: "#/components/parameters/filterParam"
+components:
+  parameters:
+    tagParam:
+      in: query
+      name: tag
+      schema:
+        type: string
+      required: false
+      description: Tag of the Seal
+    filterParam:
+      in: query
+      name: filter
+      schema:
+        type: string
+        enum:
+          - monochrome
+          - invert
+          - funky
+      required: false
+      description: Filter to apply to the image
+  schemas:
+    Seal:
+      type: object
+      required:
+        - tags
+      properties:
+        id:
+          type: string
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+        mimeType:
+          type: string
+        createdAt:
+          type: string
+    Tag:
+      type: string

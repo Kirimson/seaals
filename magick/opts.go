@@ -6,7 +6,7 @@ import (
 	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
-type SealOpts struct {
+type Opts struct {
 	Position     string  `form:"position" json:"position"`
 	Filter       string  `form:"filter" json:"filter"`
 	FontSize     float64 `form:"size" json:"size"`
@@ -31,16 +31,16 @@ func defaultString(value string, defVal string) string {
 	return value
 }
 
-func DefaultOpts(so SealOpts) *SealOpts {
+func DefaultOpts(so *Opts) *Opts {
 	so.parsePosition()
 	so.FontSize = defaultFloat(so.FontSize, 48)
 	so.FontColor = defaultString(so.FontColor, "white")
 	so.BorderColor = defaultString(so.BorderColor, "black")
 	so.BorderStroke = defaultFloat(so.BorderStroke, 6)
-	return &so
+	return so
 }
 
-func (so *SealOpts) parsePosition() {
+func (so *Opts) parsePosition() {
 	if so.Position == "" {
 		so.Gravity = imagick.GRAVITY_SOUTH
 		return

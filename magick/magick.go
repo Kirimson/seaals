@@ -1,3 +1,5 @@
+// Package magick interacts with the imagick library
+// to provide different filters and effects on images
 package magick
 
 import (
@@ -13,26 +15,24 @@ type SealMagick struct {
 	// can be used during operations, but should always be
 	// ultimately applied to the SealMW
 	SealMW *imagick.MagickWand
+	aw     *imagick.MagickWand
 	// The DrawingWand is the 'tool' to add things to
 	// a MagickWand's image
 	Dw      *imagick.DrawingWand
 	Details ImageDetails
-	opts    *SealOpts
-	aw      *imagick.MagickWand
+	opts    *Opts
 }
 
 type ImageDetails struct {
 	MimeType string
 }
 
-func NewSealMagick(opts SealOpts) *SealMagick {
-	otps := DefaultOpts(opts)
-
+func NewSealMagick(opts *Opts) *SealMagick {
 	return &SealMagick{
 		SealMW: imagick.NewMagickWand(),
-		Dw:     imagick.NewDrawingWand(),
 		aw:     imagick.NewMagickWand(),
-		opts:   otps,
+		Dw:     imagick.NewDrawingWand(),
+		opts:   opts,
 	}
 }
 

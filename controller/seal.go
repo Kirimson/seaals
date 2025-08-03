@@ -1,20 +1,19 @@
 package controller
 
 import (
-	"net/http"
 	"seaals-api/magick"
 	"seaals-api/service"
-
-	"github.com/gin-gonic/gin"
 )
 
-// SealController will implement buisness logic for different routes
-// This is usually a 'service', and our service is normall a
-// 'repository' but I feel there would just be too much duplication that way
 // SealController interacts with the Magick package, to modify Seal images with
 // different effects
 type SealController struct {
 	sealService *service.SealService
+}
+
+type SealResponse struct {
+	Image    []byte
+	MimeType string
 }
 
 // Return a new SealController, that will call methods from the provided SealService
@@ -25,42 +24,48 @@ func NewSealController(service *service.SealService) *SealController {
 	}
 }
 
-func (sc *SealController) GetSeal(c *gin.Context) {
-	var so magick.SealOpts
-	c.ShouldBind(&so)
-
-	sm := magick.NewSealMagick(so)
+// GetSeal gets a random Seal image, applies filters and
+// returns a SealResponse containing the image bytes and MimeType
+func (sc *SealController) GetSeal(mo *magick.Opts) (*SealResponse, error) {
+	sm := magick.NewSealMagick(mo)
 	sm.LoadImage(sc.randomSeal())
 
 	sm.ApplyEffects()
 	b, err := sm.GetImageBytes()
 	if err != nil {
-		c.AbortWithError(500, err)
+		return nil, err
 	}
-	c.Data(http.StatusOK, sm.Details.MimeType, b)
+
+	resp := &SealResponse{
+		Image:    b,
+		MimeType: sm.Details.MimeType,
+	}
+	return resp, nil
 }
 
-func (sc *SealController) GetSealSaying(c *gin.Context) {
-	var so magick.SealOpts
-	c.ShouldBind(&so)
-
-	sm := magick.NewSealMagick(so)
+func (sc *SealController) GetSealSaying(text string, mo *magick.Opts) (*SealResponse, error) {
+	sm := magick.NewSealMagick(mo)
 	sm.LoadImage(sc.randomSeal())
 
 	sm.LoadImage(sc.randomSeal())
 	sm.ApplyEffects()
 
-	text := c.Params.ByName("text")
+	// Draw text after all effects have been applied
 	sm.DrawText(text)
 
 	b, err := sm.GetImageBytes()
 	if err != nil {
-		c.AbortWithError(500, err)
+		return nil, err
 	}
-	c.Data(http.StatusOK, sm.Details.MimeType, b)
+
+	resp := &SealResponse{
+		Image:    b,
+		MimeType: sm.Details.MimeType,
+	}
+	return resp, nil
 }
 
 func (sc *SealController) randomSeal() string {
 	// TODO: Actually make it do something
-	return "snow.gif"
+	return "seal.jpeg"
 }
