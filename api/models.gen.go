@@ -10,6 +10,14 @@ const (
 	FilterParamMonochrome FilterParam = "monochrome"
 )
 
+// Defines values for PositionParam.
+const (
+	PositionParamBottom PositionParam = "bottom"
+	PositionParamLeft   PositionParam = "left"
+	PositionParamRight  PositionParam = "right"
+	PositionParamTop    PositionParam = "top"
+)
+
 // Defines values for GetSealParamsFilter.
 const (
 	GetSealParamsFilterFunky      GetSealParamsFilter = "funky"
@@ -24,6 +32,14 @@ const (
 	Monochrome GetSealSaysTextParamsFilter = "monochrome"
 )
 
+// Defines values for GetSealSaysTextParamsPosition.
+const (
+	GetSealSaysTextParamsPositionBottom GetSealSaysTextParamsPosition = "bottom"
+	GetSealSaysTextParamsPositionLeft   GetSealSaysTextParamsPosition = "left"
+	GetSealSaysTextParamsPositionRight  GetSealSaysTextParamsPosition = "right"
+	GetSealSaysTextParamsPositionTop    GetSealSaysTextParamsPosition = "top"
+)
+
 // Seal defines model for Seal.
 type Seal struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
@@ -35,8 +51,23 @@ type Seal struct {
 // Tag defines model for Tag.
 type Tag = string
 
+// BorderColourParam defines model for borderColourParam.
+type BorderColourParam = string
+
+// BorderSizeParam defines model for borderSizeParam.
+type BorderSizeParam = int
+
 // FilterParam defines model for filterParam.
 type FilterParam string
+
+// FontColourParam defines model for fontColourParam.
+type FontColourParam = string
+
+// FontSizeParam defines model for fontSizeParam.
+type FontSizeParam = int
+
+// PositionParam defines model for positionParam.
+type PositionParam string
 
 // TagParam defines model for tagParam.
 type TagParam = string
@@ -60,7 +91,25 @@ type GetSealSaysTextParams struct {
 
 	// Filter Filter to apply to the image
 	Filter *GetSealSaysTextParamsFilter `form:"filter,omitempty" json:"filter,omitempty"`
+
+	// Position Position of the caption text on the image
+	Position *GetSealSaysTextParamsPosition `form:"position,omitempty" json:"position,omitempty"`
+
+	// FontSize Size of the caption text
+	FontSize *FontSizeParam `form:"fontSize,omitempty" json:"fontSize,omitempty"`
+
+	// FontColour Colour of the caption text
+	FontColour *FontColourParam `form:"fontColour,omitempty" json:"fontColour,omitempty"`
+
+	// BorderSize Thickness of the caption border
+	BorderSize *BorderSizeParam `form:"borderSize,omitempty" json:"borderSize,omitempty"`
+
+	// BorderColour Colour of the caption border
+	BorderColour *BorderColourParam `form:"borderColour,omitempty" json:"borderColour,omitempty"`
 }
 
 // GetSealSaysTextParamsFilter defines parameters for GetSealSaysText.
 type GetSealSaysTextParamsFilter string
+
+// GetSealSaysTextParamsPosition defines parameters for GetSealSaysText.
+type GetSealSaysTextParamsPosition string

@@ -43,15 +43,15 @@ func (sm *SealMagick) DrawText(text string) {
 	textPW := imagick.NewPixelWand()
 
 	// Set up a 72 point white font
-	textPW.SetColor(sm.opts.FontColor)
+	textPW.SetColor(sm.opts.FontColour)
 	sm.Dw.SetFillColor(textPW)
 	sm.Dw.SetFont("Adwaita-Mono")
 	sm.Dw.SetFontSize(sm.opts.FontSize)
 
 	// Add a black outline to the text
-	textPW.SetColor(sm.opts.BorderColor)
+	textPW.SetColor(sm.opts.BorderColour)
 	sm.Dw.SetStrokeColor(textPW)
-	sm.Dw.SetStrokeWidth(sm.opts.BorderStroke)
+	sm.Dw.SetStrokeWidth(sm.opts.BorderSize)
 
 	sm.Dw.SetGravity(sm.opts.Gravity)
 	sm.Dw.Annotation(0, 0, text)

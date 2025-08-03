@@ -43,6 +43,7 @@ func (sc *SealController) GetSeal(mo *magick.Opts) (*SealResponse, error) {
 	return resp, nil
 }
 
+// GetSealSaying gets a random Seal with both graphical effects and a caption text
 func (sc *SealController) GetSealSaying(text string, mo *magick.Opts) (*SealResponse, error) {
 	sm := magick.NewSealMagick(mo)
 	sm.LoadImage(sc.randomSeal())

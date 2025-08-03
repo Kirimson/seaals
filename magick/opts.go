@@ -7,12 +7,12 @@ import (
 )
 
 type Opts struct {
-	Position     string  `form:"position" json:"position"`
-	Filter       string  `form:"filter" json:"filter"`
-	FontSize     float64 `form:"size" json:"size"`
-	FontColor    string  `form:"color" json:"color"`
-	BorderColor  string  `form:"border" json:"border"`
-	BorderStroke float64 `form:"stroke" json:"stroke"`
+	Position     string
+	Filter       string
+	FontSize     float64
+	FontColour   string
+	BorderColour string
+	BorderSize   float64
 	// Parsed from user provided Position
 	Gravity imagick.GravityType
 }
@@ -34,9 +34,9 @@ func defaultString(value string, defVal string) string {
 func DefaultOpts(so *Opts) *Opts {
 	so.parsePosition()
 	so.FontSize = defaultFloat(so.FontSize, 48)
-	so.FontColor = defaultString(so.FontColor, "white")
-	so.BorderColor = defaultString(so.BorderColor, "black")
-	so.BorderStroke = defaultFloat(so.BorderStroke, 6)
+	so.FontColour = defaultString(so.FontColour, "white")
+	so.BorderColour = defaultString(so.BorderColour, "black")
+	so.BorderSize = defaultFloat(so.BorderSize, 6)
 	return so
 }
 

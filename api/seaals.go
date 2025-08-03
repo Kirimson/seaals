@@ -48,6 +48,21 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	if params.Filter != nil {
 		mo.Filter = string(*params.Filter)
 	}
+	if params.Position != nil {
+		mo.Position = string(*params.Position)
+	}
+	if params.FontSize != nil {
+		mo.FontSize = float64(*params.FontSize)
+	}
+	if params.FontColour != nil {
+		mo.FontColour = string(*params.FontColour)
+	}
+	if params.BorderSize != nil {
+		mo.BorderSize = float64(*params.BorderSize)
+	}
+	if params.BorderColour != nil {
+		mo.BorderColour = string(*params.BorderColour)
+	}
 	// Set any defaults not set by the user
 	mo = magick.DefaultOpts(mo)
 

@@ -30,6 +30,11 @@ paths:
           required: true
         - $ref: "#/components/parameters/tagParam"
         - $ref: "#/components/parameters/filterParam"
+        - $ref: "#/components/parameters/positionParam"
+        - $ref: "#/components/parameters/fontSizeParam"
+        - $ref: "#/components/parameters/fontColourParam"
+        - $ref: "#/components/parameters/borderSizeParam"
+        - $ref: "#/components/parameters/borderColourParam"
 components:
   parameters:
     tagParam:
@@ -50,6 +55,52 @@ components:
           - funky
       required: false
       description: Filter to apply to the image
+    positionParam:
+      in: query
+      name: position
+      schema:
+        type: string
+        enum:
+          - top
+          - bottom
+          - left
+          - right
+      required: false
+      description: Position of the caption text on the image
+    fontSizeParam:
+      in: query
+      name: fontSize
+      schema:
+        type: integer
+        minimum: 0
+        default: 48
+      required: false
+      description: Size of the caption text
+    fontColourParam:
+      in: query
+      name: fontColour
+      schema:
+        type: string
+        default: white
+      required: false
+      description: Colour of the caption text
+    borderColourParam:
+      in: query
+      name: borderColour
+      schema:
+        type: string
+        default: black
+      required: false
+      description: Colour of the caption border
+    borderSizeParam:
+      in: query
+      name: borderSize
+      schema:
+        type: integer
+        minimum: 0
+        default: 6
+      required: false
+      description: Thickness of the caption border
   schemas:
     Seal:
       type: object

@@ -104,6 +104,46 @@ func (siw *ServerInterfaceWrapper) GetSealSaysText(c *gin.Context) {
 		return
 	}
 
+	// ------------- Optional query parameter "position" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "position", c.Request.URL.Query(), &params.Position)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter position: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "fontSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "fontSize", c.Request.URL.Query(), &params.FontSize)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontSize: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "fontColour" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "fontColour", c.Request.URL.Query(), &params.FontColour)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontColour: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "borderSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "borderSize", c.Request.URL.Query(), &params.BorderSize)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderSize: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "borderColour" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "borderColour", c.Request.URL.Query(), &params.BorderColour)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderColour: %w", err), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -148,15 +188,18 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/7yTQW/bMAyF/4rA7TQYcbrdfOtlQw4DCjS3ogfWZhx1luRSdFAj8H8fSKdNuqbpbTdb",
-	"Ep+o7z3uoU6hT5GiZKj20CNjICG2v43vhPhG1/S3oVyz78WnCBX8tE0nyWHfd6N+yJacD9gSFOD1zNNA",
-	"PEIBEQNBddCDAnK9pYCqSXEIUN1BSDHVW05hrt0RCxSwGeKfEe4LkLFXgSzsYwvTVIBg+0Fja2xd2lgz",
-	"t4TdB70Itm8a+feG6WXTSJiQ8uHUE4snW62ZUKi5ljMCBfjm7HLwgda2eGZTsDVlLxTs4yvTBir4Uh59",
-	"Kg99lWuca2YRZMbR0DA9DZ6pUa4meASYHh6pFq3S4vPP9nGTbMtLp3u/ffQBO5cJscvu+mblMvHOjNwR",
-	"55n61WK5WKpw6ili76GCH4urxRIK6FG29pgyHzC2ZMiUJaprqwYq+EVy8Os0hXfnGRyPlK9JmIpPz54m",
-	"erpXVLlPMc92fl8uzdUUhaI1qMn2tbVYPmZ95/4kMpe8sZcYTZ2H8puNU+KAAhU8+IiWxfexfhvllRZr",
-	"mNHlF8E8hKDVBsyhY4xNCu71QoNcZhxzuRd6lukz4Lc45jU9y3vwNjfq3snYzAePERMe6NIcFf/Lvzh0",
-	"3UU6LuPoY+tyCiTbQ9ynvwEAAP//2CR4PQIFAAA=",
+	"H4sIAAAAAAAC/7RVTW/cOAz9KwJ3TwtjPNldFMXcggItcigQIHMLcmBs2lZiSY5Ep3UH/u8F5flyas9M",
+	"A/SUiUg+Pb1H0hvInGmcJcsBVhto0KMhJh//e3Q+J//J1a71txKRw5xC5nXD2llYwRBUrlBckcownquh",
+	"EBLQkvPSku8gAYuGYDVChQRCVpHBAbnAtmZJqTF7hgS4a6QisNe2hL5PtsV3+gfNEFpXOnu2FMI7OAns",
+	"NKMPCRhttWkNrJZ7XtoyleQjsULXTHMqfY5BxU5h09Sd/BBq2mBJM4wGvBEbsnL9PRhnXVZ5Z4baV/IM",
+	"CRStfe7gYUq0wll+h4tM33mO3R5xxsFvlWaCOTIn/JPQbxKZt+3/j2d9a1zQcskMndtteIqSkr9nbNzB",
+	"TxrJrgFpaWZnIIGaCnmm12XF00YylnNtj+WO4h1hPcOGsRwReXtDvwvG8Y9AshS8a8izpniaeUKm/Jon",
+	"ABLQ+eSx0YbW8XAiyFhGZM1k4o+/PRWwgr/Sw3JKt7zSNQ41Awh6j12UxtNLqz3lUVcBPAjoHp8oY6mS",
+	"4ulna1u4GNJcS+yrdA3WKhBiHdT17Y0K5F/jRL6SD4PqV4vlYinAriGLjYYV/Le4WiwhgQa5io9Jw1bG",
+	"kqJkoiWKazc5rOAL8dav49V7P63BISXdd0KfnM09Xk39g0gVGmfDYOe/y2V01VkmGwnKitJZpJg+BXnn",
+	"5qhlTnkTXxLVlIlI/5H8wnmDcadri7EXf23rcSvfSLE0M6qwAwytMVIdBVOoPNrcGbW/MIqcBuxCupHR",
+	"7M8JfoddWA9r5Y3wcW7EvaOxGRIPLca+pVNzlPw5/86njzfaJfijjXxhwfH35IKSt9/ti0tG94yb17Z1",
+	"fbI1VMBO21IFZ4ir7az3PwMAAP//Y4R0TfQIAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
