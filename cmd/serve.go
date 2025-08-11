@@ -10,13 +10,12 @@ import (
 	"net"
 	"net/http"
 	"seaals/api"
+	"seaals/api/middleware"
 	"seaals/controller"
-	"seaals/middleware"
 	"seaals/service"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	oapimiddleware "github.com/oapi-codegen/gin-middleware"
 	"github.com/spf13/cobra"
 	"github.com/urfave/cli/v3"
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -47,8 +46,10 @@ func newRouter(seaals *api.Server, port string) *http.Server {
 	swagger.Servers = nil
 
 	r := gin.Default()
-	r.Use(oapimiddleware.OapiRequestValidator(swagger))
+	// r.Use(oapimiddleware.OapiRequestValidator(swagger))
 	r.Use(middleware.ErrorHandler())
+
+	api.RegisterSwagger(r)
 
 	api.RegisterHandlers(r, seaals)
 
