@@ -14,6 +14,13 @@ func main() {
 	cmd := &cli.Command{
 		Name:  "seaals",
 		Usage: "Of Approval",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "database",
+				Aliases: []string{"db"},
+				Value:   "seaals.db",
+			},
+		},
 		Commands: []*cli.Command{
 			{
 				Name:   "serve",
@@ -31,6 +38,17 @@ func main() {
 						},
 						Value: 8080,
 						Usage: "Port to listen on. Valid ports: 1 - 65535",
+					},
+				},
+			},
+			{
+				Name:  "db",
+				Usage: "Perform Database actions",
+				Commands: []*cli.Command{
+					{
+						Name:   "migrate",
+						Usage:  "Migrate the SEAaLS database",
+						Action: cmd.Migrate,
 					},
 				},
 			},

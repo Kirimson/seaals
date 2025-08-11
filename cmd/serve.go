@@ -12,7 +12,6 @@ import (
 	"seaals/api"
 	"seaals/controller"
 	"seaals/middleware"
-	"seaals/models"
 	"seaals/service"
 	"strconv"
 
@@ -62,18 +61,16 @@ func newRouter(seaals *api.Server, port string) *http.Server {
 }
 
 func Serve(ctx context.Context, cmd *cli.Command) error {
+	database := cmd.String("database")
 	port := strconv.Itoa(int(cmd.Int16("port")))
 
 	imagick.Initialize()
 	defer imagick.Terminate()
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(database), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-
-	// Migrate schemas
-	db.AutoMigrate(&models.Seal{}, &models.Tag{})
 
 	// Service interfaces with the database
 	sealService := service.NewSealService(db)
