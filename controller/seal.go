@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"seaals-api/magick"
-	"seaals-api/service"
+	"seaals/magick"
+	"seaals/service"
 )
 
 // SealController interacts with the Magick package, to modify Seal images with

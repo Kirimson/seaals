@@ -3,8 +3,8 @@ package api
 import (
 	"errors"
 	"net/http"
-	"seaals-api/controller"
-	"seaals-api/magick"
+	"seaals/controller"
+	"seaals/magick"
 
 	"github.com/gin-gonic/gin"
 )
