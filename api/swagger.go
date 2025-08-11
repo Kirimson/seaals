@@ -10,11 +10,10 @@ import (
 )
 
 func RegisterSwagger(r *gin.Engine) {
-	r.GET("/swagger/doc.json", openapiSpec)
-
-	r.GET("swagger/index.html", ginSwagger.WrapHandler(swaggerfiles.Handler,
-		ginSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	r.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler,
+		ginSwagger.URL("http://localhost:8080/openapi/doc.json"),
 		ginSwagger.DefaultModelsExpandDepth(-1)))
+	r.GET("/openapi/doc.json", openapiSpec)
 }
 
 func openapiSpec(c *gin.Context) {
