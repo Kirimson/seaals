@@ -25,5 +25,5 @@ func openapiSpec(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("error marshalling swagger spec to JSON\n %s", err)
 	}
-	c.Data(http.StatusOK, "application/octet-stream", b)
+	c.Data(http.StatusOK, "application/json", b)
 }

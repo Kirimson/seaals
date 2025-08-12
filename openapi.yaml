@@ -35,6 +35,16 @@ paths:
         - $ref: "#/components/parameters/fontColourParam"
         - $ref: "#/components/parameters/borderSizeParam"
         - $ref: "#/components/parameters/borderColourParam"
+      responses:
+        "200":
+          description: Image of a seal saying something
+          content:
+            image/*:
+              type: string
+              format: binary
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seal"
 components:
   parameters:
     tagParam:
