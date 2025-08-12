@@ -11,9 +11,11 @@ import (
 
 func RegisterSwagger(r *gin.Engine) {
 	r.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler,
-		ginSwagger.URL("http://localhost:8080/openapi/doc.json"),
-		ginSwagger.DefaultModelsExpandDepth(-1)))
-	r.GET("/openapi/doc.json", openapiSpec)
+		ginSwagger.URL("http://localhost:8080/doc.json"),
+		ginSwagger.DefaultModelsExpandDepth(-1),
+		ginSwagger.DefaultModelsExpandDepth(1),
+		ginSwagger.InstanceName("SEAaLS")))
+	r.GET("doc.json", openapiSpec)
 }
 
 func openapiSpec(c *gin.Context) {

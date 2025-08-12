@@ -6,6 +6,8 @@ paths:
   /seal:
     get:
       summary: Get a random Seal
+      tags:
+        - Seals
       parameters:
         - $ref: "#/components/parameters/tagParam"
         - $ref: "#/components/parameters/filterParam"
@@ -22,6 +24,8 @@ paths:
   /seal/says/{text}:
     get:
       summary: Get a random Seal saying something
+      tags:
+        - Seals
       parameters:
         - in: path
           name: text
