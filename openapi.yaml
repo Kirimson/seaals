@@ -1,7 +1,7 @@
 openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Minimal seaals API server
+  title: SEAaLS API server
 paths:
   /seal:
     get:
