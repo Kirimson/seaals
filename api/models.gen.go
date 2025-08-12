@@ -42,10 +42,10 @@ const (
 
 // Seal defines model for Seal.
 type Seal struct {
-	CreatedAt *string `json:"createdAt,omitempty"`
-	Id        *string `json:"id,omitempty"`
-	MimeType  *string `json:"mimeType,omitempty"`
-	Tags      []Tag   `json:"tags"`
+	CreatedAt string `json:"createdAt"`
+	Id        string `json:"id"`
+	MimeType  string `json:"mimeType"`
+	Tags      []Tag  `json:"tags"`
 }
 
 // Tag defines model for Tag.

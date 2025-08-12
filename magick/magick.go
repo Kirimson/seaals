@@ -136,8 +136,8 @@ func (sm *SealMagick) FilterFunky() {
 	}
 }
 
-func (sm *SealMagick) LoadImage(image string) {
-	sm.SealMW.ReadImage(image)
+func (sm *SealMagick) LoadImage(sealPath string) {
+	sm.SealMW.ReadImage(sealPath)
 	sm.Details = sm.IdentifyImage()
 }
 

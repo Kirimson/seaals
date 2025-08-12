@@ -2,6 +2,7 @@ package controller
 
 import (
 	"seaals/magick"
+	"seaals/models"
 	"seaals/service"
 )
 
@@ -26,9 +27,9 @@ func NewSealController(service *service.SealService) *SealController {
 
 // GetSeal gets a random Seal image, applies filters and
 // returns a SealResponse containing the image bytes and MimeType
-func (sc *SealController) GetSeal(mo *magick.Opts) (*SealResponse, error) {
+func (sc *SealController) GetSeal(seal *models.Seal, mo *magick.Opts) (*SealResponse, error) {
 	sm := magick.NewSealMagick(mo)
-	sm.LoadImage(sc.randomSeal())
+	sm.LoadImage(seal.Path)
 
 	sm.ApplyEffects()
 	b, err := sm.GetImageBytes()
@@ -44,11 +45,9 @@ func (sc *SealController) GetSeal(mo *magick.Opts) (*SealResponse, error) {
 }
 
 // GetSealSaying gets a random Seal with both graphical effects and a caption text
-func (sc *SealController) GetSealSaying(text string, mo *magick.Opts) (*SealResponse, error) {
+func (sc *SealController) GetSealSaying(seal *models.Seal, text string, mo *magick.Opts) (*SealResponse, error) {
 	sm := magick.NewSealMagick(mo)
-	sm.LoadImage(sc.randomSeal())
-
-	sm.LoadImage(sc.randomSeal())
+	sm.LoadImage(seal.Path)
 	sm.ApplyEffects()
 
 	// Draw text after all effects have been applied
@@ -66,7 +65,11 @@ func (sc *SealController) GetSealSaying(text string, mo *magick.Opts) (*SealResp
 	return resp, nil
 }
 
-func (sc *SealController) randomSeal() string {
+func (sc *SealController) RandomSeal() models.Seal {
 	// TODO: Actually make it do something
-	return "seal.jpeg"
+	return models.Seal{
+		Path:     "seal.jpeg",
+		MimeType: "image/jpeg",
+		Tags:     []models.Tag{{Name: "cute"}},
+	}
 }

@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"seaals/controller"
 	"seaals/magick"
+	"seaals/models"
+	"slices"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +27,19 @@ func NewSeaalsServer(controller *controller.SealController) *Server {
 	}
 }
 
+func newSealAPIResponse(seal models.Seal) Seal {
+	tags := []Tag{}
+	for _, t := range seal.Tags {
+		tags = append(tags, t.Name)
+	}
+	return Seal{
+		CreatedAt: seal.CreatedAt.String(),
+		Id:        strconv.Itoa(int(seal.ID)),
+		MimeType:  seal.MimeType,
+		Tags:      tags,
+	}
+}
+
 func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	// Convert the API Params to what the controller accepts (magick.Opts)
 	mo := &magick.Opts{}
@@ -33,7 +49,15 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	// Set any default options that have not been set by the User
 	mo = magick.DefaultOpts(mo)
 
-	sealResult, err := s.controller.GetSeal(mo)
+	seal := s.controller.RandomSeal()
+	if slices.Contains(ctx.Request.Header["Accept"], "application/json") {
+		response := newSealAPIResponse(seal)
+		ctx.JSON(http.StatusOK, response)
+		return
+	}
+
+	// Create the Seal image
+	sealResult, err := s.controller.GetSeal(&seal, mo)
 	if err != nil {
 		ctx.Error(errors.New("failed to get Seal image"))
 		return
@@ -66,7 +90,15 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	// Set any defaults not set by the user
 	mo = magick.DefaultOpts(mo)
 
-	sealResult, err := s.controller.GetSealSaying(text, mo)
+	seal := s.controller.RandomSeal()
+	if slices.Contains(ctx.Request.Header["Accept"], "application/json") {
+		response := newSealAPIResponse(seal)
+		ctx.JSON(http.StatusOK, response)
+		return
+	}
+
+	// Get the Seal image
+	sealResult, err := s.controller.GetSealSaying(&seal, text, mo)
 	if err != nil {
 		ctx.Error(errors.New("failed to get Seal image"))
 		return

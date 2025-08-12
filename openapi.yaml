@@ -120,6 +120,9 @@ components:
       type: object
       required:
         - tags
+        - id
+        - mimeType
+        - createdAt
       properties:
         id:
           type: string
