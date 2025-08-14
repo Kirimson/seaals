@@ -27,6 +27,18 @@ func main() {
 				Usage:  "Run the SEAaLS API Server",
 				Action: cmd.Serve,
 				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "base-path",
+						Aliases: []string{"b"},
+						Value:   "./",
+						Validator: func(v string) error {
+							// Ensure the path provided exists
+							if _, err := os.Stat(v); err != nil {
+								return err
+							}
+							return nil
+						},
+					},
 					&cli.Int16Flag{
 						Name:    "port",
 						Aliases: []string{"p"},

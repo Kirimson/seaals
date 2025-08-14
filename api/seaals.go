@@ -1,7 +1,7 @@
 package api
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	"seaals/controller"
 	"seaals/magick"
@@ -59,7 +59,7 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	// Create the Seal image
 	sealResult, err := s.controller.GetSeal(&seal, mo)
 	if err != nil {
-		ctx.Error(errors.New("failed to get Seal image"))
+		ctx.Error(fmt.Errorf("failed to get Seal image \n%s", err))
 		return
 	}
 
@@ -100,7 +100,7 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	// Get the Seal image
 	sealResult, err := s.controller.GetSealSaying(&seal, text, mo)
 	if err != nil {
-		ctx.Error(errors.New("failed to get Seal image"))
+		ctx.Error(fmt.Errorf("failed to get Seal image \n%s", err))
 		return
 	}
 

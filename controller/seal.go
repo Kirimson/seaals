@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+	"path/filepath"
 	"seaals/magick"
 	"seaals/models"
 	"seaals/service"
@@ -10,6 +12,7 @@ import (
 // different effects
 type SealController struct {
 	sealService *service.SealService
+	basePath    string
 }
 
 type SealResponse struct {
@@ -19,9 +22,10 @@ type SealResponse struct {
 
 // Return a new SealController, that will call methods from the provided SealService
 // SealController will implement the logic for different Seal-related routes
-func NewSealController(service *service.SealService) *SealController {
+func NewSealController(service *service.SealService, basePath string) *SealController {
 	return &SealController{
 		sealService: service,
+		basePath:    basePath,
 	}
 }
 
@@ -67,8 +71,10 @@ func (sc *SealController) GetSealSaying(seal *models.Seal, text string, mo *magi
 
 func (sc *SealController) RandomSeal() models.Seal {
 	// TODO: Actually make it do something
+	path := filepath.Join(sc.basePath, "seal.jpeg")
+	fmt.Println(path)
 	return models.Seal{
-		Path:     "seal.jpeg",
+		Path:     path,
 		MimeType: "image/jpeg",
 		Tags:     []models.Tag{{Name: "cute"}},
 	}

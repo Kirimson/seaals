@@ -75,10 +75,10 @@ func Serve(ctx context.Context, cmd *cli.Command) error {
 
 	// Service interfaces with the database
 	sealService := service.NewSealService(db)
-	// Controller implements routes, and calls the service
-	sealController := controller.NewSealController(sealService)
+	// Controller implements core business logic for SEAaLS
+	sealController := controller.NewSealController(sealService, cmd.String("base-path"))
 
-	// Create an instance of the API server
+	// Create an instance of the API server which implements routes
 	seaalsApi := api.NewSeaalsServer(sealController)
 
 	s := newRouter(seaalsApi, port)
