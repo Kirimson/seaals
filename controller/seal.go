@@ -79,3 +79,7 @@ func (sc *SealController) RandomSeal() models.Seal {
 		Tags:     []models.Tag{{Name: "cute"}},
 	}
 }
+
+func (sc *SealController) GetAllSeals() ([]models.Seal, error) {
+	return sc.sealService.GetAllSeals()
+}

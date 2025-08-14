@@ -8,7 +8,6 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/urfave/cli/v3"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -27,15 +26,16 @@ func migrateTable(db *gorm.DB, m any, t string) error {
 
 func Migrate(ctx context.Context, cmd *cli.Command) error {
 	database := cmd.String("database")
-	db, err := gorm.Open(sqlite.Open(database), &gorm.Config{})
+
+	sealDB, err := models.InitaliseDB(database)
 	if err != nil {
 		panic("failed to connect database")
 	}
 	// Migrate schemas
-	if err := migrateTable(db, &models.Seal{}, "seals"); err != nil {
+	if err := migrateTable(sealDB, &models.Seal{}, "seals"); err != nil {
 		return err
 	}
-	if err := migrateTable(db, &models.Tag{}, "tags"); err != nil {
+	if err := migrateTable(sealDB, &models.Tag{}, "tags"); err != nil {
 		return err
 	}
 	return nil

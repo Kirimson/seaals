@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"seaals/cmd"
+	"seaals/cmd/admin"
 
 	"github.com/urfave/cli/v3"
 )
@@ -50,6 +51,33 @@ func main() {
 						},
 						Value: 8080,
 						Usage: "Port to listen on. Valid ports: 1 - 65535",
+					},
+				},
+			},
+			{
+				Name:  "admin",
+				Usage: "Perform administrative seal activities",
+				Commands: []*cli.Command{
+					{
+						Name:   "list",
+						Usage:  "List all available seals",
+						Action: admin.List,
+					},
+					{
+						Name:  "add",
+						Usage: "Add a new seal to the available catalogue",
+						Arguments: []cli.Argument{
+							&cli.StringArg{
+								Name: "path",
+							},
+						},
+						Flags: []cli.Flag{
+							&cli.StringSliceFlag{
+								Name:  "tag",
+								Usage: "Extra tags to associate with the Seal",
+							},
+						},
+						Action: admin.Add,
 					},
 				},
 			},

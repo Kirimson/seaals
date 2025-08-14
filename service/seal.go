@@ -51,12 +51,21 @@ func (ss *SealService) GetRandomSealByTag(tag string) (*models.Seal, error) {
 	return &seal, nil
 }
 
-func (ss *SealService) CreateSeal(seal models.Seal) (*models.Seal, error) {
+func (ss *SealService) CreateSeal(seal *models.Seal) (*models.Seal, error) {
 	ctx := context.Background()
 	result := gorm.WithResult()
-	err := gorm.G[models.Seal](ss.db, result).Create(ctx, &seal)
+	err := gorm.G[models.Seal](ss.db, result).Create(ctx, seal)
 	if err != nil {
 		return nil, err
 	}
-	return &seal, nil
+	return seal, nil
+}
+
+func (ss *SealService) GetAllSeals() ([]models.Seal, error) {
+	ctx := context.Background()
+	seals, err := gorm.G[models.Seal](ss.db).Find(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return seals, nil
 }
