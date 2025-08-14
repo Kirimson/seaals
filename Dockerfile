@@ -10,7 +10,7 @@ RUN go mod tidy && \
   go build -a -installsuffix cgo -o app .
 
 FROM alpine:3.22
-RUN apk add --no-cache imagemagick-dev imagemagick libjpeg adwaita-fonts-mono
+RUN apk add --no-cache imagemagick-dev imagemagick libjpeg adwaita-fonts-mono giflib libpng tiff
 COPY --from=build /code/app /app/seaals
 
 WORKDIR /app
