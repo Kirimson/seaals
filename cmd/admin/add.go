@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-func Add(ctx context.Context, cmd *cli.Command) error {
+func AddSeal(ctx context.Context, cmd *cli.Command) error {
 	sealLI, err := NewCLI(cmd.String("database"), cmd.String("base-path"))
 	if err != nil {
 		return err
@@ -20,6 +20,21 @@ func Add(ctx context.Context, cmd *cli.Command) error {
 
 	fmt.Println("New Seal!")
 	fmt.Println(newSeal.Path)
+	return nil
+}
 
+func AddTag(ctx context.Context, cmd *cli.Command) error {
+	sealLI, err := NewCLI(cmd.String("database"), cmd.String("base-path"))
+	if err != nil {
+		return err
+	}
+
+	newTag, err := sealLI.AddTag(cmd.StringArg("name"))
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("New Tag!")
+	fmt.Println(newTag.Name)
 	return nil
 }

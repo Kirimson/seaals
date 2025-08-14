@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-func List(ctx context.Context, cmd *cli.Command) error {
+func ListSeals(ctx context.Context, cmd *cli.Command) error {
 	sealLI, err := NewCLI(cmd.String("database"), cmd.String("base-path"))
 	if err != nil {
 		return err
@@ -21,6 +21,29 @@ func List(ctx context.Context, cmd *cli.Command) error {
 	fmt.Println("All Seals:")
 	for _, seal := range seals {
 		fmt.Println(seal.Path)
+		fmt.Println("Tags:")
+		for _, t := range seal.Tags {
+			fmt.Println(t.Name)
+		}
+		fmt.Println("")
+	}
+	return nil
+}
+
+func ListTags(ctx context.Context, cmd *cli.Command) error {
+	sealLI, err := NewCLI(cmd.String("database"), cmd.String("base-path"))
+	if err != nil {
+		return err
+	}
+
+	tags, err := sealLI.GetAllTags()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("All Tag:")
+	for _, tag := range tags {
+		fmt.Println(tag.Name)
 	}
 
 	return nil

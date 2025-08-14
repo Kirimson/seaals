@@ -33,10 +33,7 @@ func (sli *SealLI) AddSeal(path string, tags []string) (*models.Seal, error) {
 		}
 		// If tag does not exist, create it
 		if tag == nil {
-			tag = &models.Tag{
-				Name: tagName,
-			}
-			tag, err = sli.sealService.CreateTag(*tag)
+			tag, err = sli.AddTag(tagName)
 			if err != nil {
 				return nil, err
 			}
@@ -54,4 +51,19 @@ func (sli *SealLI) AddSeal(path string, tags []string) (*models.Seal, error) {
 		return nil, err
 	}
 	return seal, nil
+}
+
+func (sli *SealLI) GetAllTags() ([]models.Tag, error) {
+	return sli.sealService.GetAllTags()
+}
+
+func (sli *SealLI) AddTag(name string) (*models.Tag, error) {
+	tag := &models.Tag{
+		Name: name,
+	}
+	tag, err := sli.sealService.CreateTag(*tag)
+	if err != nil {
+		return nil, err
+	}
+	return tag, nil
 }

@@ -59,12 +59,17 @@ func main() {
 				Usage: "Perform administrative seal activities",
 				Commands: []*cli.Command{
 					{
-						Name:   "list",
+						Name:   "list-seals",
 						Usage:  "List all available seals",
-						Action: admin.List,
+						Action: admin.ListSeals,
 					},
 					{
-						Name:  "add",
+						Name:   "list-tags",
+						Usage:  "List all available seals",
+						Action: admin.ListTags,
+					},
+					{
+						Name:  "add-seal",
 						Usage: "Add a new seal to the available catalogue",
 						Arguments: []cli.Argument{
 							&cli.StringArg{
@@ -77,7 +82,17 @@ func main() {
 								Usage: "Extra tags to associate with the Seal",
 							},
 						},
-						Action: admin.Add,
+						Action: admin.AddSeal,
+					},
+					{
+						Name:  "add-tag",
+						Usage: "Add a new tag to the available catalogue",
+						Arguments: []cli.Argument{
+							&cli.StringArg{
+								Name: "name",
+							},
+						},
+						Action: admin.AddTag,
 					},
 				},
 			},

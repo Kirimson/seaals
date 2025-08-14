@@ -31,3 +31,12 @@ func (ss *SealService) CreateTag(tag models.Tag) (*models.Tag, error) {
 	}
 	return &tag, nil
 }
+
+func (ss *SealService) GetAllTags() ([]models.Tag, error) {
+	ctx := context.Background()
+	tags, err := gorm.G[models.Tag](ss.db).Find(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return tags, nil
+}

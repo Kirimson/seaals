@@ -63,7 +63,7 @@ func (ss *SealService) CreateSeal(seal *models.Seal) (*models.Seal, error) {
 
 func (ss *SealService) GetAllSeals() ([]models.Seal, error) {
 	ctx := context.Background()
-	seals, err := gorm.G[models.Seal](ss.db).Find(ctx)
+	seals, err := gorm.G[models.Seal](ss.db).Preload("Tags", nil).Find(ctx)
 	if err != nil {
 		return nil, err
 	}
