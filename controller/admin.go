@@ -23,7 +23,7 @@ func (sli *SealLI) GetAllSeals() ([]models.Seal, error) {
 	return sli.sealService.GetAllSeals()
 }
 
-func (sli *SealLI) AddSeal(path string, tags []string) (*models.Seal, error) {
+func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error) {
 	// Ensure all tags exist for this new Seal
 	var sealTags []models.Tag
 	for _, tagName := range tags {

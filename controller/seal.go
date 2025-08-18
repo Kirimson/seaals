@@ -33,7 +33,9 @@ func NewSealController(service *service.SealService, basePath string) *SealContr
 // returns a SealResponse containing the image bytes and MimeType
 func (sc *SealController) GetSeal(seal *models.Seal, mo *magick.Opts) (*SealResponse, error) {
 	sm := magick.NewSealMagick(mo)
-	sm.LoadImage(seal.Path)
+	if err := sm.LoadImage(seal.Path); err != nil {
+		return nil, err
+	}
 
 	sm.ApplyEffects()
 	b, err := sm.GetImageBytes()
@@ -51,7 +53,9 @@ func (sc *SealController) GetSeal(seal *models.Seal, mo *magick.Opts) (*SealResp
 // GetSealSaying gets a random Seal with both graphical effects and a caption text
 func (sc *SealController) GetSealSaying(seal *models.Seal, text string, mo *magick.Opts) (*SealResponse, error) {
 	sm := magick.NewSealMagick(mo)
-	sm.LoadImage(seal.Path)
+	if err := sm.LoadImage(seal.Path); err != nil {
+		return nil, err
+	}
 	sm.ApplyEffects()
 
 	// Draw text after all effects have been applied

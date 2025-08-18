@@ -24,7 +24,8 @@ type SealMagick struct {
 }
 
 type ImageDetails struct {
-	MimeType string
+	MimeType  string
+	Extension string
 }
 
 func NewSealMagick(opts *Opts) *SealMagick {
@@ -136,9 +137,24 @@ func (sm *SealMagick) FilterFunky() {
 	}
 }
 
-func (sm *SealMagick) LoadImage(sealPath string) {
-	sm.SealMW.ReadImage(sealPath)
+// LoadImage will lod an image into the MagickWand using
+// the provided file path on the local system
+func (sm *SealMagick) LoadImage(sealPath string) error {
+	if err := sm.SealMW.ReadImage(sealPath); err != nil {
+		return err
+	}
 	sm.Details = sm.IdentifyImage()
+	return nil
+}
+
+// LoadImageByrtes will load an image into the MagickWand
+// using the provided slice of bytes as an image file
+func (sm *SealMagick) LoadImageBytes(data []byte) error {
+	mimeWand := imagick.NewMagickWand()
+	if err := mimeWand.ReadImageBlob(data); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (sm *SealMagick) IdentifyImage() ImageDetails {

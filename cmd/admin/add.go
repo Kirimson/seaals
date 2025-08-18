@@ -3,6 +3,7 @@ package admin
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/urfave/cli/v3"
 )
@@ -13,7 +14,12 @@ func AddSeal(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	newSeal, err := sealLI.AddSeal(cmd.StringArg("path"), cmd.StringSlice("tag"))
+	sealData, err := os.ReadFile(cmd.StringArg(("path")))
+	if err != nil {
+		return err
+	}
+
+	newSeal, err := sealLI.AddSeal(sealData, cmd.StringSlice("tag"))
 	if err != nil {
 		return err
 	}
