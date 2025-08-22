@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"path/filepath"
 	"seaals/magick"
 	"seaals/models"
@@ -73,15 +72,18 @@ func (sc *SealController) GetSealSaying(seal *models.Seal, text string, mo *magi
 	return resp, nil
 }
 
-func (sc *SealController) RandomSeal() models.Seal {
-	// TODO: Actually make it do something
-	path := filepath.Join(sc.basePath, "seal.jpeg")
-	fmt.Println(path)
-	return models.Seal{
-		Path:     path,
-		MimeType: "image/jpeg",
-		Tags:     []models.Tag{{Name: "cute"}},
+func (sc *SealController) GetSealByID(id uint) (*models.Seal, error) {
+	return sc.sealService.GetSealByID(id)
+}
+
+func (sc *SealController) RandomSeal() (*models.Seal, error) {
+	randomSeal, err := sc.sealService.GetRandomSeal()
+	if err != nil {
+		return nil, err
 	}
+	realPath := filepath.Join(sc.basePath, randomSeal.Path)
+	randomSeal.Path = realPath
+	return randomSeal, nil
 }
 
 func (sc *SealController) GetAllSeals() ([]models.Seal, error) {

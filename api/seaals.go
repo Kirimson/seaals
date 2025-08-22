@@ -49,15 +49,19 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	// Set any default options that have not been set by the User
 	mo = magick.DefaultOpts(mo)
 
-	seal := s.controller.RandomSeal()
+	seal, err := s.controller.RandomSeal()
+	if err != nil {
+		ctx.Error(fmt.Errorf("failed to get Seal image"))
+		return
+	}
 	if slices.Contains(ctx.Request.Header["Accept"], "application/json") {
-		response := newSealAPIResponse(seal)
+		response := newSealAPIResponse(*seal)
 		ctx.JSON(http.StatusOK, response)
 		return
 	}
 
 	// Create the Seal image
-	sealResult, err := s.controller.GetSeal(&seal, mo)
+	sealResult, err := s.controller.GetSeal(seal, mo)
 	if err != nil {
 		ctx.Error(fmt.Errorf("failed to get Seal image \n%s", err))
 		return
@@ -90,15 +94,19 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	// Set any defaults not set by the user
 	mo = magick.DefaultOpts(mo)
 
-	seal := s.controller.RandomSeal()
+	seal, err := s.controller.RandomSeal()
+	if err != nil {
+		ctx.Error(fmt.Errorf("failed to get Seal image"))
+		return
+	}
 	if slices.Contains(ctx.Request.Header["Accept"], "application/json") {
-		response := newSealAPIResponse(seal)
+		response := newSealAPIResponse(*seal)
 		ctx.JSON(http.StatusOK, response)
 		return
 	}
 
 	// Get the Seal image
-	sealResult, err := s.controller.GetSealSaying(&seal, text, mo)
+	sealResult, err := s.controller.GetSealSaying(seal, text, mo)
 	if err != nil {
 		ctx.Error(fmt.Errorf("failed to get Seal image \n%s", err))
 		return

@@ -17,14 +17,20 @@ func NewSealService(Db *gorm.DB) *SealService {
 	return &SealService{db: Db}
 }
 
-func (ss *SealService) GetRandomSeal() *models.Seal {
-	var total int64
-	ss.db.Model(&models.Seal{}).Count(&total)
+func (ss *SealService) GetRandomSeal() (*models.Seal, error) {
+	ctx := context.Background()
+	total, err := gorm.G[models.Seal](ss.db).Count(ctx, "path")
+	if err != nil {
+		return nil, err
+	}
 	randOffset := rand.Intn(int(total))
 
-	var seal models.Seal
-	ss.db.Model(models.Seal{}).Offset(randOffset).First(seal)
-	return &seal
+	seal, err := gorm.G[models.Seal](ss.db).Offset(randOffset).First(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &seal, nil
 }
 
 func (ss *SealService) GetSealByID(id uint) (*models.Seal, error) {
