@@ -1,14 +1,24 @@
 package controller
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
 	"seaals/models"
 	"seaals/service"
+	"slices"
+	"strings"
+
+	"github.com/gabriel-vasile/mimetype"
+	"github.com/google/uuid"
 )
 
 type SealLI struct {
 	sealService *service.SealService
 	basePath    string
 }
+
+var AllowedMimes = []string{"image/jpeg", "image/gif", "image/png"}
 
 // Return a new AdminController, that will call methods from the provided SealService
 // AdminController will implement admin-related oprtations for SEAaLS
@@ -24,6 +34,16 @@ func (sli *SealLI) GetAllSeals() ([]models.Seal, error) {
 }
 
 func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error) {
+	mtype := mimetype.Detect(sealData)
+	if !slices.Contains(AllowedMimes, mtype.String()) {
+		return nil, fmt.Errorf("file format %s is not allowed", mtype.String())
+	}
+
+	// Add the seal file to the current base directory
+	sealUuid := uuid.New()
+	fileName := fmt.Sprintf("%s%s", strings.ReplaceAll(sealUuid.String(), "-", ""), mtype.Extension())
+	os.WriteFile(filepath.Join(sli.basePath, fileName), sealData, 0660)
+
 	// Ensure all tags exist for this new Seal
 	var sealTags []models.Tag
 	for _, tagName := range tags {
@@ -43,8 +63,9 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 	}
 
 	seal := &models.Seal{
-		Path: path,
-		Tags: sealTags,
+		Path:     fileName,
+		Tags:     sealTags,
+		MimeType: mtype.String(),
 	}
 	seal, err := sli.sealService.CreateSeal(seal)
 	if err != nil {

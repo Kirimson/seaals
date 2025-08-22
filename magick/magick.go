@@ -147,7 +147,7 @@ func (sm *SealMagick) LoadImage(sealPath string) error {
 	return nil
 }
 
-// LoadImageByrtes will load an image into the MagickWand
+// LoadImageBytes will load an image into the MagickWand
 // using the provided slice of bytes as an image file
 func (sm *SealMagick) LoadImageBytes(data []byte) error {
 	mimeWand := imagick.NewMagickWand()
@@ -167,7 +167,8 @@ func (sm *SealMagick) IdentifyImage() ImageDetails {
 		mime = mimeMatch[1]
 	}
 	return ImageDetails{
-		MimeType: mime,
+		MimeType:  mime,
+		Extension: "jpg",
 	}
 }
 

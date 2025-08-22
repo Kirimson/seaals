@@ -14,11 +14,13 @@ func AddSeal(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	// Try and read the local file
 	sealData, err := os.ReadFile(cmd.StringArg(("path")))
 	if err != nil {
 		return err
 	}
 
+	// Add this image as a new Seal
 	newSeal, err := sealLI.AddSeal(sealData, cmd.StringSlice("tag"))
 	if err != nil {
 		return err
