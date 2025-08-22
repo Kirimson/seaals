@@ -49,7 +49,7 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	// Set any default options that have not been set by the User
 	mo = magick.DefaultOpts(mo)
 
-	seal, err := s.controller.RandomSeal()
+	seal, err := s.controller.RandomSeal(*params.Tag)
 	if err != nil {
 		ctx.Error(fmt.Errorf("failed to get Seal image"))
 		return
@@ -94,7 +94,7 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	// Set any defaults not set by the user
 	mo = magick.DefaultOpts(mo)
 
-	seal, err := s.controller.RandomSeal()
+	seal, err := s.controller.RandomSeal(*params.Tag)
 	if err != nil {
 		ctx.Error(fmt.Errorf("failed to get Seal image"))
 		return

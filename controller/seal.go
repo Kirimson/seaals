@@ -76,13 +76,22 @@ func (sc *SealController) GetSealByID(id uint) (*models.Seal, error) {
 	return sc.sealService.GetSealByID(id)
 }
 
-func (sc *SealController) RandomSeal() (*models.Seal, error) {
+func (sc *SealController) RandomSeal(tag string) (*models.Seal, error) {
+	if tag != "" {
+		randomSeal, err := sc.sealService.GetRandomSealByTag(tag)
+		if err != nil {
+			return nil, err
+		}
+		// Make a real path from the relative path from basePath
+		randomSeal.Path = filepath.Join(sc.basePath, randomSeal.Path)
+		return randomSeal, nil
+	}
 	randomSeal, err := sc.sealService.GetRandomSeal()
 	if err != nil {
 		return nil, err
 	}
-	realPath := filepath.Join(sc.basePath, randomSeal.Path)
-	randomSeal.Path = realPath
+	// Make a real path from the relative path from basePath
+	randomSeal.Path = filepath.Join(sc.basePath, randomSeal.Path)
 	return randomSeal, nil
 }
 
