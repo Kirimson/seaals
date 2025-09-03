@@ -79,9 +79,9 @@ func (ss *SealService) CreateSeal(seal *models.Seal) (*models.Seal, error) {
 		Path:     seal.Path,
 		MimeType: seal.MimeType,
 	}
-	_, err := ss.queries.CreateSeal(ctx, args)
+	newSeal, err := convertSeal(ss.queries.CreateSeal(ctx, args))
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return newSeal, nil
 }

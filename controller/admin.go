@@ -53,7 +53,7 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 	// Ensure all tags exist for this new Seal
 	var sealTags []models.Tag
 	for _, tagName := range tags {
-		tag, err := sli.sealService.GetTagByName(tagName)
+		tag, err := sli.sealService.GetTagWithName(tagName)
 		if err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 	return seal, nil
 }
 
-func (sli *SealLI) GetAllTags() ([]models.Tag, error) {
+func (sli *SealLI) GetAllTags() ([]*models.Tag, error) {
 	return sli.sealService.GetAllTags()
 }
 

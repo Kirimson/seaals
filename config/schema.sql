@@ -1,7 +1,8 @@
 CREATE TABLE seals (
   id INTEGER PRIMARY KEY,
   path text NOT NULL,
-  mime_type text NOT NULL
+  mime_type text NOT NULL,
+  created_at datetime NOT NULL DEFAULT current_timestamp
 );
 
 CREATE TABLE tags (
