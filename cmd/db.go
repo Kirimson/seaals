@@ -13,7 +13,7 @@ func Migrate(ctx context.Context, cmd *cli.Command) error {
 
 	sealDB, err := models.InitialiseDB(database)
 	if err != nil {
-		panic("failed to connect database")
+		panic(err)
 	}
 	// Migrate schemas
 	if _, err := sealDB.ExecContext(ctx, config.Ddl); err != nil {
