@@ -71,6 +71,7 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 	seal := &models.Seal{
 		Path:     fileName,
 		MimeType: mtype.String(),
+		Tags:     sealTags,
 	}
 	seal, err := sli.sealService.CreateSeal(seal)
 	if err != nil {

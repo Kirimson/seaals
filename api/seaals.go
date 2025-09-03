@@ -45,7 +45,7 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 
 	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal image"))
+		ctx.Error(fmt.Errorf("failed to get Seal image:\n%s", err))
 		return
 	}
 	if slices.Contains(ctx.Request.Header["Accept"], "application/json") {

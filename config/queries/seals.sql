@@ -55,3 +55,12 @@ INNER JOIN seal_tags ON seal_tags.seal_id = seals.id
 INNER JOIN tags ON seal_tags.tag_id = tags.id
 WHERE tags.name = ?
 ORDER BY RANDOM() LIMIT 1;
+
+-- name: AddSealTag :one
+INSERT INTO seal_tags (
+  seal_id, tag_id
+) VALUES (
+  ?, ?
+)
+RETURNING *;
+

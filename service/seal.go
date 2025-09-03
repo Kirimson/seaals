@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"seaals/db"
 	"seaals/models"
 )
@@ -60,6 +61,9 @@ func (ss *SealService) GetRandomSealWithTag(tag string) (*models.Seal, error) {
 	if err != nil {
 		return nil, err
 	}
+	if seal == nil {
+		return nil, fmt.Errorf("no seal found with tag %s", tag)
+	}
 
 	// Get tags for this seal
 	tags, err := ss.queries.ListSealTags(ctx, seal.ID)
@@ -82,6 +86,14 @@ func (ss *SealService) CreateSeal(seal *models.Seal) (*models.Seal, error) {
 	newSeal, err := convertSeal(ss.queries.CreateSeal(ctx, args))
 	if err != nil {
 		return nil, err
+	}
+
+	// Add tag associations for this seal
+	for _, t := range seal.Tags {
+		_, err := ss.queries.AddSealTag(ctx, db.AddSealTagParams{SealID: newSeal.ID, TagID: t.ID})
+		if err != nil {
+			return nil, err
+		}
 	}
 	return newSeal, nil
 }

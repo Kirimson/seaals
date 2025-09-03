@@ -1,13 +1,18 @@
 package service
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"seaals/db"
 	"seaals/models"
 )
 
 func convertSeal(s db.Seal, err error) (*models.Seal, error) {
 	// Return early if main DB get failed
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -38,6 +43,9 @@ func convertSeals(ss []db.Seal, err error) ([]*models.Seal, error) {
 
 func convertTag(t db.Tag, err error) (*models.Tag, error) {
 	// Return early if main DB get failed
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}

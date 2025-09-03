@@ -9,6 +9,27 @@ import (
 	"context"
 )
 
+const addSealTag = `-- name: AddSealTag :one
+INSERT INTO seal_tags (
+  seal_id, tag_id
+) VALUES (
+  ?, ?
+)
+RETURNING id, seal_id, tag_id
+`
+
+type AddSealTagParams struct {
+	SealID int64 `json:"seal_id"`
+	TagID  int64 `json:"tag_id"`
+}
+
+func (q *Queries) AddSealTag(ctx context.Context, arg AddSealTagParams) (SealTag, error) {
+	row := q.db.QueryRowContext(ctx, addSealTag, arg.SealID, arg.TagID)
+	var i SealTag
+	err := row.Scan(&i.ID, &i.SealID, &i.TagID)
+	return i, err
+}
+
 const countSeals = `-- name: CountSeals :one
 SELECT count(*) FROM seals
 `
