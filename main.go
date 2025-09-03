@@ -59,8 +59,13 @@ func main() {
 				Usage: "Perform administrative seal activities",
 				Commands: []*cli.Command{
 					{
-						Name:   "list-seals",
-						Usage:  "List all available seals",
+						Name:  "list-seals",
+						Usage: "List all available seals",
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "tag",
+							},
+						},
 						Action: admin.ListSeals,
 					},
 					{

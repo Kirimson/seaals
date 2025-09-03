@@ -7,7 +7,7 @@ import (
 )
 
 func NewCLI(dbPath string, basePath string) (*controller.SealLI, error) {
-	db, err := models.InitaliseDB(dbPath)
+	db, err := models.InitialiseDB(dbPath)
 	if err != nil {
 		return nil, err
 	}

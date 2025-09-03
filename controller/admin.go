@@ -39,6 +39,12 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 		return nil, fmt.Errorf("file format %s is not allowed", mtype.String())
 	}
 
+	// Add file type as a tag, eg gif, png
+	sp := strings.Split(mtype.String(), "/")
+	if len(sp) == 2 {
+		tags = append(tags, sp[1])
+	}
+
 	// Add the seal file to the current base directory
 	sealUuid := uuid.New()
 	fileName := fmt.Sprintf("%s%s", strings.ReplaceAll(sealUuid.String(), "-", ""), mtype.Extension())
@@ -64,7 +70,6 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 
 	seal := &models.Seal{
 		Path:     fileName,
-		Tags:     sealTags,
 		MimeType: mtype.String(),
 	}
 	seal, err := sli.sealService.CreateSeal(seal)

@@ -1,16 +1,11 @@
 package models
 
-import (
-	"fmt"
+import "database/sql"
 
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-)
-
-func InitaliseDB(path string) (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
+func InitialiseDB(dbname string) (*sql.DB, error) {
+	db, err := sql.Open("sqlite", dbname)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect database %s", path)
+		return nil, err
 	}
 	return db, nil
 }

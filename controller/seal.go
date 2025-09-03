@@ -72,13 +72,13 @@ func (sc *SealController) GetSealSaying(seal *models.Seal, text string, mo *magi
 	return resp, nil
 }
 
-func (sc *SealController) GetSealByID(id uint) (*models.Seal, error) {
+func (sc *SealController) GetSealByID(id int64) (*models.Seal, error) {
 	return sc.sealService.GetSealByID(id)
 }
 
-func (sc *SealController) RandomSeal(tag string) (*models.Seal, error) {
-	if tag != "" {
-		randomSeal, err := sc.sealService.GetRandomSealByTag(tag)
+func (sc *SealController) RandomSeal(tag *string) (*models.Seal, error) {
+	if tag != nil {
+		randomSeal, err := sc.sealService.GetRandomSealWithTag(*tag)
 		if err != nil {
 			return nil, err
 		}

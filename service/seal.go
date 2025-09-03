@@ -2,76 +2,86 @@ package service
 
 import (
 	"context"
-	"math/rand"
+	"database/sql"
+	"seaals/db"
 	"seaals/models"
-
-	"gorm.io/gorm"
 )
 
 // SealService will interact with the underlying database to read Seals
 type SealService struct {
-	db *gorm.DB
+	db      *sql.DB
+	queries *db.Queries
 }
 
-func NewSealService(Db *gorm.DB) *SealService {
-	return &SealService{db: Db}
+func NewSealService(Db *sql.DB) *SealService {
+	q := db.New(Db)
+	return &SealService{db: Db, queries: q}
 }
 
-func (ss *SealService) GetRandomSeal() (*models.Seal, error) {
+func (ss *SealService) GetAllSeals() ([]models.Seal, error) {
+	return nil, nil
+}
+
+func (ss *SealService) GetSealByID(id int64) (*models.Seal, error) {
 	ctx := context.Background()
-	total, err := gorm.G[models.Seal](ss.db).Count(ctx, "path")
-	if err != nil {
-		return nil, err
-	}
-	randOffset := rand.Intn(int(total))
-
-	seal, err := gorm.G[models.Seal](ss.db).Offset(randOffset).First(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &seal, nil
-}
-
-func (ss *SealService) GetSealByID(id uint) (*models.Seal, error) {
-	ctx := context.Background()
-	seal, err := gorm.G[models.Seal](ss.db).Where("id = ?", id).First(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return &seal, nil
-}
-
-func (ss *SealService) GetRandomSealByTag(tag string) (*models.Seal, error) {
-	ctx := context.Background()
-	tagTotal, err := gorm.G[models.Seal](ss.db).Where("tag = ?", tag).Count(ctx, "id")
-	if err != nil {
-		return nil, err
-	}
-
-	randOffset := rand.Intn(int(tagTotal))
-	seal, err := gorm.G[models.Seal](ss.db).Where("tag = ?", tag).Offset(randOffset).First(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return &seal, nil
-}
-
-func (ss *SealService) CreateSeal(seal *models.Seal) (*models.Seal, error) {
-	ctx := context.Background()
-	result := gorm.WithResult()
-	err := gorm.G[models.Seal](ss.db, result).Create(ctx, seal)
+	seal, err := convertSeal(ss.queries.GetSeal(ctx, id))
 	if err != nil {
 		return nil, err
 	}
 	return seal, nil
 }
 
-func (ss *SealService) GetAllSeals() ([]models.Seal, error) {
+func (ss *SealService) GetRandomSeal() (*models.Seal, error) {
 	ctx := context.Background()
-	seals, err := gorm.G[models.Seal](ss.db).Preload("Tags", nil).Find(ctx)
+	// Get a random seal from the DB and
+	// convert it to a 'regular' seaals seal
+	seal, err := convertSeal(ss.queries.RandomSeal(ctx))
 	if err != nil {
 		return nil, err
 	}
-	return seals, nil
+
+	// Get tags for this seal
+	tags, err := ss.queries.ListSealTags(ctx, seal.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, t := range tags {
+		seal.Tags = append(seal.Tags, models.Tag{Name: t.Name})
+	}
+	return seal, err
+}
+
+func (ss *SealService) GetRandomSealWithTag(tag string) (*models.Seal, error) {
+	ctx := context.Background()
+	// Get a random seal from the DB and
+	// convert it to a 'regular' seaals seal
+	seal, err := convertSeal(ss.queries.RandomSealWithTag(ctx, tag))
+	if err != nil {
+		return nil, err
+	}
+
+	// Get tags for this seal
+	tags, err := ss.queries.ListSealTags(ctx, seal.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, t := range tags {
+		seal.Tags = append(seal.Tags, models.Tag{Name: t.Name})
+	}
+	return seal, err
+}
+
+func (ss *SealService) CreateSeal(seal *models.Seal) (*models.Seal, error) {
+	ctx := context.Background()
+	args := db.CreateSealParams{
+		Path:     seal.Path,
+		MimeType: seal.MimeType,
+	}
+	_, err := ss.queries.CreateSeal(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
 }

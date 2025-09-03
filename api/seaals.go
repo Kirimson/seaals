@@ -28,15 +28,9 @@ func NewSeaalsServer(controller *controller.SealController) *Server {
 }
 
 func newSealAPIResponse(seal models.Seal) Seal {
-	tags := []Tag{}
-	for _, t := range seal.Tags {
-		tags = append(tags, t.Name)
-	}
 	return Seal{
-		CreatedAt: seal.CreatedAt.String(),
-		Id:        strconv.Itoa(int(seal.ID)),
-		MimeType:  seal.MimeType,
-		Tags:      tags,
+		Id:       strconv.Itoa(int(seal.ID)),
+		MimeType: seal.MimeType,
 	}
 }
 
@@ -49,7 +43,7 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	// Set any default options that have not been set by the User
 	mo = magick.DefaultOpts(mo)
 
-	seal, err := s.controller.RandomSeal(*params.Tag)
+	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
 		ctx.Error(fmt.Errorf("failed to get Seal image"))
 		return
@@ -94,7 +88,7 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	// Set any defaults not set by the user
 	mo = magick.DefaultOpts(mo)
 
-	seal, err := s.controller.RandomSeal(*params.Tag)
+	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
 		ctx.Error(fmt.Errorf("failed to get Seal image"))
 		return

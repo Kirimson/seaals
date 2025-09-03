@@ -51,7 +51,7 @@ func Serve(ctx context.Context, cmd *cli.Command) error {
 	imagick.Initialize()
 	defer imagick.Terminate()
 
-	sealDB, err := models.InitaliseDB(database)
+	sealDB, err := models.InitialiseDB(database)
 	if err != nil {
 		return err
 	}

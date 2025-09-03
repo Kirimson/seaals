@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"seaals/models"
 	"time"
@@ -24,19 +25,20 @@ func migrateTable(db *gorm.DB, m any, t string) error {
 	return nil
 }
 
+//go:embed schema.sql
+var ddl string
+
 func Migrate(ctx context.Context, cmd *cli.Command) error {
 	database := cmd.String("database")
 
-	sealDB, err := models.InitaliseDB(database)
+	sealDB, err := models.InitialiseDB(database)
 	if err != nil {
 		panic("failed to connect database")
 	}
 	// Migrate schemas
-	if err := migrateTable(sealDB, &models.Seal{}, "seals"); err != nil {
+	if _, err := sealDB.ExecContext(ctx, ddl); err != nil {
 		return err
 	}
-	if err := migrateTable(sealDB, &models.Tag{}, "tags"); err != nil {
-		return err
-	}
+
 	return nil
 }
