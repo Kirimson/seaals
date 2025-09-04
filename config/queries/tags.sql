@@ -4,7 +4,7 @@ WHERE id = ? LIMIT 1;
 
 -- name: ListTags :many
 SELECT * FROM tags
-ORDER BY path;
+ORDER BY name;
 
 -- name: GetTagWithName :one
 SELECT * from tags

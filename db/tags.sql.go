@@ -47,7 +47,7 @@ func (q *Queries) GetTagWithName(ctx context.Context, name string) (Tag, error) 
 
 const listTags = `-- name: ListTags :many
 SELECT id, name FROM tags
-ORDER BY path
+ORDER BY name
 `
 
 func (q *Queries) ListTags(ctx context.Context) ([]Tag, error) {

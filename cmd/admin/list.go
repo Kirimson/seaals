@@ -40,7 +40,7 @@ func ListTags(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	fmt.Println("All Tag:")
+	fmt.Println("All Tags:")
 	for _, tag := range tags {
 		fmt.Println(tag.Name)
 	}
