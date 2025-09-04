@@ -17,7 +17,7 @@ WHERE tags.name = ?;
 
 -- name: ListSeals :many
 SELECT * FROM seals
-ORDER BY path;
+ORDER BY id;
 
 -- name: ListSealTags :many
 SELECT tags.* FROM tags

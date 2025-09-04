@@ -37,7 +37,7 @@ func newSealAPIResponse(seal models.Seal) Seal {
 	}
 }
 
-func tagsToString(tags []models.Tag) []string {
+func tagsToString(tags []*models.Tag) []string {
 	var tagsString []string
 	for _, t := range tags {
 		tagsString = append(tagsString, t.Name)

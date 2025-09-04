@@ -30,7 +30,19 @@ func NewSealLI(service *service.SealService, basePath string) *SealLI {
 }
 
 func (sli *SealLI) GetAllSeals() ([]*models.Seal, error) {
-	return sli.sealService.GetAllSeals()
+	seals, err := sli.sealService.GetAllSeals()
+	if err != nil {
+		return nil, err
+	}
+	for _, s := range seals {
+		tags, err := sli.sealService.GetSealTags(s)
+		if err != nil {
+			return nil, err
+		}
+		s.Tags = tags
+	}
+
+	return seals, nil
 }
 
 func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error) {
@@ -51,7 +63,7 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 	os.WriteFile(filepath.Join(sli.basePath, fileName), sealData, 0660)
 
 	// Ensure all tags exist for this new Seal
-	var sealTags []models.Tag
+	var sealTags []*models.Tag
 	for _, tagName := range tags {
 		tag, err := sli.sealService.GetTagWithName(tagName)
 		if err != nil {
@@ -65,7 +77,7 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 			}
 		}
 		// Add the retrieved or newly made tag to the []Tag
-		sealTags = append(sealTags, *tag)
+		sealTags = append(sealTags, tag)
 	}
 
 	seal := &models.Seal{
@@ -85,10 +97,17 @@ func (sli *SealLI) GetAllTags() ([]*models.Tag, error) {
 }
 
 func (sli *SealLI) AddTag(name string) (*models.Tag, error) {
+	existing, err := sli.sealService.GetTagWithName(name)
+	if err != nil {
+		return nil, err
+	}
+	if existing != nil {
+		return nil, fmt.Errorf("tag with name '%s' already exsits", name)
+	}
 	tag := &models.Tag{
 		Name: name,
 	}
-	tag, err := sli.sealService.CreateTag(*tag)
+	tag, err = sli.sealService.CreateTag(*tag)
 	if err != nil {
 		return nil, err
 	}

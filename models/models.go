@@ -3,12 +3,14 @@
 // relations for seals and tags
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Seal struct {
 	ID        int64  `json:"id"`
 	Path      string `json:"path"`
-	Tags      []Tag
+	Tags      []*Tag
 	MimeType  string    `json:"mime_type"`
 	CreatedAt time.Time `json:"created_at"`
 }

@@ -71,7 +71,7 @@ func (ss *SealService) GetRandomSeal() (*models.Seal, error) {
 	}
 
 	for _, t := range tags {
-		seal.Tags = append(seal.Tags, models.Tag{Name: t.Name})
+		seal.Tags = append(seal.Tags, &models.Tag{Name: t.Name})
 	}
 	return seal, err
 }
@@ -95,7 +95,7 @@ func (ss *SealService) GetRandomSealWithTag(tag string) (*models.Seal, error) {
 	}
 
 	for _, t := range tags {
-		seal.Tags = append(seal.Tags, models.Tag{Name: t.Name})
+		seal.Tags = append(seal.Tags, &models.Tag{Name: t.Name})
 	}
 	return seal, err
 }
@@ -119,4 +119,9 @@ func (ss *SealService) CreateSeal(seal *models.Seal) (*models.Seal, error) {
 		}
 	}
 	return newSeal, nil
+}
+
+func (ss *SealService) GetSealTags(seal *models.Seal) ([]*models.Tag, error) {
+	ctx := context.Background()
+	return convertTags(ss.queries.ListSealTags(ctx, seal.ID))
 }

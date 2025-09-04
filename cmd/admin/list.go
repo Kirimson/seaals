@@ -19,8 +19,12 @@ func ListSeals(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	fmt.Println("All Seals:")
-	for _, seal := range seals {
-		fmt.Printf("%+v\n", seal)
+	for _, s := range seals {
+		fmt.Printf("ID: %d\nPath %s\nMimeType: %s\n", s.ID, s.Path, s.MimeType)
+		for _, t := range s.Tags {
+			fmt.Printf("Tag: %s\n", t.Name)
+		}
+		fmt.Println("")
 	}
 	return nil
 }

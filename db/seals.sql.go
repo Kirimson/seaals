@@ -156,7 +156,7 @@ func (q *Queries) ListSealTags(ctx context.Context, sealID int64) ([]Tag, error)
 
 const listSeals = `-- name: ListSeals :many
 SELECT id, path, mime_type, created_at FROM seals
-ORDER BY path
+ORDER BY id
 `
 
 func (q *Queries) ListSeals(ctx context.Context) ([]Seal, error) {
