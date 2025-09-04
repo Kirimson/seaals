@@ -95,6 +95,6 @@ func (sc *SealController) RandomSeal(tag *string) (*models.Seal, error) {
 	return randomSeal, nil
 }
 
-func (sc *SealController) GetAllSeals() ([]models.Seal, error) {
+func (sc *SealController) GetAllSeals() ([]*models.Seal, error) {
 	return sc.sealService.GetAllSeals()
 }

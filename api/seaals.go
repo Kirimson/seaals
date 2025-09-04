@@ -29,9 +29,19 @@ func NewSeaalsServer(controller *controller.SealController) *Server {
 
 func newSealAPIResponse(seal models.Seal) Seal {
 	return Seal{
-		Id:       strconv.Itoa(int(seal.ID)),
-		MimeType: seal.MimeType,
+		Id:        strconv.Itoa(int(seal.ID)),
+		MimeType:  seal.MimeType,
+		CreatedAt: seal.CreatedAt.String(),
+		Tags:      tagsToString(seal.Tags),
 	}
+}
+
+func tagsToString(tags []models.Tag) []string {
+	var tagsString []string
+	for _, t := range tags {
+		tagsString = append(tagsString, t.Name)
+	}
+	return tagsString
 }
 
 func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
@@ -45,7 +55,7 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 
 	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal image:\n%s", err))
+		ctx.Error(fmt.Errorf("failed to get Seal image: %s", err))
 		return
 	}
 	if slices.Contains(ctx.Request.Header["Accept"], "application/json") {

@@ -20,8 +20,7 @@ func ListSeals(ctx context.Context, cmd *cli.Command) error {
 
 	fmt.Println("All Seals:")
 	for _, seal := range seals {
-		fmt.Println(seal.Path)
-		fmt.Println("")
+		fmt.Printf("%+v\n", seal)
 	}
 	return nil
 }

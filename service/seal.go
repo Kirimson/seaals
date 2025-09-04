@@ -19,8 +19,14 @@ func NewSealService(Db *sql.DB) *SealService {
 	return &SealService{db: Db, queries: q}
 }
 
-func (ss *SealService) GetAllSeals() ([]models.Seal, error) {
-	return nil, nil
+func (ss *SealService) GetAllSeals() ([]*models.Seal, error) {
+	ctx := context.Background()
+	seals, err := convertSeals(ss.queries.ListSeals(ctx))
+	if err != nil {
+		return nil, err
+	}
+
+	return seals, nil
 }
 
 func (ss *SealService) GetSealByID(id int64) (*models.Seal, error) {
@@ -62,7 +68,7 @@ func (ss *SealService) GetRandomSealWithTag(tag string) (*models.Seal, error) {
 		return nil, err
 	}
 	if seal == nil {
-		return nil, fmt.Errorf("no seal found with tag %s", tag)
+		return nil, fmt.Errorf("no seal found with tag '%s'", tag)
 	}
 
 	// Get tags for this seal

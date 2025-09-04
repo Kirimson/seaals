@@ -29,7 +29,7 @@ func NewSealLI(service *service.SealService, basePath string) *SealLI {
 	}
 }
 
-func (sli *SealLI) GetAllSeals() ([]models.Seal, error) {
+func (sli *SealLI) GetAllSeals() ([]*models.Seal, error) {
 	return sli.sealService.GetAllSeals()
 }
 
