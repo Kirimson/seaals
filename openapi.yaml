@@ -3,6 +3,38 @@ info:
   version: 1.0.0
   title: SEAaLS API server
 paths:
+  /api/seal:
+    get:
+      summary: Get a JSON reprentation of a random Seal
+      tags:
+        - API
+      parameters:
+        - $ref: "#/components/parameters/tagParam"
+      responses:
+        "200":
+          description: JSON data of a seal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seal"
+  /api/seal/{id}:
+    get:
+      summary: Get a JSON reprentation of a Seal by their ID
+      tags:
+        - API
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: JSON data of a seal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seal"
   /seal:
     get:
       summary: Get a random Seal
@@ -18,9 +50,25 @@ paths:
             image/*:
               type: string
               format: binary
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Seal"
+  /seal/{id}:
+    get:
+      summary: Get a Seal by their ID
+      tags:
+        - Seals
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - $ref: "#/components/parameters/filterParam"
+      responses:
+        "200":
+          description: Image of a seal
+          content:
+            image/*:
+              type: string
+              format: binary
   /seal/says/{text}:
     get:
       summary: Get a random Seal saying something
@@ -46,9 +94,35 @@ paths:
             image/*:
               type: string
               format: binary
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Seal"
+  /seal/{id}/says/{text}:
+    get:
+      summary: Get a random Seal saying something
+      tags:
+        - Seals
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: text
+          schema:
+            type: string
+          required: true
+        - $ref: "#/components/parameters/filterParam"
+        - $ref: "#/components/parameters/positionParam"
+        - $ref: "#/components/parameters/fontSizeParam"
+        - $ref: "#/components/parameters/fontColourParam"
+        - $ref: "#/components/parameters/borderSizeParam"
+        - $ref: "#/components/parameters/borderColourParam"
+      responses:
+        "200":
+          description: Image of a seal saying something
+          content:
+            image/*:
+              type: string
+              format: binary
 components:
   parameters:
     tagParam:
@@ -119,12 +193,15 @@ components:
     Seal:
       type: object
       required:
-        - tags
         - id
+        - permalink
+        - tags
         - mimeType
         - createdAt
       properties:
         id:
+          type: string
+        permalink:
           type: string
         tags:
           type: array

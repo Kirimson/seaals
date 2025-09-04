@@ -27,9 +27,9 @@ const (
 
 // Defines values for GetSealSaysTextParamsFilter.
 const (
-	Funky      GetSealSaysTextParamsFilter = "funky"
-	Invert     GetSealSaysTextParamsFilter = "invert"
-	Monochrome GetSealSaysTextParamsFilter = "monochrome"
+	GetSealSaysTextParamsFilterFunky      GetSealSaysTextParamsFilter = "funky"
+	GetSealSaysTextParamsFilterInvert     GetSealSaysTextParamsFilter = "invert"
+	GetSealSaysTextParamsFilterMonochrome GetSealSaysTextParamsFilter = "monochrome"
 )
 
 // Defines values for GetSealSaysTextParamsPosition.
@@ -40,11 +40,34 @@ const (
 	GetSealSaysTextParamsPositionTop    GetSealSaysTextParamsPosition = "top"
 )
 
+// Defines values for GetSealIdParamsFilter.
+const (
+	GetSealIdParamsFilterFunky      GetSealIdParamsFilter = "funky"
+	GetSealIdParamsFilterInvert     GetSealIdParamsFilter = "invert"
+	GetSealIdParamsFilterMonochrome GetSealIdParamsFilter = "monochrome"
+)
+
+// Defines values for GetSealIdSaysTextParamsFilter.
+const (
+	Funky      GetSealIdSaysTextParamsFilter = "funky"
+	Invert     GetSealIdSaysTextParamsFilter = "invert"
+	Monochrome GetSealIdSaysTextParamsFilter = "monochrome"
+)
+
+// Defines values for GetSealIdSaysTextParamsPosition.
+const (
+	Bottom GetSealIdSaysTextParamsPosition = "bottom"
+	Left   GetSealIdSaysTextParamsPosition = "left"
+	Right  GetSealIdSaysTextParamsPosition = "right"
+	Top    GetSealIdSaysTextParamsPosition = "top"
+)
+
 // Seal defines model for Seal.
 type Seal struct {
 	CreatedAt string `json:"createdAt"`
 	Id        string `json:"id"`
 	MimeType  string `json:"mimeType"`
+	Permalink string `json:"permalink"`
 	Tags      []Tag  `json:"tags"`
 }
 
@@ -71,6 +94,12 @@ type PositionParam string
 
 // TagParam defines model for tagParam.
 type TagParam = string
+
+// GetApiSealParams defines parameters for GetApiSeal.
+type GetApiSealParams struct {
+	// Tag Tag of the Seal
+	Tag *TagParam `form:"tag,omitempty" json:"tag,omitempty"`
+}
 
 // GetSealParams defines parameters for GetSeal.
 type GetSealParams struct {
@@ -113,3 +142,39 @@ type GetSealSaysTextParamsFilter string
 
 // GetSealSaysTextParamsPosition defines parameters for GetSealSaysText.
 type GetSealSaysTextParamsPosition string
+
+// GetSealIdParams defines parameters for GetSealId.
+type GetSealIdParams struct {
+	// Filter Filter to apply to the image
+	Filter *GetSealIdParamsFilter `form:"filter,omitempty" json:"filter,omitempty"`
+}
+
+// GetSealIdParamsFilter defines parameters for GetSealId.
+type GetSealIdParamsFilter string
+
+// GetSealIdSaysTextParams defines parameters for GetSealIdSaysText.
+type GetSealIdSaysTextParams struct {
+	// Filter Filter to apply to the image
+	Filter *GetSealIdSaysTextParamsFilter `form:"filter,omitempty" json:"filter,omitempty"`
+
+	// Position Position of the caption text on the image
+	Position *GetSealIdSaysTextParamsPosition `form:"position,omitempty" json:"position,omitempty"`
+
+	// FontSize Size of the caption text
+	FontSize *FontSizeParam `form:"fontSize,omitempty" json:"fontSize,omitempty"`
+
+	// FontColour Colour of the caption text
+	FontColour *FontColourParam `form:"fontColour,omitempty" json:"fontColour,omitempty"`
+
+	// BorderSize Thickness of the caption border
+	BorderSize *BorderSizeParam `form:"borderSize,omitempty" json:"borderSize,omitempty"`
+
+	// BorderColour Colour of the caption border
+	BorderColour *BorderColourParam `form:"borderColour,omitempty" json:"borderColour,omitempty"`
+}
+
+// GetSealIdSaysTextParamsFilter defines parameters for GetSealIdSaysText.
+type GetSealIdSaysTextParamsFilter string
+
+// GetSealIdSaysTextParamsPosition defines parameters for GetSealIdSaysText.
+type GetSealIdSaysTextParamsPosition string

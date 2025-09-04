@@ -20,12 +20,24 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Get a JSON reprentation of a random Seal
+	// (GET /api/seal)
+	GetApiSeal(c *gin.Context, params GetApiSealParams)
+	// Get a JSON reprentation of a Seal by their ID
+	// (GET /api/seal/{id})
+	GetApiSealId(c *gin.Context, id string)
 	// Get a random Seal
 	// (GET /seal)
 	GetSeal(c *gin.Context, params GetSealParams)
 	// Get a random Seal saying something
 	// (GET /seal/says/{text})
 	GetSealSaysText(c *gin.Context, text string, params GetSealSaysTextParams)
+	// Get a Seal by their ID
+	// (GET /seal/{id})
+	GetSealId(c *gin.Context, id string, params GetSealIdParams)
+	// Get a random Seal saying something
+	// (GET /seal/{id}/says/{text})
+	GetSealIdSaysText(c *gin.Context, id string, text string, params GetSealIdSaysTextParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -36,6 +48,56 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// GetApiSeal operation middleware
+func (siw *ServerInterfaceWrapper) GetApiSeal(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetApiSealParams
+
+	// ------------- Optional query parameter "tag" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "tag", c.Request.URL.Query(), &params.Tag)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter tag: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetApiSeal(c, params)
+}
+
+// GetApiSealId operation middleware
+func (siw *ServerInterfaceWrapper) GetApiSealId(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetApiSealId(c, id)
+}
 
 // GetSeal operation middleware
 func (siw *ServerInterfaceWrapper) GetSeal(c *gin.Context) {
@@ -154,6 +216,125 @@ func (siw *ServerInterfaceWrapper) GetSealSaysText(c *gin.Context) {
 	siw.Handler.GetSealSaysText(c, text, params)
 }
 
+// GetSealId operation middleware
+func (siw *ServerInterfaceWrapper) GetSealId(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSealIdParams
+
+	// ------------- Optional query parameter "filter" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "filter", c.Request.URL.Query(), &params.Filter)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter filter: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetSealId(c, id, params)
+}
+
+// GetSealIdSaysText operation middleware
+func (siw *ServerInterfaceWrapper) GetSealIdSaysText(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "text" -------------
+	var text string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "text", c.Param("text"), &text, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter text: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSealIdSaysTextParams
+
+	// ------------- Optional query parameter "filter" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "filter", c.Request.URL.Query(), &params.Filter)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter filter: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "position" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "position", c.Request.URL.Query(), &params.Position)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter position: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "fontSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "fontSize", c.Request.URL.Query(), &params.FontSize)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontSize: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "fontColour" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "fontColour", c.Request.URL.Query(), &params.FontColour)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontColour: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "borderSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "borderSize", c.Request.URL.Query(), &params.BorderSize)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderSize: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "borderColour" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "borderColour", c.Request.URL.Query(), &params.BorderColour)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderColour: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetSealIdSaysText(c, id, text, params)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -181,25 +362,31 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
+	router.GET(options.BaseURL+"/api/seal", wrapper.GetApiSeal)
+	router.GET(options.BaseURL+"/api/seal/:id", wrapper.GetApiSealId)
 	router.GET(options.BaseURL+"/seal", wrapper.GetSeal)
 	router.GET(options.BaseURL+"/seal/says/:text", wrapper.GetSealSaysText)
+	router.GET(options.BaseURL+"/seal/:id", wrapper.GetSealId)
+	router.GET(options.BaseURL+"/seal/:id/says/:text", wrapper.GetSealIdSaysText)
 }
 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

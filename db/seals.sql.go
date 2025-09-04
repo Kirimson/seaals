@@ -108,6 +108,23 @@ func (q *Queries) GetSeal(ctx context.Context, id int64) (Seal, error) {
 	return i, err
 }
 
+const getSealByPath = `-- name: GetSealByPath :one
+SELECT id, path, mime_type, created_at FROM seals
+WHERE path LIKE ? LIMIT 1
+`
+
+func (q *Queries) GetSealByPath(ctx context.Context, path string) (Seal, error) {
+	row := q.db.QueryRowContext(ctx, getSealByPath, path)
+	var i Seal
+	err := row.Scan(
+		&i.ID,
+		&i.Path,
+		&i.MimeType,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const listSealTags = `-- name: ListSealTags :many
 SELECT tags.id, tags.name FROM tags
 INNER JOIN seal_tags ON seal_tags.tag_id = tags.id

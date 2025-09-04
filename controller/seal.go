@@ -28,9 +28,9 @@ func NewSealController(service *service.SealService, basePath string) *SealContr
 	}
 }
 
-// GetSeal gets a random Seal image, applies filters and
+// GetSealImage gets a random Seal image, applies filters and
 // returns a SealResponse containing the image bytes and MimeType
-func (sc *SealController) GetSeal(seal *models.Seal, mo *magick.Opts) (*SealResponse, error) {
+func (sc *SealController) GetSealImage(seal *models.Seal, mo *magick.Opts) (*SealResponse, error) {
 	sm := magick.NewSealMagick(mo)
 	if err := sm.LoadImage(seal.Path); err != nil {
 		return nil, err
@@ -72,8 +72,14 @@ func (sc *SealController) GetSealSaying(seal *models.Seal, text string, mo *magi
 	return resp, nil
 }
 
-func (sc *SealController) GetSealByID(id int64) (*models.Seal, error) {
-	return sc.sealService.GetSealByID(id)
+func (sc *SealController) GetSealByPath(path string) (*models.Seal, error) {
+	seal, err := sc.sealService.GetSealByPath(path)
+	if err != nil {
+		return nil, err
+	}
+	// Make a real path from the relative path from basePath
+	seal.Path = filepath.Join(sc.basePath, seal.Path)
+	return seal, nil
 }
 
 func (sc *SealController) RandomSeal(tag *string) (*models.Seal, error) {

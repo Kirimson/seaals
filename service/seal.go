@@ -35,6 +35,23 @@ func (ss *SealService) GetSealByID(id int64) (*models.Seal, error) {
 	if err != nil {
 		return nil, err
 	}
+	if seal == nil {
+		return seal, fmt.Errorf("no seal found with ID '%d'", id)
+	}
+	return seal, nil
+}
+
+func (ss *SealService) GetSealByPath(path string) (*models.Seal, error) {
+	ctx := context.Background()
+	// This is a **bit** hacky. Paths always end in a file extension, so use the provided path
+	// and append .% to the LIKE query for an exact match disregarind the extension
+	seal, err := convertSeal(ss.queries.GetSealByPath(ctx, fmt.Sprintf("%s.%%", path)))
+	if err != nil {
+		return nil, err
+	}
+	if seal == nil {
+		return seal, fmt.Errorf("no seal found with ID '%s'", path)
+	}
 	return seal, nil
 }
 

@@ -2,6 +2,10 @@
 SELECT * FROM seals
 WHERE id = ? LIMIT 1;
 
+-- name: GetSealByPath :one
+SELECT * FROM seals
+WHERE path LIKE ? LIMIT 1;
+
 -- name: CountSeals :one
 SELECT count(*) FROM seals;
 
