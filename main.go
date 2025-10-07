@@ -121,6 +121,16 @@ func main() {
 						},
 						Action: admin.AddTag,
 					},
+					{
+						Name:  "delete-seal",
+						Usage: "Delete a seal from the database",
+						Arguments: []cli.Argument{
+							&cli.Int64Arg{
+								Name: "id",
+							},
+						},
+						Action: admin.DeleteSeal,
+					},
 				},
 			},
 			{

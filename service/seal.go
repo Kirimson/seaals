@@ -128,5 +128,11 @@ func (ss *SealService) GetSealTags(seal *models.Seal) ([]*models.Tag, error) {
 
 func (ss *SealService) DeleteSeal(id int64) error {
 	ctx := context.Background()
-	return ss.queries.DeleteSeal(ctx, id)
+	// Delete the seal
+	err := ss.queries.DeleteSeal(ctx, id)
+	if err != nil {
+		return err
+	}
+	// Delete all tag associations with the seal to delete
+	return ss.queries.DeleteSealTags(ctx, id)
 }

@@ -43,6 +43,10 @@ RETURNING *;
 DELETE FROM seals
 WHERE id = ?;
 
+-- name: DeleteSealTags :exec
+DELETE FROM seal_tags
+WHERE seal_id = ?;
+
 -- name: ListSealsWithTag :many
 SELECT seals.* FROM seals
 INNER JOIN seal_tags ON seal_tags.seal_id = seals.id

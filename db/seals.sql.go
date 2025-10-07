@@ -91,6 +91,16 @@ func (q *Queries) DeleteSeal(ctx context.Context, id int64) error {
 	return err
 }
 
+const deleteSealTags = `-- name: DeleteSealTags :exec
+DELETE FROM seal_tags
+WHERE seal_id = ?
+`
+
+func (q *Queries) DeleteSealTags(ctx context.Context, sealID int64) error {
+	_, err := q.db.ExecContext(ctx, deleteSealTags, sealID)
+	return err
+}
+
 const getSeal = `-- name: GetSeal :one
 SELECT id, path, mime_type, created_at FROM seals
 WHERE id = ? LIMIT 1

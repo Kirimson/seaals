@@ -77,7 +77,12 @@ func AddTag(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	newTag, err := sealLI.AddTag(cmd.StringArg("name"))
+	tagName := cmd.StringArg("name")
+	if tagName == "" {
+		return errors.New("no tag name provided")
+	}
+
+	newTag, err := sealLI.AddTag(tagName)
 	if err != nil {
 		return err
 	}

@@ -46,6 +46,16 @@ func (sli *SealLI) GetAllSeals() ([]*models.Seal, error) {
 }
 
 func (sli *SealLI) DeleteSeal(id int64) error {
+	// Delete the seal file from disk
+	seal, err := sli.sealService.GetSealByID(id)
+	if err != nil {
+		return err
+	}
+	sealPath := filepath.Join(sli.basePath, seal.Path)
+	if err := os.Remove(sealPath); err != nil {
+		return fmt.Errorf("failed to delete seal file at %s: %w", sealPath, err)
+	}
+	// Delete the seal and its tag associations from the database
 	return sli.sealService.DeleteSeal(id)
 }
 
