@@ -11,7 +11,7 @@ import (
 
 func RegisterSwagger(r *gin.Engine) {
 	r.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler,
-		ginSwagger.URL("http://localhost:8080/doc.json"),
+		ginSwagger.URL("/doc.json"),
 		ginSwagger.DefaultModelsExpandDepth(-1),
 		ginSwagger.DefaultModelsExpandDepth(1),
 		ginSwagger.InstanceName("SEAaLS")))
