@@ -89,6 +89,9 @@ type FontColourParam = string
 // FontSizeParam defines model for fontSizeParam.
 type FontSizeParam = int
 
+// PermalinkParam defines model for permalinkParam.
+type PermalinkParam = bool
+
 // PositionParam defines model for positionParam.
 type PositionParam string
 
@@ -108,6 +111,9 @@ type GetSealParams struct {
 
 	// Filter Filter to apply to the image
 	Filter *GetSealParamsFilter `form:"filter,omitempty" json:"filter,omitempty"`
+
+	// Permalink Redirect to the permalink URL of the image with provided parameters
+	Permalink *PermalinkParam `form:"permalink,omitempty" json:"permalink,omitempty"`
 }
 
 // GetSealParamsFilter defines parameters for GetSeal.
@@ -135,6 +141,9 @@ type GetSealSaysTextParams struct {
 
 	// BorderColour Colour of the caption border
 	BorderColour *BorderColourParam `form:"borderColour,omitempty" json:"borderColour,omitempty"`
+
+	// Permalink Redirect to the permalink URL of the image with provided parameters
+	Permalink *PermalinkParam `form:"permalink,omitempty" json:"permalink,omitempty"`
 }
 
 // GetSealSaysTextParamsFilter defines parameters for GetSealSaysText.

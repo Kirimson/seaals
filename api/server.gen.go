@@ -123,6 +123,14 @@ func (siw *ServerInterfaceWrapper) GetSeal(c *gin.Context) {
 		return
 	}
 
+	// ------------- Optional query parameter "permalink" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "permalink", c.Request.URL.Query(), &params.Permalink)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter permalink: %w", err), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -203,6 +211,14 @@ func (siw *ServerInterfaceWrapper) GetSealSaysText(c *gin.Context) {
 	err = runtime.BindQueryParameter("form", true, false, "borderColour", c.Request.URL.Query(), &params.BorderColour)
 	if err != nil {
 		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderColour: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "permalink" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "permalink", c.Request.URL.Query(), &params.Permalink)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter permalink: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -373,20 +389,22 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
+	"+q8AAAD//1pDwvkUEgAA",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

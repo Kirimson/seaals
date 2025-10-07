@@ -53,7 +53,6 @@ func (s Server) GetApiSeal(ctx *gin.Context, params GetApiSealParams) {
 	}
 	response := newSealAPIResponse(*seal)
 	ctx.JSON(http.StatusOK, response)
-	return
 }
 
 // Despite advertising this as an ID, we use the path, to make the seal ID look more unique
@@ -65,10 +64,28 @@ func (s Server) GetApiSealId(ctx *gin.Context, id string) {
 	}
 	response := newSealAPIResponse(*seal)
 	ctx.JSON(http.StatusOK, response)
-	return
 }
 
+// http://localhost:8080/seal?filter=monochrome&permalink=true
 func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
+	// Get a random seal
+	seal, err := s.controller.RandomSeal(params.Tag)
+	if err != nil {
+		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		return
+	}
+
+	// If permalink is set 302 to to GetSealIdSaysText
+	if params.Permalink != nil && *params.Permalink {
+		// Remove permalink from query params
+		q := ctx.Request.URL.Query()
+		q.Del("permalink")
+		// Get the seal ID from the path for the redirect
+		sealID := strings.Split(filepath.Base(seal.Path), ".")[0]
+		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s?%s", sealID, q.Encode()))
+		return
+	}
+
 	// Convert the API Params to what the controller accepts (magick.Opts)
 	mo := &magick.Opts{}
 	if params.Filter != nil {
@@ -76,12 +93,6 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	}
 	// Set any default options that have not been set by the User
 	mo = magick.DefaultOpts(mo)
-
-	seal, err := s.controller.RandomSeal(params.Tag)
-	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
-		return
-	}
 
 	// Create the Seal image
 	sealResult, err := s.controller.GetSealImage(seal, mo)
@@ -121,6 +132,24 @@ func (s Server) GetSealId(ctx *gin.Context, id string, params GetSealIdParams) {
 }
 
 func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSaysTextParams) {
+	// Get a random seal
+	seal, err := s.controller.RandomSeal(params.Tag)
+	if err != nil {
+		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		return
+	}
+
+	// If permalink is set 302 to to GetSealIdSaysText
+	if params.Permalink != nil && *params.Permalink {
+		// Remove permalink from query params
+		q := ctx.Request.URL.Query()
+		q.Del("permalink")
+		// Get the seal ID from the path for the redirect
+		sealID := strings.Split(filepath.Base(seal.Path), ".")[0]
+		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s/says/%s?%s", sealID, text, q.Encode()))
+		return
+	}
+
 	// Convert the API Params to what the controller accepts (magic.Opts)
 	mo := &magick.Opts{}
 	if params.Filter != nil {
@@ -143,12 +172,6 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	}
 	// Set any defaults not set by the user
 	mo = magick.DefaultOpts(mo)
-
-	seal, err := s.controller.RandomSeal(params.Tag)
-	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
-		return
-	}
 
 	// Get the Seal image
 	sealResult, err := s.controller.GetSealSaying(seal, text, mo)

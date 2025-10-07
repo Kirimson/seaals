@@ -43,6 +43,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/tagParam"
         - $ref: "#/components/parameters/filterParam"
+        - $ref: "#/components/parameters/permalinkParam"
       responses:
         "200":
           description: Image of a seal
@@ -50,6 +51,8 @@ paths:
             image/*:
               type: string
               format: binary
+        "302":
+          description: Redirect to the permalink URL of a random seal with provided parameters
   /seal/{id}:
     get:
       summary: Get a Seal by their ID
@@ -87,6 +90,7 @@ paths:
         - $ref: "#/components/parameters/fontColourParam"
         - $ref: "#/components/parameters/borderSizeParam"
         - $ref: "#/components/parameters/borderColourParam"
+        - $ref: "#/components/parameters/permalinkParam"
       responses:
         "200":
           description: Image of a seal saying something
@@ -94,6 +98,8 @@ paths:
             image/*:
               type: string
               format: binary
+        "302":
+          description: Redirect to the permalink URL of a random seal with provided parameters
   /seal/{id}/says/{text}:
     get:
       summary: Get a random Seal saying something
@@ -189,6 +195,14 @@ components:
         default: 6
       required: false
       description: Thickness of the caption border
+    permalinkParam:
+      in: query
+      name: permalink
+      schema:
+        type: boolean
+        default: false
+      required: false
+      description: Redirect to the permalink URL of the image with provided parameters
   schemas:
     Seal:
       type: object

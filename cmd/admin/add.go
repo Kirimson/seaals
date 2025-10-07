@@ -60,7 +60,6 @@ func sealFromURL(url string) ([]byte, error) {
 		return nil, err
 	}
 	// Ensure downloaded file is an image
-	fmt.Println(resp.Header.Get("Content-Type"))
 	if strings.HasPrefix(resp.Header.Get("Content-Type"), "image/") {
 		sealData, err := io.ReadAll(resp.Body)
 		if err != nil {
