@@ -8,10 +8,17 @@ import (
 	"seaals/cmd"
 	"seaals/cmd/admin"
 
+	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v3"
 )
 
 func main() {
+	// Load env vars
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	cmd := &cli.Command{
 		Name:  "seaals",
 		Usage: "Of Approval",
@@ -20,11 +27,13 @@ func main() {
 				Name:    "database",
 				Aliases: []string{"db"},
 				Value:   "seaals.db",
+				Sources: cli.EnvVars("DB_PATH"),
 			},
 			&cli.StringFlag{
 				Name:    "base-path",
 				Aliases: []string{"b"},
 				Value:   "./",
+				Sources: cli.EnvVars("BASE_PATH"),
 				Validator: func(v string) error {
 					// Ensure the path provided exists
 					if _, err := os.Stat(v); err != nil {
@@ -49,8 +58,9 @@ func main() {
 							}
 							return nil
 						},
-						Value: 8080,
-						Usage: "Port to listen on. Valid ports: 1 - 65535",
+						Value:   8080,
+						Usage:   "Port to listen on. Valid ports: 1 - 65535",
+						Sources: cli.EnvVars("PORT"),
 					},
 				},
 			},
@@ -76,9 +86,21 @@ func main() {
 					{
 						Name:  "add-seal",
 						Usage: "Add a new seal to the available catalogue",
-						Arguments: []cli.Argument{
-							&cli.StringArg{
-								Name: "path",
+						MutuallyExclusiveFlags: []cli.MutuallyExclusiveFlags{
+							{
+								Required: true,
+								Flags: [][]cli.Flag{
+									{
+										&cli.StringFlag{
+											Name: "path",
+										},
+									},
+									{
+										&cli.StringFlag{
+											Name: "url",
+										},
+									},
+								},
 							},
 						},
 						Flags: []cli.Flag{

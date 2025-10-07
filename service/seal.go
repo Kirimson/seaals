@@ -125,3 +125,8 @@ func (ss *SealService) GetSealTags(seal *models.Seal) ([]*models.Tag, error) {
 	ctx := context.Background()
 	return convertTags(ss.queries.ListSealTags(ctx, seal.ID))
 }
+
+func (ss *SealService) DeleteSeal(id int64) error {
+	ctx := context.Background()
+	return ss.queries.DeleteSeal(ctx, id)
+}

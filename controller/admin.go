@@ -45,6 +45,10 @@ func (sli *SealLI) GetAllSeals() ([]*models.Seal, error) {
 	return seals, nil
 }
 
+func (sli *SealLI) DeleteSeal(id int64) error {
+	return sli.sealService.DeleteSeal(id)
+}
+
 func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error) {
 	mtype := mimetype.Detect(sealData)
 	if !slices.Contains(AllowedMimes, mtype.String()) {
