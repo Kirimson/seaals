@@ -1,4 +1,4 @@
-# SEAaLS API Server
+# 🦭 SEAaLS API Server
 
 An API Server to serve seal images. Uses Imagemagick to add effects to images
 
