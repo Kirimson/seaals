@@ -8,17 +8,12 @@ import (
 	"seaals/cmd"
 	"seaals/cmd/admin"
 
-	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v3"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
-	// Load env vars
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	cmd := &cli.Command{
 		Name:  "seaals",
 		Usage: "Of Approval",
