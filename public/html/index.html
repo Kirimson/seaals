@@ -1,13 +1,57 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/assets/output.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/assets/output.css" rel="stylesheet" />
 </head>
+
 <body>
-  <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+  <nav class="bg-white dark:bg-gray-950 text-black dark:text-white shadow-md sticky top-0">
+    <div class="flex h-14 items-center justify-between gap-8 px-4 sm:px-6">
+      <div id="logo" class="flex items-center gap-2">
+        <div class="align-middle text-2xl">🦭</div>
+        SEAaLS
+      </div>
+      <div id="links"><a href="https://github.com/kirimson/">Github</a></div>
+    </div>
+  </nav>
+
+  <section class="text-white dark:text-black max-w-screen-xl justify-between mx-auto">
+    <div class="pt-4">
+      <h1 class="text-6xl tracking-tighter text-balance text-center md:text-start">
+        Seals, as a service. Because why not?
+      </h1>
+    </div>
+
+    <div class="pt-8 text-4xl text-center md:text-start">
+      How to SEAaL:
+    </div>
+
+    <div class="flex flex-col w-2/3 mx-auto">
+      <div class="flex flex-col items-center gap-8 p-5 md:flex-row">
+        <div>
+          <img class="size-48 shadow-xl rounded-md" alt="" src="/seal/" />
+        </div>
+        <div class="flex flex-col items-center md:items-start">
+          <code class="text-2xl font-medium"><a href="/seal">/seal</a></code>
+          <span class="font-medium text-sky-500">Get a random Seal</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col items-center gap-8 p-5 md:flex-row md:self-end">
+        <div class="md:order-2">
+          <img class="size-48 shadow-xl rounded-md" alt="" src="/seal/says/hi!?tag=jpeg&fontSize=100" />
+        </div>
+        <div class="flex flex-col items-center md:items-start md:order-1">
+          <code class="text-2xl font-medium">/seal/says/{text}</code>
+          <span class="font-medium text-sky-500">Get a random Seal saying: <input type="text" value="hi!" id="seal-says" class="w-24 pl-2 pr-2 rounded-sm bg-gray-800"></input></span>
+        </div>
+      </div>
+    </div>
+
+  </section>
 </body>
+
 </html>
