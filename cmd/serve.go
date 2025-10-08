@@ -35,6 +35,16 @@ func newRouter(seaals *api.Server, port string) *http.Server {
 
 	api.RegisterHandlers(r, seaals)
 
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+	r.Static("/assets", "./public/assets")
+	r.LoadHTMLGlob("public/html/*.html")
+
+	r.NoRoute(func(ctx *gin.Context) {
+		ctx.HTML(http.StatusNotFound, "404.html", nil)
+	})
+
 	s := &http.Server{
 		Handler: r,
 		Addr:    net.JoinHostPort("0.0.0.0", port),
