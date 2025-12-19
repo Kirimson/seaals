@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -54,12 +55,20 @@ func sealFromURL(url string) ([]byte, error) {
 	client := http.Client{}
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("Accept", "image/*")
+	req.Header.Set("User-Agent", "SEAaLS/1.0")
 
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	// Ensure downloaded file is an image
+	if strings.HasPrefix(resp.Header.Get("Content-Type"), "text/") {
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		slog.Debug(fmt.Sprintf("%s\n", b))
+	}
 	if strings.HasPrefix(resp.Header.Get("Content-Type"), "image/") {
 		sealData, err := io.ReadAll(resp.Body)
 		if err != nil {

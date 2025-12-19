@@ -27,7 +27,7 @@ func main() {
 			&cli.StringFlag{
 				Name:    "base-path",
 				Aliases: []string{"b"},
-				Value:   "./",
+				Value:   "./data",
 				Sources: cli.EnvVars("BASE_PATH"),
 				Validator: func(v string) error {
 					// Ensure the path provided exists
