@@ -1,57 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/output.css" rel="stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="/assets/output.css" rel="stylesheet" />
-</head>
-
-<body>
-  <nav class="bg-white dark:bg-gray-950 text-black dark:text-white shadow-md sticky top-0">
-    <div class="flex h-14 items-center justify-between gap-8 px-4 sm:px-6">
-      <div id="logo" class="flex items-center gap-2">
-        <div class="align-middle text-2xl">🦭</div>
-        SEAaLS
+  <body
+    class="bg-zinc-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100 transition-colors duration-500"
+  >
+    <nav
+      class="bg-white dark:bg-zinc-700 text-black dark:text-white shadow-md sticky top-0"
+    >
+      <div class="flex h-14 items-center justify-between gap-8 px-4 sm:px-6">
+        <div id="logo" class="flex items-center gap-2">
+          <div class="align-middle text-2xl">🦭</div>
+          <span>SEAaLS</span>
+        </div>
+        <div id="links"><a href="https://github.com/kirimson/">Github</a></div>
       </div>
-      <div id="links"><a href="https://github.com/kirimson/">Github</a></div>
-    </div>
-  </nav>
+    </nav>
 
-  <section class="text-white dark:text-black max-w-screen-xl justify-between mx-auto">
-    <div class="pt-4">
-      <h1 class="text-6xl tracking-tighter text-balance text-center md:text-start">
-        Seals, as a service. Because why not?
-      </h1>
-    </div>
-
-    <div class="pt-8 text-4xl text-center md:text-start">
-      How to SEAaL:
-    </div>
-
-    <div class="flex flex-col w-2/3 mx-auto">
-      <div class="flex flex-col items-center gap-8 p-5 md:flex-row">
-        <div>
-          <img class="size-48 shadow-xl rounded-md" alt="" src="/seal/" />
-        </div>
-        <div class="flex flex-col items-center md:items-start">
-          <code class="text-2xl font-medium"><a href="/seal">/seal</a></code>
-          <span class="font-medium text-sky-500">Get a random Seal</span>
-        </div>
+    <section class="max-w-screen-xl justify-between mx-auto">
+      <div class="pt-4">
+        <h1 class="text-6xl tracking-tighter text-balance text-center">
+          Get a seal for any situation
+        </h1>
       </div>
 
-      <div class="flex flex-col items-center gap-8 p-5 md:flex-row md:self-end">
-        <div class="md:order-2">
-          <img class="size-48 shadow-xl rounded-md" alt="" src="/seal/says/hi!?tag=jpeg&fontSize=100" />
+      <div class="flex justify-center flex-col items-center">
+        <div class="py-8 text-xl tracking-tighter text-balance">
+          <p>A REST API to get seals of approval, or seals of any kind</p>
         </div>
-        <div class="flex flex-col items-center md:items-start md:order-1">
-          <code class="text-2xl font-medium">/seal/says/{text}</code>
-          <span class="font-medium text-sky-500">Get a random Seal saying: <input type="text" value="hi!" id="seal-says" class="w-24 pl-2 pr-2 rounded-sm bg-gray-800"></input></span>
-        </div>
+
+        <form action="/seal">
+          <button
+            class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 focus:bg-sky-300 active:bg-sky-300 hover:bg-sky-300 focus:dark:bg-sky-700 active:dark:bg-sky-700 hover:dark:bg-sky-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none hover:cursor-pointer"
+            type="submit"
+          >
+            <b>Get a Seal!</b>
+          </button>
+        </form>
       </div>
-    </div>
-
-  </section>
-</body>
-
+    </section>
+  </body>
 </html>

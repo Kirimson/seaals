@@ -12,8 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//go:generate oapi-codegen --config models.yaml  ../openapi.yaml
-//go:generate oapi-codegen --config server.yaml ../openapi.yaml
+//go:generate go tool oapi-codegen --config models.yaml  ../openapi.yaml
+//go:generate go tool oapi-codegen --config server.yaml ../openapi.yaml
 
 var _ ServerInterface = (*Server)(nil)
 
