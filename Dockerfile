@@ -12,6 +12,7 @@ RUN go mod tidy && \
 FROM alpine:3.22
 RUN apk add --no-cache imagemagick-dev imagemagick libjpeg adwaita-fonts-mono giflib libpng tiff
 COPY --from=build /code/app /app/seaals
+COPY public /app/
 
 WORKDIR /app
 ENTRYPOINT [ "./seaals" ]
