@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/output.css" rel="stylesheet" />
+    <title>SEAaLS - Seals as a Service</title>
+  </head>
+
+  <body
+    class="bg-zinc-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100 transition-colors duration-500"
+  >
+    <nav
+      class="bg-white dark:bg-zinc-700 text-black dark:text-white shadow-md sticky top-0"
+    >
+      <div class="flex h-14 items-center justify-between gap-8 px-4 sm:px-6">
+        <div id="logo" class="flex items-center gap-2">
+          <div class="align-middle text-2xl">🦭</div>
+          <span>SEAaLS</span>
+        </div>
+        <div id="links"><a href="https://github.com/kirimson/">Github</a></div>
+      </div>
+    </nav>
+
+    <section class="max-w-screen-xl justify-between mx-auto">
+      <div class="pt-4">
+        <h1 class="text-6xl tracking-tighter text-balance text-center">
+          Get a seal for any situation
+        </h1>
+      </div>
+
+      <div class="flex justify-center flex-col items-center">
+        <div class="py-8 text-xl tracking-tighter text-balance">
+          <p>A REST API to get seals of approval, or seals of any kind</p>
+        </div>
+
+        <form action="/seal">
+          <button
+            class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 focus:bg-sky-300 active:bg-sky-300 hover:bg-sky-300 focus:dark:bg-sky-700 active:dark:bg-sky-700 hover:dark:bg-sky-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none hover:cursor-pointer"
+            type="submit"
+          >
+            <b>Get a Seal!</b>
+          </button>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

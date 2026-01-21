@@ -4,6 +4,7 @@ package magick
 
 import (
 	"regexp"
+	"strconv"
 	"strings"
 
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -26,6 +27,8 @@ type SealMagick struct {
 type ImageDetails struct {
 	MimeType  string
 	Extension string
+	Width     int
+	Height    int
 }
 
 func NewSealMagick(opts *Opts) *SealMagick {
@@ -62,7 +65,7 @@ func (sm *SealMagick) DrawText(text string) {
 	sm.Dw.SetStrokeColor(textPW)
 	sm.Dw.Annotation(0, 0, text)
 
-	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+	for i := range int(sm.SealMW.GetNumberImages()) {
 		sm.SealMW.SetIteratorIndex(i)
 		sm.SealMW.DrawImage(sm.Dw)
 	}
@@ -79,14 +82,14 @@ func (sm *SealMagick) ApplyEffects() {
 }
 
 func (sm *SealMagick) FilterMonochrome() {
-	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+	for i := range int(sm.SealMW.GetNumberImages()) {
 		sm.SealMW.SetIteratorIndex(i)
 		sm.SealMW.TransformImageColorspace(imagick.COLORSPACE_GRAY)
 	}
 }
 
 func (sm *SealMagick) FilterInvert() {
-	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+	for i := range int(sm.SealMW.GetNumberImages()) {
 		sm.SealMW.SetIteratorIndex(i)
 		sm.SealMW.NegateImage(false)
 	}
@@ -131,9 +134,20 @@ func (sm *SealMagick) FilterFunky() {
 	}
 
 	// Apply the CLUT to the base image
-	for i := 0; i < int(sm.SealMW.GetNumberImages()); i++ {
+	for i := range int(sm.SealMW.GetNumberImages()) {
 		sm.SealMW.SetIteratorIndex(i)
 		sm.SealMW.ClutImage(gradientMW, imagick.INTERPOLATE_PIXEL_AVERAGE)
+	}
+}
+
+func (sm *SealMagick) ResizeImage(maxHeight int) {
+	// Only resize the image if it is smaller than maxHeight
+	if sm.Details.Height < maxHeight {
+		return
+	}
+	for i := range int(sm.SealMW.GetNumberImages()) {
+		sm.SealMW.SetIteratorIndex(i)
+		sm.SealMW.ResizeImage(uint(maxHeight), 0, imagick.FILTER_LANCZOS)
 	}
 }
 
@@ -159,8 +173,12 @@ func (sm *SealMagick) LoadImageBytes(data []byte) error {
 
 func (sm *SealMagick) IdentifyImage() ImageDetails {
 	identifyString := sm.SealMW.IdentifyImage()
-	mimeRegexp, _ := regexp.Compile("Mime type: ([a-z]+/([a-z]+))")
+	mimeRegexp, _ := regexp.Compile(`Mime type: ([a-z]+/([a-z]+))`)
 	mimeMatch := mimeRegexp.FindStringSubmatch(identifyString)
+	geometryRegexp, _ := regexp.Compile(`Geometry: (\d+)x(\d+)`)
+	geometryMatch := geometryRegexp.FindStringSubmatch(identifyString)
+	width, _ := strconv.Atoi(geometryMatch[1])
+	height, _ := strconv.Atoi(geometryMatch[2])
 
 	mime := ""
 	if len(mimeMatch) == 3 {
@@ -169,6 +187,8 @@ func (sm *SealMagick) IdentifyImage() ImageDetails {
 	return ImageDetails{
 		MimeType:  mime,
 		Extension: "jpg",
+		Width:     width,
+		Height:    height,
 	}
 }
 

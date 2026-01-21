@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"seaals/magick"
 	"seaals/models"
 	"seaals/service"
 	"slices"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/google/uuid"
+	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
 type SealLI struct {
@@ -71,6 +73,17 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 		tags = append(tags, sp[1])
 	}
 
+	// Resize the image if it is too big
+	imagick.Initialize()
+	defer imagick.Terminate()
+	sm := magick.NewSealMagick(magick.DefaultOpts(nil))
+	sm.LoadImageBytes(sealData)
+	sm.ResizeImage(1024)
+	sealData, err := sm.GetImageBytes()
+	if err != nil {
+		return nil, err
+	}
+
 	// Add the seal file to the current base directory
 	sealUuid := uuid.New()
 	fileName := fmt.Sprintf("%s%s", strings.ReplaceAll(sealUuid.String(), "-", ""), mtype.Extension())
@@ -99,7 +112,7 @@ func (sli *SealLI) AddSeal(sealData []byte, tags []string) (*models.Seal, error)
 		MimeType: mtype.String(),
 		Tags:     sealTags,
 	}
-	seal, err := sli.sealService.CreateSeal(seal)
+	seal, err = sli.sealService.CreateSeal(seal)
 	if err != nil {
 		return nil, err
 	}

@@ -34,3 +34,8 @@ go.work.sum
 # .vscode/
 *.db
 seal-files/**
+data/**
+
+# Node stuff
+node_modules
+
