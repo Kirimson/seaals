@@ -8,7 +8,7 @@
   </head>
 
   <body
-    class="bg-zinc-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100 transition-colors duration-500"
+    class="bg-sky-200 dark:bg-cyan-900 text-gray-900 dark:text-gray-100 transition-colors duration-500"
   >
     <nav
       class="bg-white dark:bg-zinc-700 text-black dark:text-white shadow-md sticky top-0"
@@ -22,27 +22,46 @@
       </div>
     </nav>
 
-    <section class="max-w-screen-xl justify-between mx-auto">
-      <div class="pt-4">
+    <div class="box four bg-zinc-100 dark:bg-zinc-900 h-screen"></div>
+
+    <content class="flex flex-col">
+      <section id="upper" class="max-w-screen-xl justify-between mx-auto py-16">
         <h1 class="text-6xl tracking-tighter text-balance text-center">
           Get a seal for any situation
         </h1>
-      </div>
 
-      <div class="flex justify-center flex-col items-center">
-        <div class="py-8 text-xl tracking-tighter text-balance">
-          <p>A REST API to get seals of approval, or seals of any kind</p>
+        <div class="flex justify-center flex-col items-center">
+          <div class="py-8 text-xl tracking-tighter text-balance">
+            <p>A REST API to get seals of approval, or seals of any kind</p>
+          </div>
+
+          <form action="/seal">
+            <button
+              class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 focus:bg-sky-300 active:bg-sky-300 hover:bg-sky-300 focus:dark:bg-sky-700 active:dark:bg-sky-700 hover:dark:bg-sky-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none hover:cursor-pointer"
+              type="submit"
+            >
+              <b>Get a Seal!</b>
+            </button>
+          </form>
+        </div>
+      </section>
+      <section class="flex flex-col items-center">
+        <div
+          class="flex flex-col items-center py-8 text-xl tracking-tighter text-balance"
+        >
+          <span class="text-xl text-center">or...</span>
+          <h2 class="text-4xl">Get a Seal saying something!</h2>
         </div>
 
-        <form action="/seal">
+        <form action="/seal/says/hi">
           <button
             class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 focus:bg-sky-300 active:bg-sky-300 hover:bg-sky-300 focus:dark:bg-sky-700 active:dark:bg-sky-700 hover:dark:bg-sky-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none hover:cursor-pointer"
             type="submit"
           >
-            <b>Get a Seal!</b>
+            <b>Get a Seal Saying...</b>
           </button>
         </form>
-      </div>
-    </section>
+      </section>
+    </content>
   </body>
 </html>
