@@ -3,6 +3,18 @@ info:
   version: 1.0.0
   title: SEAaLS API server
 paths:
+  /api/stats:
+    get:
+      summary: Get stats of the server
+      tags:
+        - API
+      responses:
+        "200":
+          description: JSON data of server stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stats"
   /api/seal:
     get:
       summary: Get a JSON reprentation of a random Seal
@@ -204,6 +216,28 @@ components:
       required: false
       description: Redirect to the permalink URL of the image with provided parameters
   schemas:
+    Stats:
+      type: object
+      required:
+        - count
+        - tags
+      properties:
+        count:
+          type: integer
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagStats"
+    TagStats:
+      type: object
+      required:
+        - name
+        - count
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
     Seal:
       type: object
       required:

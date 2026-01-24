@@ -45,6 +45,8 @@ func tagsToString(tags []*models.Tag) []string {
 	return tagsString
 }
 
+func (s Server) GetApiStats(ctx *gin.Context) {}
+
 func (s Server) GetApiSeal(ctx *gin.Context, params GetApiSealParams) {
 	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
