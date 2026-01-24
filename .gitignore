@@ -35,6 +35,8 @@ go.work.sum
 *.db
 seal-files/**
 data/**
+seaals
+*.log
 
 # Node stuff
 node_modules

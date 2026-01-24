@@ -1,16 +1,13 @@
 # SEAaLS API Server
 
 <!--toc:start-->
+
 - [SEAaLS API Server](#seaals-api-server)
   - [Sample endpoints](#sample-endpoints)
     - [/seal](#seal)
     - [/seal/says/{text}](#sealsaystext)
-  - [Development](#development)
-    - [Adding additional SQL Operations](#adding-additional-sql-operations)
-    - [Adding additional API routes/parameters](#adding-additional-api-routesparameters)
-    - [Running the server](#running-the-server)
-      - [Docker](#docker)
-<!--toc:end-->
+  - [Development](#development) - [Adding additional SQL Operations](#adding-additional-sql-operations) - [Adding additional API routes/parameters](#adding-additional-api-routesparameters) - [Running the server](#running-the-server) - [Docker](#docker)
+  <!--toc:end-->
 
 An API Server to serve seal images. Uses Imagemagick to add effects to images
 
@@ -78,7 +75,10 @@ package, which uses the Imagemagick 7.x bindings.
 Run the server with `go run main.go serve`
 
 To update the output css, if adding new tailwind classes, run `npm run css`
+
 > This runs `npx @tailwindcss/cli -i ./public/assets/input.css -o ./public/assets/output.css`
+
+To live refresh the server, and regenerate css, use `go tool air`
 
 #### Docker
 
