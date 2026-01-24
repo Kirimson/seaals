@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-.box {
+.wave {
   display: inline-grid;
   position: absolute;
   top: 0;
@@ -9,9 +9,6 @@
   width: 100%;
   height: 100vh;
   z-index: -5;
-}
-
-.four {
   clip-path: polygon(
     100% 0%,
     0% 0%,
