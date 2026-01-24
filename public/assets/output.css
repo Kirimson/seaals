@@ -225,6 +225,9 @@
   .mx-auto {
     margin-inline: auto;
   }
+  .mb-5 {
+    margin-bottom: calc(var(--spacing) * 5);
+  }
   .contents {
     display: contents;
   }
