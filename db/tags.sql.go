@@ -21,6 +21,41 @@ func (q *Queries) CreateTag(ctx context.Context, name string) (Tag, error) {
 	return i, err
 }
 
+const getPopularTags = `-- name: GetPopularTags :many
+SELECT tags.name,COUNT(tag_id) as "count"
+FROM seal_tags INNER JOIN tags ON tags.id == tag_id
+WHERE tags.name != 'jpeg' AND tags.name != 'png' AND tags.name != 'gif'
+GROUP BY tag_id ORDER BY "count" DESC LIMIT 10
+`
+
+type GetPopularTagsRow struct {
+	Name  string `json:"name"`
+	Count int64  `json:"count"`
+}
+
+func (q *Queries) GetPopularTags(ctx context.Context) ([]GetPopularTagsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPopularTags)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetPopularTagsRow
+	for rows.Next() {
+		var i GetPopularTagsRow
+		if err := rows.Scan(&i.Name, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTag = `-- name: GetTag :one
 SELECT id, name FROM tags
 WHERE id = ? LIMIT 1
