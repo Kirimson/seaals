@@ -104,3 +104,11 @@ func (sc *SealController) RandomSeal(tag *string) (*models.Seal, error) {
 func (sc *SealController) GetAllSeals() ([]*models.Seal, error) {
 	return sc.sealService.GetAllSeals()
 }
+
+func (sc *SealController) CountSeals() (int64, error) {
+	return sc.sealService.CountSeals()
+}
+
+func (sc *SealController) GetPopularTags() ([]*models.TagStat, error) {
+	return sc.sealService.GetPopularTags()
+}

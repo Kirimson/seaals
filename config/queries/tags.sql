@@ -13,3 +13,9 @@ WHERE name = ?;
 -- name: CreateTag :one
 INSERT INTO tags (name) VALUES (?)
 RETURNING *;
+
+-- name: GetPopularTags :many
+SELECT tags.name,COUNT(tag_id) as "count"
+FROM seal_tags INNER JOIN tags ON tags.id == tag_id
+WHERE tags.name != 'jpeg' AND tags.name != 'png' AND tags.name != 'gif'
+GROUP BY tag_id ORDER BY "count" DESC LIMIT 10;

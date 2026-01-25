@@ -14,14 +14,15 @@ func (ss *SealService) GetTagWithName(name string) (*models.Tag, error) {
 
 func (ss *SealService) CreateTag(tag models.Tag) (*models.Tag, error) {
 	ctx := context.Background()
-	newTag, err := convertTag(ss.queries.CreateTag(ctx, tag.Name))
-	if err != nil {
-		return nil, err
-	}
-	return newTag, nil
+	return convertTag(ss.queries.CreateTag(ctx, tag.Name))
 }
 
 func (ss *SealService) GetAllTags() ([]*models.Tag, error) {
 	ctx := context.Background()
 	return convertTags(ss.queries.ListTags(ctx))
+}
+
+func (ss *SealService) GetPopularTags() ([]*models.TagStat, error) {
+	ctx := context.Background()
+	return convertTagStats(ss.queries.GetPopularTags(ctx))
 }

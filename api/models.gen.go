@@ -71,8 +71,20 @@ type Seal struct {
 	Tags      []Tag  `json:"tags"`
 }
 
+// Stats defines model for Stats.
+type Stats struct {
+	Count int        `json:"count"`
+	Tags  []TagStats `json:"tags"`
+}
+
 // Tag defines model for Tag.
 type Tag = string
+
+// TagStats defines model for TagStats.
+type TagStats struct {
+	Count int    `json:"count"`
+	Name  string `json:"name"`
+}
 
 // BorderColourParam defines model for borderColourParam.
 type BorderColourParam = string

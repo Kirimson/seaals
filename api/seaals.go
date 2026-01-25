@@ -45,6 +45,34 @@ func tagsToString(tags []*models.Tag) []string {
 	return tagsString
 }
 
+func (s Server) GetApiStats(ctx *gin.Context) {
+	// Get the Seal count
+	sealCount, err := s.controller.CountSeals()
+	if err != nil {
+		ctx.Error(fmt.Errorf("failed to get Seal count: %s", err))
+		return
+	}
+	popularTags, err := s.controller.GetPopularTags()
+	if err != nil {
+		ctx.Error(fmt.Errorf("failed to get Seal count: %s", err))
+		return
+	}
+	fmt.Printf("%+v\n", popularTags)
+
+	var ts []TagStats
+	for _, pt := range popularTags {
+		ts = append(ts, TagStats{
+			Name:  pt.Name,
+			Count: int(pt.Count),
+		})
+	}
+	response := Stats{
+		Count: int(sealCount),
+		Tags:  ts,
+	}
+	ctx.JSON(http.StatusOK, response)
+}
+
 func (s Server) GetApiSeal(ctx *gin.Context, params GetApiSealParams) {
 	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {

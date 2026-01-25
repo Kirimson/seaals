@@ -136,3 +136,8 @@ func (ss *SealService) DeleteSeal(id int64) error {
 	// Delete all tag associations with the seal to delete
 	return ss.queries.DeleteSealTags(ctx, id)
 }
+
+func (ss *SealService) CountSeals() (int64, error) {
+	ctx := context.Background()
+	return ss.queries.CountSeals(ctx)
+}
