@@ -22,16 +22,13 @@ async function getStats() {
 
     const stats = await response.json();
     countText.innerHTML = stats["count"];
-    // stats.tags.forEach((tag, idx) => {
-    //   console.log(idx);
-    //   row = popularTags.insertRow(idx);
-    //   console.log(tag.name);
-    //   nameCell = row.insertCell(0);
-    //   nameCell.innerHTML = tag.name;
-    //   console.log(tag.count);
-    //   countCell = row.insertCell(1);
-    //   countCell.innerHTML = tag.count;
-    // });
+    stats.tags.forEach((tag, idx) => {
+      row = popularTags.insertRow(idx);
+      nameCell = row.insertCell(0);
+      nameCell.innerHTML = tag.name;
+      countCell = row.insertCell(1);
+      countCell.innerHTML = tag.count;
+    });
   } catch (error) {
     console.error(error.message);
   }
