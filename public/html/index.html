@@ -47,8 +47,11 @@
         </h1>
 
         <div class="flex justify-center flex-col items-center">
-          <div class="py-8 text-xl tracking-tighter text-balance text-center">
+          <div class="py-6 text-xl tracking-tighter text-balance text-center">
             <p>A REST API to get seals of approval, or seals of any kind</p>
+            <p class="text-lg">
+              Currently, we have <span id="seal-count">0</span> seals
+            </p>
           </div>
         </div>
       </section>
@@ -63,7 +66,7 @@
             <h2 class="text-4xl">Get a Random Seal Image</h2>
           </div>
 
-          <a href="/seal">
+          <a href="/seal" target="_blank">
             <button
               class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
               type="submit"
@@ -87,7 +90,7 @@
             />
           </div>
 
-          <a id="says-link" href="/seal/says/Something">
+          <a id="says-link" href="/seal/says/Something" target="_blank">
             <button
               class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
               type="submit"
@@ -98,8 +101,72 @@
         </section>
       </section>
 
-      <section class="flex flex-col items-center">
-        <span class="text-xl text-center pb-6">Or View The Docs: </span>
+      <section
+        class="flex flex-col gap-8 md:flex-row items-start justify-around py-8"
+      >
+        <div id="stats" class="flex flex-col items-start">
+          <p class="text-2xl py-2">Popular Tags</p>
+          <div>
+            <table
+              class="bg-sky-500 dark:bg-sky-800 border-separate border-1 border-zinc-800 rounded-lg overflow-hidden border-spacing-0"
+            >
+              <thead>
+                <tr
+                  class="*:font-medium dark:*:text-slate-300 *:border-b-1 *:border-zinc-800"
+                >
+                  <th class="px-5 py-2">Tag</th>
+                  <th class="px-5 py-2">Count</th>
+                  <th class="px-5 py-2">Example</th>
+                </tr>
+              </thead>
+              <tbody
+                class="bg-zinc-100 dark:bg-zinc-900 **:px-5 **:py-2"
+                id="popular-tags"
+              ></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="usage">
+          <p class="text-2xl py-2">Seal-y Examples</p>
+          <div>
+            <table
+              class="rounded-corners bg-sky-500 dark:bg-sky-800 border-separate border-1 border-zinc-800 rounded-lg overflow-hidden border-spacing-0"
+            >
+              <thead>
+                <tr
+                  class="*:font-medium dark:*:text-slate-300 *:border-b-1 *:border-zinc-800"
+                >
+                  <th class="px-5 py-2">Endpoint</th>
+                  <th class="px-5 py-2">Description</th>
+                  <th class="px-5 py-2">Example</th>
+                </tr>
+              </thead>
+              <tbody class="bg-zinc-100 dark:bg-zinc-900 **:px-5 **:py-2">
+                <tr>
+                  <td>/seal</td>
+                  <td>Get a Random Seal</td>
+                  <td>
+                    <a href="/seal" target="_blank">
+                      <button
+                        class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
+                        type="submit"
+                      >
+                        <b>Random Seal</b>
+                      </button>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="flex flex-col md:flex-row gap-2 justify-center items-center"
+      >
+        <span class="text-xl text-center">For more, view the API docs:</span>
         <a href="/swagger/index.html">
           <button
             class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
@@ -108,53 +175,6 @@
             <b>API Docs</b>
           </button>
         </a>
-      </section>
-
-      <section class="flex flex-row items-center">
-        <div id="stats" class="flex flex-col items-center">
-          <p class="text-lg">
-            Currently, we have <span id="seal-count">0</span> seals
-          </p>
-          <p class="text-lg">The most popular tags are:</p>
-          <div>
-            <table
-              class="rounded-corners bg-sky-500 dark:bg-sky-800 border-separate border-1 border-zinc-800 rounded-lg overflow-hidden border-spacing-0"
-            >
-              <thead>
-                <tr
-                  class="*:font-medium dark:*:text-slate-300 *:border-b-1 *:border-zinc-800"
-                >
-                  <th class="px-6 py-3">Tag</th>
-                  <th class="px-6 py-3">Count</th>
-                </tr>
-              </thead>
-              <tbody
-                class="bg-zinc-100 dark:bg-zinc-900 **:px-6 **:py-3"
-                id="popular-tags"
-              ></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div id="usage" class="grow border">
-          <div>
-            <table
-              class="rounded-corners bg-sky-500 dark:bg-sky-800 border-separate border-1 border-zinc-800 rounded-lg overflow-hidden border-spacing-0"
-            >
-              <thead>
-                <tr
-                  class="*:font-medium dark:*:text-slate-300 *:border-b-1 *:border-zinc-800"
-                >
-                  <th class="px-6 py-3">Tag</th>
-                  <th class="px-6 py-3">Count</th>
-                </tr>
-              </thead>
-              <tbody
-                class="bg-zinc-100 dark:bg-zinc-900 **:px-6 **:py-3"
-              ></tbody>
-            </table>
-          </div>
-        </div>
       </section>
     </content>
     <script src="/assets/js/index.js"></script>

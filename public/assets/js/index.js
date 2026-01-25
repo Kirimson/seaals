@@ -28,6 +28,34 @@ async function getStats() {
       nameCell.innerHTML = tag.name;
       countCell = row.insertCell(1);
       countCell.innerHTML = tag.count;
+
+      exampleLink = document.createElement("a");
+      exampleLink.href = `/seal?tag=${tag.name}`;
+      exampleLink.target = "_blank";
+      exampleButton = document.createElement("button");
+      exampleButton.innerHTML = "Get a Seal!";
+      exampleButton.classList.add(
+        "rounded-md",
+        "py-2",
+        "px-4",
+        "border",
+        "border-transparent",
+        "transition-all",
+        "shadow-md",
+        "hover:shadow-lg",
+        "text-center",
+        "text-black",
+        "dark:text-white",
+        "focus:shadow-none",
+        "bg-sky-500",
+        "dark:bg-sky-800",
+        "hover:bg-sky-300",
+        "hover:dark:bg-sky-700",
+        "hover:cursor-pointer",
+      );
+      exampleCell = row.insertCell(2);
+      exampleLink.appendChild(exampleButton);
+      exampleCell.appendChild(exampleLink);
     });
   } catch (error) {
     console.error(error.message);
