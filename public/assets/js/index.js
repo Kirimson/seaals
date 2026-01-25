@@ -57,6 +57,12 @@ async function getStats() {
       exampleLink.appendChild(exampleButton);
       exampleCell.appendChild(exampleLink);
     });
+
+    // Use the most popular tag as the tag example
+    tagExampleLink = document.getElementById("tag-example");
+    tagExampleLink.href = `/seal?tag=${stats.tags[0].name}`;
+    tagExampleBtn = document.getElementById("tag-example-btn");
+    tagExampleBtn.innerHTML = stats.tags[0].name;
   } catch (error) {
     console.error(error.message);
   }

@@ -250,6 +250,9 @@
   .max-w-7xl {
     max-width: var(--container-7xl);
   }
+  .max-w-\[90vw\] {
+    max-width: 90vw;
+  }
   .border-separate {
     border-collapse: separate;
   }
@@ -293,6 +296,9 @@
   }
   .overflow-hidden {
     overflow: hidden;
+  }
+  .overflow-x-auto {
+    overflow-x: auto;
   }
   .rounded-lg {
     border-radius: var(--radius-lg);
