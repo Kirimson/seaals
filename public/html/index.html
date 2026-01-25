@@ -40,7 +40,7 @@
 
     <div class="wave bg-zinc-100 dark:bg-zinc-900 h-screen"></div>
 
-    <content class="flex flex-col">
+    <content class="flex flex-col px-5">
       <section id="upper" class="max-w-7xl justify-between mx-auto pt-16">
         <h1 class="text-6xl tracking-tighter text-balance text-center">
           Get a seal for any situation
@@ -79,7 +79,7 @@
           >
             <h2>Get a Seal Saying: &nbsp;</h2>
             <input
-              id="saysInput"
+              id="says-input"
               class="w-[9ch] p-0 m-0 border-b-2 focus:outline-0"
               type="text"
               value="Something"
@@ -87,12 +87,12 @@
             />
           </div>
 
-          <a id="saysLink" href="/seal/says/Something">
+          <a id="says-link" href="/seal/says/Something">
             <button
               class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
               type="submit"
             >
-              <b id="saysText">Get a Seal!</b>
+              <b id="says-text">Get a Seal!</b>
             </button>
           </a>
         </section>
@@ -108,6 +108,28 @@
             <b>API Docs</b>
           </button>
         </a>
+      </section>
+
+      <section id="stats" class="flex flex-col items-center">
+        <p>Currently, we have <span id="seal-count">0</span> seals</p>
+        <div>
+          <table
+            class="bg-slate-800 border-separate border-0 rounded-lg border-spacing-0"
+          >
+            <thead class="">
+              <tr class="">
+                <th class="px-6 py-3">Tag</th>
+                <th class="px-6 py-3">Count</th>
+              </tr>
+            </thead>
+            <tbody class="even:bg-slate-700" id="popular-tags">
+              <tr>
+                <td>1</td>
+                <td>2</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </content>
     <script src="/assets/js/index.js"></script>
