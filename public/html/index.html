@@ -83,7 +83,7 @@
               class="w-[9ch] p-0 m-0 border-b-2 focus:outline-0"
               type="text"
               value="Something"
-              onKeyUp="UpdateSays(this)"
+              onKeyUp="UpdateSays()"
             />
           </div>
 
@@ -110,17 +110,6 @@
         </a>
       </section>
     </content>
+    <script src="/assets/js/index.js"></script>
   </body>
-  <script>
-    let saysInput = document.getElementById("saysInput");
-    let saysLink = document.getElementById("saysLink");
-
-    // Reset input
-    saysInput.value = "Something";
-    UpdateSays();
-
-    function UpdateSays(e) {
-      saysLink.href = `/seal/says/${saysInput.value}`;
-    }
-  </script>
 </html>
