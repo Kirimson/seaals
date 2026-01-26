@@ -1,18 +1,25 @@
-FROM golang:1.25-alpine AS build
+FROM golang:1.25-trixie AS build
 
-RUN apk add --no-cache build-base imagemagick-dev imagemagick
+RUN apt-get update && apt-get install -y libmagickwand-dev libmagickcore-dev \
+  imagemagick libjpeg-dev libpng-dev libgif-dev fonts-cantarell
 
 WORKDIR /code
 ENV CGO_ENABLED=1
-ENV CGO_CFLAGS_ALLOW=-Xpreprocessor
 COPY . /code
 RUN go mod tidy && \
-  go build -a -installsuffix cgo -o app .
+  go build -a -installsuffix cgo -o seaals .
 
-FROM alpine:3.22
-RUN apk add --no-cache imagemagick-dev imagemagick libjpeg adwaita-fonts-mono giflib libpng tiff
-COPY --from=build /code/app /app/seaals
-COPY public /app/public
+FROM debian:trixie-slim
 
+RUN apt-get update && apt-get install -y libmagickwand-dev libmagickcore-dev \
+  libjpeg-dev libpng-dev libgif-dev
+
+RUN adduser seaals
+USER seaals
 WORKDIR /app
-ENTRYPOINT [ "./seaals" ]
+ENV PATH="$PATH:/app"
+COPY --from=build --chown=seaals:seaals /code/seaals /app/seaals
+COPY --chown=seaals:seaals ./public /app/public
+
+ENTRYPOINT [ "/app/seaals" ]
+CMD [ "serve" ]
