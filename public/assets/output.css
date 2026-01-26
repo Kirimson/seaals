@@ -18,11 +18,13 @@
     --color-gray-100: oklch(96.7% 0.003 264.542);
     --color-gray-900: oklch(21% 0.034 264.665);
     --color-zinc-100: oklch(96.7% 0.001 286.375);
+    --color-zinc-700: oklch(37% 0.013 285.805);
     --color-zinc-800: oklch(27.4% 0.006 286.033);
     --color-zinc-900: oklch(21% 0.006 285.885);
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
+    --container-4xl: 56rem;
     --container-7xl: 80rem;
     --text-lg: 1.125rem;
     --text-lg--line-height: calc(1.75 / 1.125);
@@ -245,6 +247,9 @@
   .h-screen {
     height: 100vh;
   }
+  .min-h-svh {
+    min-height: 100svh;
+  }
   .w-\[9ch\] {
     width: 9ch;
   }
@@ -253,6 +258,9 @@
   }
   .max-w-\[90vw\] {
     max-width: 90vw;
+  }
+  .grow {
+    flex-grow: 1;
   }
   .border-separate {
     border-collapse: separate;
@@ -471,16 +479,6 @@
       font-weight: var(--font-weight-medium);
     }
   }
-  .\*\*\:px-5 {
-    :is(& *) {
-      padding-inline: calc(var(--spacing) * 5);
-    }
-  }
-  .\*\*\:py-2 {
-    :is(& *) {
-      padding-block: calc(var(--spacing) * 2);
-    }
-  }
   .hover\:cursor-pointer {
     &:hover {
       @media (hover: hover) {
@@ -539,6 +537,11 @@
       margin-inline: calc(var(--spacing) * 0);
     }
   }
+  .md\:max-w-4xl {
+    @media (width >= 48rem) {
+      max-width: var(--container-4xl);
+    }
+  }
   .md\:flex-row {
     @media (width >= 48rem) {
       flex-direction: row;
@@ -588,6 +591,39 @@
           background-color: var(--color-sky-700);
         }
       }
+    }
+  }
+  .\[\&_td\]\:px-2 {
+    & td {
+      padding-inline: calc(var(--spacing) * 2);
+    }
+  }
+  .\[\&_td\]\:px-5 {
+    & td {
+      padding-inline: calc(var(--spacing) * 5);
+    }
+  }
+  .\[\&_td\]\:py-2 {
+    & td {
+      padding-block: calc(var(--spacing) * 2);
+    }
+  }
+  .\[\&_td\]\:align-middle {
+    & td {
+      vertical-align: middle;
+    }
+  }
+  .dark\:\[\&_td\]\:border-zinc-700 {
+    @media (prefers-color-scheme: dark) {
+      & td {
+        border-color: var(--color-zinc-700);
+      }
+    }
+  }
+  .\[\&_tr\:not\(\:last-child\)_td\]\:border-b-1 {
+    & tr:not(:last-child) td {
+      border-bottom-style: var(--tw-border-style);
+      border-bottom-width: 1px;
     }
   }
 }
