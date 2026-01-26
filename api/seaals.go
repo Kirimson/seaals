@@ -57,7 +57,6 @@ func (s Server) GetApiStats(ctx *gin.Context) {
 		ctx.Error(fmt.Errorf("failed to get Seal count: %s", err))
 		return
 	}
-	fmt.Printf("%+v\n", popularTags)
 
 	var ts []TagStats
 	for _, pt := range popularTags {
@@ -146,8 +145,6 @@ func (s Server) GetSealId(ctx *gin.Context, id string, params GetSealIdParams) {
 		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
 		return
 	}
-
-	fmt.Printf("%+v\n", seal)
 
 	// Create the Seal image
 	sealResult, err := s.controller.GetSealImage(seal, mo)

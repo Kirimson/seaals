@@ -15,7 +15,7 @@
   </head>
 
   <body
-    class="bg-sky-200 dark:bg-cyan-900 text-gray-900 dark:text-gray-100 transition-colors duration-500"
+    class="flex flex-col min-h-svh bg-sky-200 dark:bg-cyan-900 text-gray-900 dark:text-gray-100 transition-colors duration-500"
   >
     <nav
       class="bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white sticky top-0"
@@ -40,7 +40,7 @@
 
     <div class="wave bg-zinc-100 dark:bg-zinc-900 h-screen"></div>
 
-    <content class="flex flex-col px-5 mb-5">
+    <main class="flex flex-col px-5 mb-5 grow">
       <section id="upper" class="max-w-7xl justify-between mx-auto pt-16">
         <h1 class="text-6xl tracking-tighter text-balance text-center">
           Get a seal for any situation
@@ -102,7 +102,7 @@
       </section>
 
       <section
-        class="flex flex-col gap-8 md:flex-row items-start justify-around py-8"
+        class="flex flex-col gap-2 md:flex-row items-start justify-around py-8"
       >
         <div id="stats" class="flex flex-col items-start">
           <p class="text-2xl py-2">Popular Tags</p>
@@ -116,10 +116,11 @@
                 >
                   <th class="px-5 py-2">Tag</th>
                   <th class="px-5 py-2">Seals</th>
+                  <th class="px-5 py-2"></th>
                 </tr>
               </thead>
               <tbody
-                class="bg-zinc-100 dark:bg-zinc-900 **:px-5 **:py-2 align-bottom"
+                class="bg-zinc-100 dark:bg-zinc-900 border-zinc-800 dark:[&_td]:border-zinc-700 [&_td]:align-middle [&_td]:px-5 [&_td]:py-2 align-bottom [&_tr:not(:last-child)_td]:border-b-1"
                 id="popular-tags"
               ></tbody>
             </table>
@@ -128,7 +129,7 @@
 
         <div id="usage" class="flex flex-col">
           <p class="text-2xl py-2">Seal-y Examples</p>
-          <div class="max-w-[90vw] overflow-x-auto rounded-lg">
+          <div class="max-w-[90vw] md:max-w-4xl overflow-x-auto rounded-lg">
             <table
               class="bg-sky-500 dark:bg-sky-800 border-separate border-1 border-zinc-800 rounded-lg overflow-hidden border-spacing-0"
             >
@@ -141,11 +142,13 @@
                   <th class="px-5 py-2">Example</th>
                 </tr>
               </thead>
-              <tbody class="bg-zinc-100 dark:bg-zinc-900">
+              <tbody
+                class="bg-zinc-100 dark:bg-zinc-900 border-zinc-800 dark:[&_td]:border-zinc-700 [&_td]:px-2 [&_td]:py-2 [&_td]:align-middle [&_tr:not(:last-child)_td]:border-b-1"
+              >
                 <tr>
-                  <td class="px-5 py-2">/seal</td>
-                  <td class="px-5 py-2">Returns a random Seal</td>
-                  <td class="px-5 py-2">
+                  <td>/seal</td>
+                  <td>Returns a random Seal</td>
+                  <td>
                     <a href="/seal" target="_blank">
                       <button
                         class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
@@ -157,17 +160,56 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="px-5 py-2">/seal/:tag</td>
-                  <td class="px-5 py-2">
-                    Returns a random Seal with a specified tag
+                  <td>/seal?tag=<code>{tag}</code></td>
+                  <td>
+                    Returns a random Seal with a specified tag.<br />File types
+                    are also tags!
                   </td>
-                  <td class="px-5 py-2">
+                  <td>
                     <a id="tag-example" href="/seal" target="_blank">
                       <button
                         class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
                         type="submit"
                       >
                         Random "<span id="tag-example-btn"></span>" Seal
+                      </button>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>/seal/says/<code>{text}</code></td>
+                  <td>Returns a random Seal saying <code>{text}</code></td>
+                  <td>
+                    <a href="/seal/says/Hello" target="_blank">
+                      <button
+                        class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
+                        type="submit"
+                      >
+                        Random Seal saying "Hello"
+                      </button>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    /seal/says/<code>{text}</code>?fontColour=<code>colour</code>&fontSize=<code
+                      >{size}</code
+                    >
+                  </td>
+                  <td>
+                    Returns a random Seal saying <code>{text}</code> in
+                    <code>{colour}</code> and size <code>{size}</code>
+                  </td>
+                  <td>
+                    <a
+                      href="/seal/says/Hello?fontColour=red&fontSize=200"
+                      target="_blank"
+                    >
+                      <button
+                        class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
+                        type="submit"
+                      >
+                        Random Seal saying "Hello"
                       </button>
                     </a>
                   </td>
@@ -193,13 +235,15 @@
           </button>
         </a>
       </section>
-    </content>
+    </main>
+
     <footer class="border-t-1 dark:border-sky-950 py-4 px-4">
       Made by
       <a href="https://github.com/Kirimson" class="hover:underline">Kirimson</a>
       - Inspired by
       <a href="https://cataas.com/" class="hover:underline">CATAAS</a>
     </footer>
+
     <script src="/assets/js/index.js"></script>
   </body>
 </html>
