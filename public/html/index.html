@@ -17,9 +17,7 @@
   <body
     class="flex flex-col min-h-svh bg-sky-200 dark:bg-cyan-900 text-gray-900 dark:text-gray-100 transition-colors duration-500"
   >
-    <nav
-      class="bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white sticky top-0"
-    >
+    <nav class="navbar">
       <div class="flex h-14 items-center justify-between gap-8 px-4 sm:px-6">
         <a href="/">
           <div id="logo" class="flex items-center gap-2">
@@ -38,7 +36,7 @@
       </div>
     </nav>
 
-    <div class="wave bg-zinc-100 dark:bg-zinc-900 h-screen"></div>
+    <div class="wave"></div>
 
     <main class="flex flex-col px-5 mb-5 grow">
       <section id="upper" class="max-w-7xl justify-between mx-auto pt-16">
@@ -67,10 +65,7 @@
           </div>
 
           <a href="/seal" target="_blank">
-            <button
-              class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
-              type="submit"
-            >
+            <button class="seal-button" type="submit">
               <b>Get a Seal!</b>
             </button>
           </a>
@@ -91,10 +86,7 @@
           </div>
 
           <a id="says-link" href="/seal/says/Something" target="_blank">
-            <button
-              class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
-              type="submit"
-            >
+            <button class="seal-button" type="submit">
               <b id="says-text">Get a Seal!</b>
             </button>
           </a>
@@ -107,22 +99,15 @@
         <div id="stats" class="flex flex-col items-start">
           <p class="text-2xl py-2">Popular Tags</p>
           <div>
-            <table
-              class="bg-sky-500 dark:bg-sky-800 border-separate border-1 border-zinc-800 rounded-lg overflow-hidden border-spacing-0"
-            >
+            <table class="seal-table">
               <thead>
-                <tr
-                  class="*:font-medium dark:*:text-slate-300 *:border-b-1 *:border-zinc-800"
-                >
-                  <th class="px-5 py-2">Tag</th>
-                  <th class="px-5 py-2">Seals</th>
-                  <th class="px-5 py-2"></th>
+                <tr>
+                  <th>Tag</th>
+                  <th>Seals</th>
+                  <th></th>
                 </tr>
               </thead>
-              <tbody
-                class="bg-zinc-100 dark:bg-zinc-900 border-zinc-800 dark:[&_td]:border-zinc-700 [&_td]:align-middle [&_td]:px-5 [&_td]:py-2 align-bottom [&_tr:not(:last-child)_td]:border-b-1"
-                id="popular-tags"
-              ></tbody>
+              <tbody id="popular-tags"></tbody>
             </table>
           </div>
         </div>
@@ -130,30 +115,21 @@
         <div id="usage" class="flex flex-col">
           <p class="text-2xl py-2">Seal-y Examples</p>
           <div class="max-w-[90vw] md:max-w-4xl overflow-x-auto rounded-lg">
-            <table
-              class="bg-sky-500 dark:bg-sky-800 border-separate border-1 border-zinc-800 rounded-lg overflow-hidden border-spacing-0"
-            >
+            <table class="seal-table">
               <thead>
-                <tr
-                  class="*:font-medium dark:*:text-slate-300 *:border-b-1 *:border-zinc-800"
-                >
-                  <th class="px-5 py-2">Endpoint</th>
-                  <th class="px-5 py-2">Description</th>
-                  <th class="px-5 py-2">Example</th>
+                <tr>
+                  <th>Endpoint</th>
+                  <th>Description</th>
+                  <th>Example</th>
                 </tr>
               </thead>
-              <tbody
-                class="bg-zinc-100 dark:bg-zinc-900 border-zinc-800 dark:[&_td]:border-zinc-700 [&_td]:px-2 [&_td]:py-2 [&_td]:align-middle [&_tr:not(:last-child)_td]:border-b-1"
-              >
+              <tbody>
                 <tr>
                   <td>/seal</td>
                   <td>Returns a random Seal</td>
                   <td>
                     <a href="/seal" target="_blank">
-                      <button
-                        class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
-                        type="submit"
-                      >
+                      <button class="seal-button" type="submit">
                         Random Seal
                       </button>
                     </a>
@@ -167,10 +143,7 @@
                   </td>
                   <td>
                     <a id="tag-example" href="/seal" target="_blank">
-                      <button
-                        class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
-                        type="submit"
-                      >
+                      <button class="seal-button" type="submit">
                         Random "<span id="tag-example-btn"></span>" Seal
                       </button>
                     </a>
@@ -181,10 +154,7 @@
                   <td>Returns a random Seal saying <code>{text}</code></td>
                   <td>
                     <a href="/seal/says/Hello" target="_blank">
-                      <button
-                        class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
-                        type="submit"
-                      >
+                      <button class="seal-button" type="submit">
                         Random Seal saying "Hello"
                       </button>
                     </a>
@@ -205,10 +175,7 @@
                       href="/seal/says/Hello?fontColour=red&fontSize=200"
                       target="_blank"
                     >
-                      <button
-                        class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
-                        type="submit"
-                      >
+                      <button class="seal-button" type="submit">
                         Random Seal saying "Hello"
                       </button>
                     </a>
@@ -227,10 +194,7 @@
           >For more examples, view the interactive API docs:</span
         >
         <a href="/swagger/index.html">
-          <button
-            class="rounded-md py-2 px-4 border border-transparent transition-all shadow-md hover:shadow-lg text-center text-black dark:text-white focus:shadow-none bg-sky-500 dark:bg-sky-800 hover:bg-sky-300 hover:dark:bg-sky-700 hover:cursor-pointer"
-            type="submit"
-          >
+          <button class="seal-button" type="submit">
             <b>API Docs</b>
           </button>
         </a>

@@ -1,8 +1,17 @@
 Dockerfile
+docker-compose.yaml
 .git
+.gitignore
 *.db
 tmp
 .air.toml
 node_modules
 seaals
 *.db
+README.md
+package.json
+package-lock.json
+openapi.yaml
+sqlc.yaml
+.air.toml
+.github
