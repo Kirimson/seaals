@@ -24,7 +24,6 @@
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
-    --container-4xl: 56rem;
     --container-7xl: 80rem;
     --text-lg: 1.125rem;
     --text-lg--line-height: calc(1.75 / 1.125);
@@ -256,8 +255,8 @@
   .max-w-7xl {
     max-width: var(--container-7xl);
   }
-  .max-w-\[90vw\] {
-    max-width: 90vw;
+  .max-w-\[60vw\] {
+    max-width: 60vw;
   }
   .grow {
     flex-grow: 1;
@@ -497,11 +496,6 @@
   .md\:mx-0 {
     @media (width >= 48rem) {
       margin-inline: calc(var(--spacing) * 0);
-    }
-  }
-  .md\:max-w-4xl {
-    @media (width >= 48rem) {
-      max-width: var(--container-4xl);
     }
   }
   .md\:flex-row {
