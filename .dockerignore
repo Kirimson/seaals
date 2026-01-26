@@ -3,3 +3,6 @@ Dockerfile
 *.db
 tmp
 .air.toml
+node_modules
+seaals
+*.db

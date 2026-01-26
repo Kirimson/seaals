@@ -1,0 +1,11 @@
+services:
+  seaals:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      DB_PATH: /data/seaals.db
+      BASE_PATH: /data
+    volumes:
+      - ./data:/data
+    command: serve
