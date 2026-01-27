@@ -79,6 +79,7 @@ func (s Server) GetApiSeal(ctx *gin.Context, params GetApiSealParams) {
 		return
 	}
 	response := newSealAPIResponse(*seal)
+	response.Permalink = fmt.Sprintf("%s/seal/%s", ctx.Request.Host, seal.GetApiID())
 	ctx.JSON(http.StatusOK, response)
 }
 
@@ -90,6 +91,7 @@ func (s Server) GetApiSealId(ctx *gin.Context, id string) {
 		return
 	}
 	response := newSealAPIResponse(*seal)
+	response.Permalink = fmt.Sprintf("%s/seal/%s", ctx.Request.Host, seal.GetApiID())
 	ctx.JSON(http.StatusOK, response)
 }
 
@@ -107,9 +109,7 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 		// Remove permalink from query params
 		q := ctx.Request.URL.Query()
 		q.Del("permalink")
-		// Get the seal ID from the path for the redirect
-		sealID := strings.Split(filepath.Base(seal.Path), ".")[0]
-		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s?%s", sealID, q.Encode()))
+		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s?%s", seal.GetApiID(), q.Encode()))
 		return
 	}
 
@@ -169,9 +169,7 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 		// Remove permalink from query params
 		q := ctx.Request.URL.Query()
 		q.Del("permalink")
-		// Get the seal ID from the path for the redirect
-		sealID := strings.Split(filepath.Base(seal.Path), ".")[0]
-		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s/says/%s?%s", sealID, text, q.Encode()))
+		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s/says/%s?%s", seal.GetApiID(), text, q.Encode()))
 		return
 	}
 
