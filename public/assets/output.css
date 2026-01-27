@@ -255,8 +255,8 @@
   .max-w-7xl {
     max-width: var(--container-7xl);
   }
-  .max-w-\[60vw\] {
-    max-width: 60vw;
+  .max-w-\[90vw\] {
+    max-width: 90vw;
   }
   .grow {
     flex-grow: 1;
@@ -501,6 +501,11 @@
   .md\:flex-row {
     @media (width >= 48rem) {
       flex-direction: row;
+    }
+  }
+  .lg\:max-w-\[80vw\] {
+    @media (width >= 64rem) {
+      max-width: 80vw;
     }
   }
   .dark\:border-sky-950 {
