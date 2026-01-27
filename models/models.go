@@ -4,6 +4,8 @@
 package models
 
 import (
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -13,6 +15,12 @@ type Seal struct {
 	Tags      []*Tag
 	MimeType  string    `json:"mime_type"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+// GetApiID returns the filename without extension of the seal this is used
+// as the 'id' for all parts of the application, besides the database itself
+func (s *Seal) GetApiID() string {
+	return strings.Split(filepath.Base(s.Path), ".")[0]
 }
 
 type Tag struct {
