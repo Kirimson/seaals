@@ -2,7 +2,7 @@ package controller
 
 import (
 	"path/filepath"
-	"seaals/magick"
+	"seaals/image"
 	"seaals/models"
 	"seaals/service"
 )
@@ -30,44 +30,50 @@ func NewSealController(service *service.SealService, basePath string) *SealContr
 
 // GetSealImage gets a random Seal image, applies filters and
 // returns a SealResponse containing the image bytes and MimeType
-func (sc *SealController) GetSealImage(seal *models.Seal, mo *magick.Opts) (*SealResponse, error) {
-	sm := magick.NewSealMagick(mo)
-	if err := sm.LoadImage(seal.Path); err != nil {
+func (sc *SealController) GetSealImage(seal *models.Seal, opts *image.Opts) (*SealResponse, error) {
+	imgs, err := image.LoadImage(seal.Path)
+	if err != nil {
 		return nil, err
 	}
 
-	sm.ApplyEffects()
-	b, err := sm.GetImageBytes()
+	if err := image.ApplyEffects(imgs, opts.Filter); err != nil {
+		return nil, err
+	}
+	b, err := image.GetImageBytes(imgs)
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &SealResponse{
 		Image:    b,
-		MimeType: sm.Details.MimeType,
+		MimeType: string(imgs[0].Format()),
 	}
 	return resp, nil
 }
 
 // GetSealSaying gets a random Seal with both graphical effects and a caption text
-func (sc *SealController) GetSealSaying(seal *models.Seal, text string, mo *magick.Opts) (*SealResponse, error) {
-	sm := magick.NewSealMagick(mo)
-	if err := sm.LoadImage(seal.Path); err != nil {
+func (sc *SealController) GetSealSaying(seal *models.Seal, text string, opts *image.Opts) (*SealResponse, error) {
+	imgs, err := image.LoadImage(seal.Path)
+	if err != nil {
 		return nil, err
 	}
-	sm.ApplyEffects()
+	if err := image.ApplyEffects(imgs, opts.Filter); err != nil {
+		return nil, err
+	}
 
 	// Draw text after all effects have been applied
-	sm.DrawText(text)
+	if err := image.DrawText(imgs, text, opts); err != nil {
+		return nil, err
+	}
 
-	b, err := sm.GetImageBytes()
+	b, err := image.GetImageBytes(imgs)
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &SealResponse{
 		Image:    b,
-		MimeType: sm.Details.MimeType,
+		MimeType: string(imgs[0].Format()),
 	}
 	return resp, nil
 }

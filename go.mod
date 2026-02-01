@@ -3,6 +3,7 @@ module seaals
 go 1.25
 
 require (
+	github.com/cshum/vipsgen v1.3.1
 	github.com/gabriel-vasile/mimetype v1.4.9
 	github.com/getkin/kin-openapi v0.133.0
 	github.com/gin-gonic/gin v1.10.1

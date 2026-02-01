@@ -169,6 +169,7 @@ components:
         enum:
           - top
           - bottom
+          - middle
           - left
           - right
       required: false
