@@ -13,7 +13,6 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/urfave/cli/v3 v3.3.9
-	gopkg.in/gographics/imagick.v3 v3.7.2
 	modernc.org/sqlite v1.38.2
 )
 

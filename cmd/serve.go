@@ -17,7 +17,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli/v3"
-	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
 func newRouter(seaals *api.Server, port string) *http.Server {
@@ -57,9 +56,6 @@ func Serve(ctx context.Context, cmd *cli.Command) error {
 	database := cmd.String("database")
 	basePath := cmd.String("base-path")
 	port := strconv.Itoa(int(cmd.Int16("port")))
-
-	imagick.Initialize()
-	defer imagick.Terminate()
 
 	sealDB, err := models.InitialiseDB(database)
 	if err != nil {

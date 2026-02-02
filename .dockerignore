@@ -15,3 +15,5 @@ openapi.yaml
 sqlc.yaml
 .air.toml
 .github
+# Ignore generated vips library. Will be regenerated based on image packages
+vips
