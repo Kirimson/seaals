@@ -14,7 +14,7 @@
   - [Administration](#administration)
   <!--toc:end-->
 
-An API Server to serve seal images. Uses Imagemagick to add effects to images
+An API Server to serve seal images. Uses libvips to add effects to images
 
 ## Sample endpoints
 
@@ -79,9 +79,9 @@ which implements the generated API `ServerInterface` interface.
 
 Get all dependencies with `go get`, and `npm i` (For tailwind)
 
-Seaals depends on Imagemagick 7.0 to run correctly. It must be installed to make
-use of the `imagick` package, which uses Imagemagick 7.x bindings, before the
-server can be started.
+Seaals depends on libvips (tested on 8.18) to run correctly. It must be installed
+to make use of the generated `vips` package, which uses libvips C bindings,
+before the server can be started.
 
 The database path and data path can be defined by the `--db` and `--base-path`/`-b`
 flags, or the `DB_PATH` and `BASE_PATH` environment variables. Env files can
@@ -103,7 +103,7 @@ CSS by running `tailwinscss/cli`
 
 Build a docker image with `docker build -t <image_name> .`
 
-This is an alpine-based image, with Imagemagick 7 and other dependencies pre-installed
+This is an alpine-based image, with libvips and other dependencies pre-installed
 
 ### Administration
 
