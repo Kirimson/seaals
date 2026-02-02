@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"seaals/vips"
+	"strings"
 )
 
 // LoadImage will load an image from a set path, returning a slice of vips.Image,
@@ -106,6 +107,33 @@ func DrawText(imgs []*vips.Image, text string, textOpts *Opts) error {
 }
 
 func ApplyEffects(imgs []*vips.Image, filter string) error {
+	switch strings.ToLower(filter) {
+	case "monochrome":
+		return FilterMonochrome(imgs)
+	case "invert":
+		return FilterInvert(imgs)
+	}
+	return nil
+}
+
+func FilterMonochrome(imgs []*vips.Image) error {
+	for _, img := range imgs {
+		if err := img.Colourspace(vips.InterpretationBW, vips.DefaultColourspaceOptions()); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func FilterInvert(imgs []*vips.Image) error {
+	for _, img := range imgs {
+		if err := img.ExtractBand(0, &vips.ExtractBandOptions{N: 3}); err != nil {
+			return err
+		}
+		if err := img.Invert(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

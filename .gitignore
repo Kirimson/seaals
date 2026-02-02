@@ -41,5 +41,3 @@ seaals
 # Node stuff
 node_modules
 
-# Unsure to commit generated vips library
-vips
