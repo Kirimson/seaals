@@ -3,6 +3,7 @@ module seaals
 go 1.25
 
 require (
+	github.com/cshum/vipsgen v1.3.1
 	github.com/gabriel-vasile/mimetype v1.4.9
 	github.com/getkin/kin-openapi v0.133.0
 	github.com/gin-gonic/gin v1.10.1
@@ -12,7 +13,6 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/urfave/cli/v3 v3.3.9
-	gopkg.in/gographics/imagick.v3 v3.7.2
 	modernc.org/sqlite v1.38.2
 )
 

@@ -14,6 +14,7 @@ const (
 const (
 	PositionParamBottom PositionParam = "bottom"
 	PositionParamLeft   PositionParam = "left"
+	PositionParamMiddle PositionParam = "middle"
 	PositionParamRight  PositionParam = "right"
 	PositionParamTop    PositionParam = "top"
 )
@@ -36,6 +37,7 @@ const (
 const (
 	GetSealSaysTextParamsPositionBottom GetSealSaysTextParamsPosition = "bottom"
 	GetSealSaysTextParamsPositionLeft   GetSealSaysTextParamsPosition = "left"
+	GetSealSaysTextParamsPositionMiddle GetSealSaysTextParamsPosition = "middle"
 	GetSealSaysTextParamsPositionRight  GetSealSaysTextParamsPosition = "right"
 	GetSealSaysTextParamsPositionTop    GetSealSaysTextParamsPosition = "top"
 )
@@ -58,6 +60,7 @@ const (
 const (
 	Bottom GetSealIdSaysTextParamsPosition = "bottom"
 	Left   GetSealIdSaysTextParamsPosition = "left"
+	Middle GetSealIdSaysTextParamsPosition = "middle"
 	Right  GetSealIdSaysTextParamsPosition = "right"
 	Top    GetSealIdSaysTextParamsPosition = "top"
 )
