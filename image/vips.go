@@ -8,10 +8,18 @@ import (
 	"strings"
 )
 
+type Image struct {
+	Image     *vips.Image
+	ImageType vips.ImageType
+	Pages     int
+	Height    int
+	Width     int
+}
+
 // LoadImage will load an image from a set path, returning a slice of vips.Image,
 // with each index being a page. Still images will consist of a single page. Animated
 // images will have a page per frame of animation
-func LoadImage(path string) ([]*vips.Image, error) {
+func LoadImage(path string) (*Image, error) {
 	var imgs []*vips.Image
 	meta, err := vips.NewImageFromFile(path, &vips.LoadOptions{})
 	if err != nil {
@@ -26,10 +34,26 @@ func LoadImage(path string) ([]*vips.Image, error) {
 		imgs = append(imgs, img)
 	}
 
-	return imgs, nil
+	opts := vips.DefaultArrayjoinOptions()
+	opts.Hspacing = imgs[0].Width()
+	opts.Vspacing = imgs[0].Height()
+	joined, err := vips.NewArrayjoin(imgs, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	img := Image{
+		Image:     joined,
+		ImageType: imgs[0].Format(),
+		Pages:     imgs[0].Pages(),
+		Height:    imgs[0].Height(),
+		Width:     imgs[0].Width(),
+	}
+
+	return &img, nil
 }
 
-func LoadImageBytes(data []byte) ([]*vips.Image, error) {
+func LoadImageBytes(data []byte) (*Image, error) {
 	var imgs []*vips.Image
 	meta, err := vips.NewImageFromBuffer(data, &vips.LoadOptions{})
 	if err != nil {
@@ -44,10 +68,6 @@ func LoadImageBytes(data []byte) ([]*vips.Image, error) {
 		imgs = append(imgs, img)
 	}
 
-	return imgs, nil
-}
-
-func GetImageBytes(imgs []*vips.Image) ([]byte, error) {
 	opts := vips.DefaultArrayjoinOptions()
 	opts.Hspacing = imgs[0].Width()
 	opts.Vspacing = imgs[0].Height()
@@ -55,26 +75,37 @@ func GetImageBytes(imgs []*vips.Image) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	img := Image{
+		Image:     joined,
+		ImageType: imgs[0].Format(),
+		Pages:     imgs[0].Pages(),
+		Height:    imgs[0].Height(),
+		Width:     imgs[0].Width(),
+	}
 
-	pageHeight := imgs[0].Height()
-	switch imgs[0].Format() {
+	return &img, nil
+}
+
+func GetImageBytes(img *Image) ([]byte, error) {
+	switch img.ImageType {
 	case vips.ImageTypeGif:
 		saveOpts := vips.DefaultGifsaveBufferOptions()
-		saveOpts.PageHeight = pageHeight
-		return joined.GifsaveBuffer(saveOpts)
+		saveOpts.PageHeight = img.Height
+		return img.Image.GifsaveBuffer(saveOpts)
 	case vips.ImageTypePng:
-		return joined.PngsaveBuffer(vips.DefaultPngsaveBufferOptions())
+		return img.Image.PngsaveBuffer(vips.DefaultPngsaveBufferOptions())
 	case vips.ImageTypeJpeg:
-		return joined.JpegsaveBuffer(vips.DefaultJpegsaveBufferOptions())
+		return img.Image.JpegsaveBuffer(vips.DefaultJpegsaveBufferOptions())
 	}
 	return nil, errors.New("failed to output image")
 }
 
 // DrawText will composite a text image on top of a slice of vips.Image
-func DrawText(imgs []*vips.Image, text string, textOpts *Opts) error {
+func DrawText(img *Image, text string, textOpts *Opts) error {
 	// Always set the width of the text to the image's width
 	// Assume that at least one image (page) is provided
-	textOpts.Width = imgs[0].Width()
+	textOpts.Width = img.Width
+	textOpts.Height = img.Height
 	// Create the base Text image
 	textImg, err := makeText(text, textOpts)
 	// Close the text image after this function. Will only be used in this scope
@@ -83,56 +114,44 @@ func DrawText(imgs []*vips.Image, text string, textOpts *Opts) error {
 	}
 	defer textImg.Close()
 
-	// Calculate the y position based on image height
-	var yPos int
-	switch textOpts.Position {
-	case TextTop:
-		yPos = int(float64(imgs[0].Height()) * 0.05)
-	case TextMiddle:
-		yPos = int(float64(imgs[0].Height())/2 - float64(textImg.Height())/2)
-	default:
-		yPos = int(float64(imgs[0].Height())*0.95) - textImg.Height()
+	// Replicate text imag based on amount of pages. For non-animated images, this
+	// will always just be 1. For animated images, this will be per frame
+	if err := textImg.Replicate(1, img.Pages); err != nil {
+		return err
 	}
 
-	// Iterate over all image pages, compositing text image on top
-	for _, img := range imgs {
-		if err := img.Composite2(textImg, vips.BlendModeOver, &vips.Composite2Options{
-			X: 0,
-			Y: yPos,
-		}); err != nil {
-			log.Fatalf("failed to add text: %s", err)
-		}
+	if err := img.Image.Composite2(textImg, vips.BlendModeOver, &vips.Composite2Options{
+		X: 0,
+		Y: 0,
+	}); err != nil {
+		log.Fatalf("failed to add text: %s", err)
 	}
 	return nil
 }
 
-func ApplyEffects(imgs []*vips.Image, filter string) error {
+func ApplyEffects(img *Image, filter string) error {
 	switch strings.ToLower(filter) {
 	case "monochrome":
-		return FilterMonochrome(imgs)
+		return FilterMonochrome(img)
 	case "invert":
-		return FilterInvert(imgs)
+		return FilterInvert(img)
 	}
 	return nil
 }
 
-func FilterMonochrome(imgs []*vips.Image) error {
-	for _, img := range imgs {
-		if err := img.Colourspace(vips.InterpretationBW, vips.DefaultColourspaceOptions()); err != nil {
-			return err
-		}
+func FilterMonochrome(img *Image) error {
+	if err := img.Image.Colourspace(vips.InterpretationBW, vips.DefaultColourspaceOptions()); err != nil {
+		return err
 	}
 	return nil
 }
 
-func FilterInvert(imgs []*vips.Image) error {
-	for _, img := range imgs {
-		if err := img.ExtractBand(0, &vips.ExtractBandOptions{N: 3}); err != nil {
-			return err
-		}
-		if err := img.Invert(); err != nil {
-			return err
-		}
+func FilterInvert(img *Image) error {
+	if err := img.Image.ExtractBand(0, &vips.ExtractBandOptions{N: 3}); err != nil {
+		return err
+	}
+	if err := img.Image.Invert(); err != nil {
+		return err
 	}
 	return nil
 }
@@ -148,6 +167,18 @@ func makeText(text string, opts *Opts) (*vips.Image, error) {
 	default:
 		xPos = opts.Width / 2
 	}
+
+	// Calculate the y position based on image height
+	var yPos int
+	switch opts.Position {
+	case TextTop:
+		yPos = int(float64(opts.Height)*0.05) + opts.Size/2
+	case TextMiddle:
+		yPos = int(float64(opts.Height) / 2)
+	default:
+		yPos = int(float64(opts.Height) * 0.95)
+	}
+
 	svg := fmt.Sprintf(`
 		<svg width="%d" height="%d">
 			<text x="%d" y="%d" text-anchor="%s"
@@ -156,6 +187,6 @@ func makeText(text string, opts *Opts) (*vips.Image, error) {
 			>
 				%s
 			</text>
-		</svg>`, opts.Width, opts.Size, xPos, opts.Size-(opts.StrokeSize*2), opts.Align, opts.Size, opts.Colour, opts.Stroke, opts.StrokeSize, text)
+		</svg>`, opts.Width, opts.Height, xPos, yPos, opts.Align, opts.Size, opts.Colour, opts.Stroke, opts.StrokeSize, text)
 	return vips.NewImageFromBuffer([]byte(svg), nil)
 }

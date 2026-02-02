@@ -31,49 +31,49 @@ func NewSealController(service *service.SealService, basePath string) *SealContr
 // GetSealImage gets a random Seal image, applies filters and
 // returns a SealResponse containing the image bytes and MimeType
 func (sc *SealController) GetSealImage(seal *models.Seal, opts *image.Opts) (*SealResponse, error) {
-	imgs, err := image.LoadImage(seal.Path)
+	img, err := image.LoadImage(seal.Path)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := image.ApplyEffects(imgs, opts.Filter); err != nil {
+	if err := image.ApplyEffects(img, opts.Filter); err != nil {
 		return nil, err
 	}
-	b, err := image.GetImageBytes(imgs)
+	b, err := image.GetImageBytes(img)
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &SealResponse{
 		Image:    b,
-		MimeType: string(imgs[0].Format()),
+		MimeType: string(img.ImageType),
 	}
 	return resp, nil
 }
 
 // GetSealSaying gets a random Seal with both graphical effects and a caption text
 func (sc *SealController) GetSealSaying(seal *models.Seal, text string, opts *image.Opts) (*SealResponse, error) {
-	imgs, err := image.LoadImage(seal.Path)
+	img, err := image.LoadImage(seal.Path)
 	if err != nil {
 		return nil, err
 	}
-	if err := image.ApplyEffects(imgs, opts.Filter); err != nil {
+	if err := image.ApplyEffects(img, opts.Filter); err != nil {
 		return nil, err
 	}
 
 	// Draw text after all effects have been applied
-	if err := image.DrawText(imgs, text, opts); err != nil {
+	if err := image.DrawText(img, text, opts); err != nil {
 		return nil, err
 	}
 
-	b, err := image.GetImageBytes(imgs)
+	b, err := image.GetImageBytes(img)
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &SealResponse{
 		Image:    b,
-		MimeType: string(imgs[0].Format()),
+		MimeType: string(img.ImageType),
 	}
 	return resp, nil
 }

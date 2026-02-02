@@ -9,6 +9,7 @@ type Opts struct {
 	Stroke     string
 	StrokeSize int
 	Width      int
+	Height     int
 }
 
 type (
