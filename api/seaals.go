@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -8,8 +9,6 @@ import (
 	"seaals/image"
 	"seaals/models"
 	"strings"
-
-	"github.com/gin-gonic/gin"
 )
 
 //go:generate go tool oapi-codegen --config models.yaml  ../openapi.yaml
@@ -19,6 +18,11 @@ var _ ServerInterface = (*Server)(nil)
 
 type Server struct {
 	controller *controller.SealController
+}
+
+type SeaalsError struct {
+	Message string `json:"msg"`
+	Error   error  `json:"error"`
 }
 
 func NewSeaalsServer(controller *controller.SealController) *Server {
@@ -45,16 +49,20 @@ func tagsToString(tags []*models.Tag) []string {
 	return tagsString
 }
 
-func (s Server) GetApiStats(ctx *gin.Context) {
+func (s Server) GetApiStats(w http.ResponseWriter, r *http.Request) {
 	// Get the Seal count
 	sealCount, err := s.controller.CountSeals()
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal count: %s", err))
+		e := SeaalsError{Message: "failed to get Seal count", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 	popularTags, err := s.controller.GetPopularTags()
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal count: %s", err))
+		e := SeaalsError{Message: "failed to get Seal count", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
@@ -69,47 +77,56 @@ func (s Server) GetApiStats(ctx *gin.Context) {
 		Count: int(sealCount),
 		Tags:  ts,
 	}
-	ctx.JSON(http.StatusOK, response)
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(response)
 }
 
-func (s Server) GetApiSeal(ctx *gin.Context, params GetApiSealParams) {
+func (s Server) GetApiSeal(w http.ResponseWriter, r *http.Request, params GetApiSealParams) {
 	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		e := SeaalsError{Message: "failed to get Seal record", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 	response := newSealAPIResponse(*seal)
-	response.Permalink = fmt.Sprintf("%s/seal/%s", ctx.Request.Host, seal.GetApiID())
-	ctx.JSON(http.StatusOK, response)
+	response.Permalink = fmt.Sprintf("%s/seal/%s", r.Host, seal.GetApiID())
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(response)
 }
 
 // Despite advertising this as an ID, we use the path, to make the seal ID look more unique
-func (s Server) GetApiSealId(ctx *gin.Context, id string) {
+func (s Server) GetApiSealId(w http.ResponseWriter, r *http.Request, id string) {
 	seal, err := s.controller.GetSealByPath(id)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		e := SeaalsError{Message: "failed to get Seal record", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 	response := newSealAPIResponse(*seal)
-	response.Permalink = fmt.Sprintf("%s/seal/%s", ctx.Request.Host, seal.GetApiID())
-	ctx.JSON(http.StatusOK, response)
+	response.Permalink = fmt.Sprintf("%s/seal/%s", r.Host, seal.GetApiID())
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(response)
 }
 
 // http://localhost:8080/seal?filter=monochrome&permalink=true
-func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
+func (s Server) GetSeal(w http.ResponseWriter, r *http.Request, params GetSealParams) {
 	// Get a random seal
 	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		e := SeaalsError{Message: "failed to get Seal record", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
 	// If permalink is set 302 to to GetSealIdSaysText
 	if params.Permalink != nil && *params.Permalink {
 		// Remove permalink from query params
-		q := ctx.Request.URL.Query()
+		q := r.URL.Query()
 		q.Del("permalink")
-		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s?%s", seal.GetApiID(), q.Encode()))
+		http.Redirect(w, r, fmt.Sprintf("/seal/%s?%s", seal.GetApiID(), q.Encode()), http.StatusMovedPermanently)
 		return
 	}
 
@@ -124,14 +141,19 @@ func (s Server) GetSeal(ctx *gin.Context, params GetSealParams) {
 	// Create the Seal image
 	sealResult, err := s.controller.GetSealImage(seal, opts)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to load Seal image: %s", err))
+		e := SeaalsError{Message: "failed to load Seal image", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
-	ctx.Data(http.StatusOK, fmt.Sprintf("image/%s", sealResult.MimeType), sealResult.Image)
+	// render.Data{Data: sealResult.Image, ContentType: fmt.Sprintf("image/%s", sealResult.MimeType)}.Render(w)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Add("Content-Type", fmt.Sprintf("image/%s", sealResult.MimeType))
+	w.Write(sealResult.Image)
 }
 
-func (s Server) GetSealId(ctx *gin.Context, id string, params GetSealIdParams) {
+func (s Server) GetSealId(w http.ResponseWriter, r *http.Request, id string, params GetSealIdParams) {
 	// Convert the API Params to what the controller accepts (image.Opts)
 	opts := &image.Opts{}
 	if params.Filter != nil {
@@ -142,34 +164,42 @@ func (s Server) GetSealId(ctx *gin.Context, id string, params GetSealIdParams) {
 
 	seal, err := s.controller.GetSealByPath(id)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		e := SeaalsError{Message: "failed to get Seal record", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
 	// Create the Seal image
 	sealResult, err := s.controller.GetSealImage(seal, opts)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to load Seal image: %s", err))
+		e := SeaalsError{Message: "failed to load Seal image", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
-	ctx.Data(http.StatusOK, fmt.Sprintf("image/%s", sealResult.MimeType), sealResult.Image)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Add("Content-Type", fmt.Sprintf("image/%s", sealResult.MimeType))
+	w.Write(sealResult.Image)
 }
 
-func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSaysTextParams) {
+func (s Server) GetSealSaysText(w http.ResponseWriter, r *http.Request, text string, params GetSealSaysTextParams) {
 	// Get a random seal
 	seal, err := s.controller.RandomSeal(params.Tag)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		e := SeaalsError{Message: "failed to get Seal record", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
 	// If permalink is set 302 to to GetSealIdSaysText
 	if params.Permalink != nil && *params.Permalink {
 		// Remove permalink from query params
-		q := ctx.Request.URL.Query()
+		q := r.URL.Query()
 		q.Del("permalink")
-		ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/seal/%s/says/%s?%s", seal.GetApiID(), text, q.Encode()))
+		http.Redirect(w, r, fmt.Sprintf("/seal/%s?%s", seal.GetApiID(), q.Encode()), http.StatusMovedPermanently)
 		return
 	}
 
@@ -199,14 +229,18 @@ func (s Server) GetSealSaysText(ctx *gin.Context, text string, params GetSealSay
 	// Get the Seal image
 	sealResult, err := s.controller.GetSealSaying(seal, text, opts)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to load Seal image: %s", err))
+		e := SeaalsError{Message: "failed to load Seal image", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
-	ctx.Data(http.StatusOK, fmt.Sprintf("image/%s", sealResult.MimeType), sealResult.Image)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Add("Content-Type", fmt.Sprintf("image/%s", sealResult.MimeType))
+	w.Write(sealResult.Image)
 }
 
-func (s Server) GetSealIdSaysText(ctx *gin.Context, id string, text string, params GetSealIdSaysTextParams) {
+func (s Server) GetSealIdSaysText(w http.ResponseWriter, r *http.Request, id string, text string, params GetSealIdSaysTextParams) {
 	// Convert the API Params to what the controller accepts (image.Opts)
 	opts := &image.Opts{}
 	if params.Filter != nil {
@@ -232,16 +266,22 @@ func (s Server) GetSealIdSaysText(ctx *gin.Context, id string, text string, para
 
 	seal, err := s.controller.GetSealByPath(id)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to get Seal record: %s", err))
+		e := SeaalsError{Message: "failed to get Seal record", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
 	// Get the Seal image
 	sealResult, err := s.controller.GetSealSaying(seal, text, opts)
 	if err != nil {
-		ctx.Error(fmt.Errorf("failed to load Seal image: %s", err))
+		e := SeaalsError{Message: "failed to load Seal image", Error: err}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(e)
 		return
 	}
 
-	ctx.Data(http.StatusOK, fmt.Sprintf("image/%s", sealResult.MimeType), sealResult.Image)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Add("Content-Type", fmt.Sprintf("image/%s", sealResult.MimeType))
+	w.Write(sealResult.Image)
 }

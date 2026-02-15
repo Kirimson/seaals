@@ -5,47 +5,73 @@ package cmd
 
 import (
 	"context"
-	"log"
 	"net"
 	"net/http"
+	"os"
+	"path/filepath"
 	"seaals/api"
-	"seaals/api/middleware"
 	"seaals/controller"
 	"seaals/models"
 	"seaals/service"
 	"strconv"
+	"strings"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
 	"github.com/urfave/cli/v3"
 )
 
-func newRouter(seaals *api.Server, port string) *http.Server {
-	swagger, err := api.GetSwagger()
-	if err != nil {
-		log.Fatalf("error loading swagger spec\n %s", err)
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func FileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit any URL parameters.")
 	}
-	swagger.Servers = nil
 
-	r := gin.Default()
-	// r.Use(oapimiddleware.OapiRequestValidator(swagger))
-	r.Use(middleware.ErrorHandler())
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
 
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+		fs.ServeHTTP(w, r)
+	})
+}
+
+func newRouter(seaals *api.Server, port string) *http.Server {
+	r := chi.NewMux()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
+	// Add generate Api server implementation to Chi Mux
+	h := api.HandlerFromMux(seaals, r)
+
+	// Register Swagger
 	api.RegisterSwagger(r)
 
-	api.RegisterHandlers(r, seaals)
-
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
+	// Serve index page
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "public/html/index.html")
 	})
-	r.Static("/assets", "./public/assets")
-	r.LoadHTMLGlob("public/html/*.html")
 
-	r.NoRoute(func(ctx *gin.Context) {
-		ctx.HTML(http.StatusNotFound, "404.html", nil)
+	// Serve static files
+	workDir, _ := os.Getwd()
+	filesDir := http.Dir(filepath.Join(workDir, "public/assets"))
+	FileServer(r, "/assets", filesDir)
+
+	// 404
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "public/html/404.html")
 	})
 
 	s := &http.Server{
-		Handler: r,
+		Handler: h,
 		Addr:    net.JoinHostPort("0.0.0.0", port),
 	}
 
@@ -70,6 +96,7 @@ func Serve(ctx context.Context, cmd *cli.Command) error {
 	// Create an instance of the API server which implements routes
 	seaalsApi := api.NewSeaalsServer(sealController)
 
+	// Create a http.Server using the API server, and some middleware
 	s := newRouter(seaalsApi, port)
 	// Run the HTTP server, and return any error it returns
 	return s.ListenAndServe()

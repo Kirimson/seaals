@@ -1,31 +1,32 @@
 package api
 
 import (
-	"log"
+	"encoding/json"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-func RegisterSwagger(r *gin.Engine) {
-	r.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler,
-		ginSwagger.URL("/doc.json"),
-		ginSwagger.DefaultModelsExpandDepth(-1),
-		ginSwagger.DefaultModelsExpandDepth(1),
-		ginSwagger.InstanceName("SEAaLS")))
-	r.GET("doc.json", openapiSpec)
+func RegisterSwagger(r *chi.Mux) {
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:1323/swagger/doc.json"), // The url pointing to API definition
+		httpSwagger.URL("/doc.json"),
+	))
+	r.Get("/doc.json", func(w http.ResponseWriter, r *http.Request) {
+		spec, err := openapiSpec()
+		if err != nil {
+			e := SeaalsError{Message: "failed to get API spec", Error: err}
+			w.WriteHeader(http.StatusInternalServerError)
+			_ = json.NewEncoder(w).Encode(e)
+			return
+		}
+		w.Write(spec)
+	})
 }
 
-func openapiSpec(c *gin.Context) {
-	swagger, err := GetSwagger()
-	if err != nil {
-		log.Fatalf("error loading swagger spec\n %s", err)
-	}
-	b, err := swagger.MarshalJSON()
-	if err != nil {
-		log.Fatalf("error marshalling swagger spec to JSON\n %s", err)
-	}
-	c.Data(http.StatusOK, "application/json", b)
+func openapiSpec() ([]byte, error) {
+	s, _ := GetSwagger()
+	b, _ := s.MarshalJSON()
+	return b, nil
 }
