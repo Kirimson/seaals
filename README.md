@@ -83,6 +83,8 @@ Seaals depends on libvips (tested on 8.18) to run correctly. It must be installe
 to make use of the generated `vips` package, which uses libvips C bindings,
 before the server can be started.
 
+To update the generated vips bindings, run `vipsgen -out ./vips`
+
 The database path and data path can be defined by the `--db` and `--base-path`/`-b`
 flags, or the `DB_PATH` and `BASE_PATH` environment variables. Env files can
 also be used.

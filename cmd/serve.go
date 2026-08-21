@@ -9,12 +9,13 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
+
 	"seaals/api"
 	"seaals/controller"
 	"seaals/models"
 	"seaals/service"
-	"strconv"
-	"strings"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
@@ -66,9 +67,9 @@ func newRouter(seaals *api.Server, port string) *http.Server {
 	FileServer(r, "/assets", filesDir)
 
 	// 404
-	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "public/html/404.html")
-	})
+	// r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+	// 	http.ServeFile(w, r, "public/html/404.html")
+	// })
 
 	s := &http.Server{
 		Handler: h,

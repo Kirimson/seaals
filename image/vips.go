@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"seaals/vips"
 	"strings"
+
+	"seaals/vips"
 )
 
 type Image struct {
@@ -25,12 +26,14 @@ func LoadImage(path string) (*Image, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer meta.Close()
 	pages := meta.Pages()
 	for page := range pages {
 		img, err := vips.NewImageFromFile(path, &vips.LoadOptions{Page: page})
 		if err != nil {
 			return nil, err
 		}
+		defer img.Close()
 		imgs = append(imgs, img)
 	}
 
@@ -59,12 +62,15 @@ func LoadImageBytes(data []byte) (*Image, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer meta.Close()
 	pages := meta.Pages()
 	for page := range pages {
 		img, err := vips.NewImageFromBuffer(data, &vips.LoadOptions{Page: page})
 		if err != nil {
 			return nil, err
 		}
+		// Close the images used to make the joined image at the end of the function
+		defer img.Close()
 		imgs = append(imgs, img)
 	}
 
@@ -75,6 +81,9 @@ func LoadImageBytes(data []byte) (*Image, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Close the joined image at the end of the function
+	// defer joined.Close()
 	img := Image{
 		Image:     joined,
 		ImageType: imgs[0].Format(),
