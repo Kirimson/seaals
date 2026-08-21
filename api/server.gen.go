@@ -14,7 +14,7 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
 	"github.com/oapi-codegen/runtime"
 )
 
@@ -22,38 +22,84 @@ import (
 type ServerInterface interface {
 	// Get a JSON reprentation of a random Seal
 	// (GET /api/seal)
-	GetApiSeal(c *gin.Context, params GetApiSealParams)
+	GetApiSeal(w http.ResponseWriter, r *http.Request, params GetApiSealParams)
 	// Get a JSON reprentation of a Seal by their ID
 	// (GET /api/seal/{id})
-	GetApiSealId(c *gin.Context, id string)
+	GetApiSealId(w http.ResponseWriter, r *http.Request, id string)
 	// Get stats of the server
 	// (GET /api/stats)
-	GetApiStats(c *gin.Context)
+	GetApiStats(w http.ResponseWriter, r *http.Request)
 	// Get a random Seal
 	// (GET /seal)
-	GetSeal(c *gin.Context, params GetSealParams)
+	GetSeal(w http.ResponseWriter, r *http.Request, params GetSealParams)
 	// Get a random Seal saying something
 	// (GET /seal/says/{text})
-	GetSealSaysText(c *gin.Context, text string, params GetSealSaysTextParams)
+	GetSealSaysText(w http.ResponseWriter, r *http.Request, text string, params GetSealSaysTextParams)
 	// Get a Seal by their ID
 	// (GET /seal/{id})
-	GetSealId(c *gin.Context, id string, params GetSealIdParams)
+	GetSealId(w http.ResponseWriter, r *http.Request, id string, params GetSealIdParams)
 	// Get a random Seal saying something
 	// (GET /seal/{id}/says/{text})
-	GetSealIdSaysText(c *gin.Context, id string, text string, params GetSealIdSaysTextParams)
+	GetSealIdSaysText(w http.ResponseWriter, r *http.Request, id string, text string, params GetSealIdSaysTextParams)
+}
+
+// Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
+
+type Unimplemented struct{}
+
+// Get a JSON reprentation of a random Seal
+// (GET /api/seal)
+func (_ Unimplemented) GetApiSeal(w http.ResponseWriter, r *http.Request, params GetApiSealParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get a JSON reprentation of a Seal by their ID
+// (GET /api/seal/{id})
+func (_ Unimplemented) GetApiSealId(w http.ResponseWriter, r *http.Request, id string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get stats of the server
+// (GET /api/stats)
+func (_ Unimplemented) GetApiStats(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get a random Seal
+// (GET /seal)
+func (_ Unimplemented) GetSeal(w http.ResponseWriter, r *http.Request, params GetSealParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get a random Seal saying something
+// (GET /seal/says/{text})
+func (_ Unimplemented) GetSealSaysText(w http.ResponseWriter, r *http.Request, text string, params GetSealSaysTextParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get a Seal by their ID
+// (GET /seal/{id})
+func (_ Unimplemented) GetSealId(w http.ResponseWriter, r *http.Request, id string, params GetSealIdParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get a random Seal saying something
+// (GET /seal/{id}/says/{text})
+func (_ Unimplemented) GetSealIdSaysText(w http.ResponseWriter, r *http.Request, id string, text string, params GetSealIdSaysTextParams) {
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler            ServerInterface
 	HandlerMiddlewares []MiddlewareFunc
-	ErrorHandler       func(*gin.Context, error, int)
+	ErrorHandlerFunc   func(w http.ResponseWriter, r *http.Request, err error)
 }
 
-type MiddlewareFunc func(c *gin.Context)
+type MiddlewareFunc func(http.Handler) http.Handler
 
 // GetApiSeal operation middleware
-func (siw *ServerInterfaceWrapper) GetApiSeal(c *gin.Context) {
+func (siw *ServerInterfaceWrapper) GetApiSeal(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
@@ -62,61 +108,64 @@ func (siw *ServerInterfaceWrapper) GetApiSeal(c *gin.Context) {
 
 	// ------------- Optional query parameter "tag" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "tag", c.Request.URL.Query(), &params.Tag)
+	err = runtime.BindQueryParameter("form", true, false, "tag", r.URL.Query(), &params.Tag)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter tag: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "tag", Err: err})
 		return
 	}
 
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetApiSeal(w, r, params)
+	}))
+
 	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
+		handler = middleware(handler)
 	}
 
-	siw.Handler.GetApiSeal(c, params)
+	handler.ServeHTTP(w, r)
 }
 
 // GetApiSealId operation middleware
-func (siw *ServerInterfaceWrapper) GetApiSealId(c *gin.Context) {
+func (siw *ServerInterfaceWrapper) GetApiSealId(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
 	// ------------- Path parameter "id" -------------
 	var id string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
 		return
 	}
 
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetApiSealId(w, r, id)
+	}))
+
 	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
+		handler = middleware(handler)
 	}
 
-	siw.Handler.GetApiSealId(c, id)
+	handler.ServeHTTP(w, r)
 }
 
 // GetApiStats operation middleware
-func (siw *ServerInterfaceWrapper) GetApiStats(c *gin.Context) {
+func (siw *ServerInterfaceWrapper) GetApiStats(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetApiStats(w, r)
+	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
+		handler = middleware(handler)
 	}
 
-	siw.Handler.GetApiStats(c)
+	handler.ServeHTTP(w, r)
 }
 
 // GetSeal operation middleware
-func (siw *ServerInterfaceWrapper) GetSeal(c *gin.Context) {
+func (siw *ServerInterfaceWrapper) GetSeal(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
@@ -125,49 +174,50 @@ func (siw *ServerInterfaceWrapper) GetSeal(c *gin.Context) {
 
 	// ------------- Optional query parameter "tag" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "tag", c.Request.URL.Query(), &params.Tag)
+	err = runtime.BindQueryParameter("form", true, false, "tag", r.URL.Query(), &params.Tag)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter tag: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "tag", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "filter" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "filter", c.Request.URL.Query(), &params.Filter)
+	err = runtime.BindQueryParameter("form", true, false, "filter", r.URL.Query(), &params.Filter)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter filter: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "filter", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "permalink" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "permalink", c.Request.URL.Query(), &params.Permalink)
+	err = runtime.BindQueryParameter("form", true, false, "permalink", r.URL.Query(), &params.Permalink)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter permalink: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "permalink", Err: err})
 		return
 	}
 
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSeal(w, r, params)
+	}))
+
 	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
+		handler = middleware(handler)
 	}
 
-	siw.Handler.GetSeal(c, params)
+	handler.ServeHTTP(w, r)
 }
 
 // GetSealSaysText operation middleware
-func (siw *ServerInterfaceWrapper) GetSealSaysText(c *gin.Context) {
+func (siw *ServerInterfaceWrapper) GetSealSaysText(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
 	// ------------- Path parameter "text" -------------
 	var text string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "text", c.Param("text"), &text, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "text", chi.URLParam(r, "text"), &text, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter text: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "text", Err: err})
 		return
 	}
 
@@ -176,89 +226,90 @@ func (siw *ServerInterfaceWrapper) GetSealSaysText(c *gin.Context) {
 
 	// ------------- Optional query parameter "tag" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "tag", c.Request.URL.Query(), &params.Tag)
+	err = runtime.BindQueryParameter("form", true, false, "tag", r.URL.Query(), &params.Tag)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter tag: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "tag", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "filter" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "filter", c.Request.URL.Query(), &params.Filter)
+	err = runtime.BindQueryParameter("form", true, false, "filter", r.URL.Query(), &params.Filter)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter filter: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "filter", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "position" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "position", c.Request.URL.Query(), &params.Position)
+	err = runtime.BindQueryParameter("form", true, false, "position", r.URL.Query(), &params.Position)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter position: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "position", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "fontSize" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "fontSize", c.Request.URL.Query(), &params.FontSize)
+	err = runtime.BindQueryParameter("form", true, false, "fontSize", r.URL.Query(), &params.FontSize)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontSize: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fontSize", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "fontColour" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "fontColour", c.Request.URL.Query(), &params.FontColour)
+	err = runtime.BindQueryParameter("form", true, false, "fontColour", r.URL.Query(), &params.FontColour)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontColour: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fontColour", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "borderSize" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "borderSize", c.Request.URL.Query(), &params.BorderSize)
+	err = runtime.BindQueryParameter("form", true, false, "borderSize", r.URL.Query(), &params.BorderSize)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderSize: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "borderSize", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "borderColour" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "borderColour", c.Request.URL.Query(), &params.BorderColour)
+	err = runtime.BindQueryParameter("form", true, false, "borderColour", r.URL.Query(), &params.BorderColour)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderColour: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "borderColour", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "permalink" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "permalink", c.Request.URL.Query(), &params.Permalink)
+	err = runtime.BindQueryParameter("form", true, false, "permalink", r.URL.Query(), &params.Permalink)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter permalink: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "permalink", Err: err})
 		return
 	}
 
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSealSaysText(w, r, text, params)
+	}))
+
 	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
+		handler = middleware(handler)
 	}
 
-	siw.Handler.GetSealSaysText(c, text, params)
+	handler.ServeHTTP(w, r)
 }
 
 // GetSealId operation middleware
-func (siw *ServerInterfaceWrapper) GetSealId(c *gin.Context) {
+func (siw *ServerInterfaceWrapper) GetSealId(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
 	// ------------- Path parameter "id" -------------
 	var id string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
 		return
 	}
 
@@ -267,42 +318,43 @@ func (siw *ServerInterfaceWrapper) GetSealId(c *gin.Context) {
 
 	// ------------- Optional query parameter "filter" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "filter", c.Request.URL.Query(), &params.Filter)
+	err = runtime.BindQueryParameter("form", true, false, "filter", r.URL.Query(), &params.Filter)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter filter: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "filter", Err: err})
 		return
 	}
 
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSealId(w, r, id, params)
+	}))
+
 	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
+		handler = middleware(handler)
 	}
 
-	siw.Handler.GetSealId(c, id, params)
+	handler.ServeHTTP(w, r)
 }
 
 // GetSealIdSaysText operation middleware
-func (siw *ServerInterfaceWrapper) GetSealIdSaysText(c *gin.Context) {
+func (siw *ServerInterfaceWrapper) GetSealIdSaysText(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
 	// ------------- Path parameter "id" -------------
 	var id string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
 		return
 	}
 
 	// ------------- Path parameter "text" -------------
 	var text string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "text", c.Param("text"), &text, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "text", chi.URLParam(r, "text"), &text, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter text: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "text", Err: err})
 		return
 	}
 
@@ -311,96 +363,199 @@ func (siw *ServerInterfaceWrapper) GetSealIdSaysText(c *gin.Context) {
 
 	// ------------- Optional query parameter "filter" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "filter", c.Request.URL.Query(), &params.Filter)
+	err = runtime.BindQueryParameter("form", true, false, "filter", r.URL.Query(), &params.Filter)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter filter: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "filter", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "position" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "position", c.Request.URL.Query(), &params.Position)
+	err = runtime.BindQueryParameter("form", true, false, "position", r.URL.Query(), &params.Position)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter position: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "position", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "fontSize" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "fontSize", c.Request.URL.Query(), &params.FontSize)
+	err = runtime.BindQueryParameter("form", true, false, "fontSize", r.URL.Query(), &params.FontSize)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontSize: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fontSize", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "fontColour" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "fontColour", c.Request.URL.Query(), &params.FontColour)
+	err = runtime.BindQueryParameter("form", true, false, "fontColour", r.URL.Query(), &params.FontColour)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fontColour: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fontColour", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "borderSize" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "borderSize", c.Request.URL.Query(), &params.BorderSize)
+	err = runtime.BindQueryParameter("form", true, false, "borderSize", r.URL.Query(), &params.BorderSize)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderSize: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "borderSize", Err: err})
 		return
 	}
 
 	// ------------- Optional query parameter "borderColour" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "borderColour", c.Request.URL.Query(), &params.BorderColour)
+	err = runtime.BindQueryParameter("form", true, false, "borderColour", r.URL.Query(), &params.BorderColour)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter borderColour: %w", err), http.StatusBadRequest)
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "borderColour", Err: err})
 		return
 	}
 
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSealIdSaysText(w, r, id, text, params)
+	}))
+
 	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
+		handler = middleware(handler)
 	}
 
-	siw.Handler.GetSealIdSaysText(c, id, text, params)
+	handler.ServeHTTP(w, r)
 }
 
-// GinServerOptions provides options for the Gin server.
-type GinServerOptions struct {
-	BaseURL      string
-	Middlewares  []MiddlewareFunc
-	ErrorHandler func(*gin.Context, error, int)
+type UnescapedCookieParamError struct {
+	ParamName string
+	Err       error
 }
 
-// RegisterHandlers creates http.Handler with routing matching OpenAPI spec.
-func RegisterHandlers(router gin.IRouter, si ServerInterface) {
-	RegisterHandlersWithOptions(router, si, GinServerOptions{})
+func (e *UnescapedCookieParamError) Error() string {
+	return fmt.Sprintf("error unescaping cookie parameter '%s'", e.ParamName)
 }
 
-// RegisterHandlersWithOptions creates http.Handler with additional options
-func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options GinServerOptions) {
-	errorHandler := options.ErrorHandler
-	if errorHandler == nil {
-		errorHandler = func(c *gin.Context, err error, statusCode int) {
-			c.JSON(statusCode, gin.H{"msg": err.Error()})
+func (e *UnescapedCookieParamError) Unwrap() error {
+	return e.Err
+}
+
+type UnmarshalingParamError struct {
+	ParamName string
+	Err       error
+}
+
+func (e *UnmarshalingParamError) Error() string {
+	return fmt.Sprintf("Error unmarshaling parameter %s as JSON: %s", e.ParamName, e.Err.Error())
+}
+
+func (e *UnmarshalingParamError) Unwrap() error {
+	return e.Err
+}
+
+type RequiredParamError struct {
+	ParamName string
+}
+
+func (e *RequiredParamError) Error() string {
+	return fmt.Sprintf("Query argument %s is required, but not found", e.ParamName)
+}
+
+type RequiredHeaderError struct {
+	ParamName string
+	Err       error
+}
+
+func (e *RequiredHeaderError) Error() string {
+	return fmt.Sprintf("Header parameter %s is required, but not found", e.ParamName)
+}
+
+func (e *RequiredHeaderError) Unwrap() error {
+	return e.Err
+}
+
+type InvalidParamFormatError struct {
+	ParamName string
+	Err       error
+}
+
+func (e *InvalidParamFormatError) Error() string {
+	return fmt.Sprintf("Invalid format for parameter %s: %s", e.ParamName, e.Err.Error())
+}
+
+func (e *InvalidParamFormatError) Unwrap() error {
+	return e.Err
+}
+
+type TooManyValuesForParamError struct {
+	ParamName string
+	Count     int
+}
+
+func (e *TooManyValuesForParamError) Error() string {
+	return fmt.Sprintf("Expected one value for %s, got %d", e.ParamName, e.Count)
+}
+
+// Handler creates http.Handler with routing matching OpenAPI spec.
+func Handler(si ServerInterface) http.Handler {
+	return HandlerWithOptions(si, ChiServerOptions{})
+}
+
+type ChiServerOptions struct {
+	BaseURL          string
+	BaseRouter       chi.Router
+	Middlewares      []MiddlewareFunc
+	ErrorHandlerFunc func(w http.ResponseWriter, r *http.Request, err error)
+}
+
+// HandlerFromMux creates http.Handler with routing matching OpenAPI spec based on the provided mux.
+func HandlerFromMux(si ServerInterface, r chi.Router) http.Handler {
+	return HandlerWithOptions(si, ChiServerOptions{
+		BaseRouter: r,
+	})
+}
+
+func HandlerFromMuxWithBaseURL(si ServerInterface, r chi.Router, baseURL string) http.Handler {
+	return HandlerWithOptions(si, ChiServerOptions{
+		BaseURL:    baseURL,
+		BaseRouter: r,
+	})
+}
+
+// HandlerWithOptions creates http.Handler with additional options
+func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handler {
+	r := options.BaseRouter
+
+	if r == nil {
+		r = chi.NewRouter()
+	}
+	if options.ErrorHandlerFunc == nil {
+		options.ErrorHandlerFunc = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 	}
-
 	wrapper := ServerInterfaceWrapper{
 		Handler:            si,
 		HandlerMiddlewares: options.Middlewares,
-		ErrorHandler:       errorHandler,
+		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
-	router.GET(options.BaseURL+"/api/seal", wrapper.GetApiSeal)
-	router.GET(options.BaseURL+"/api/seal/:id", wrapper.GetApiSealId)
-	router.GET(options.BaseURL+"/api/stats", wrapper.GetApiStats)
-	router.GET(options.BaseURL+"/seal", wrapper.GetSeal)
-	router.GET(options.BaseURL+"/seal/says/:text", wrapper.GetSealSaysText)
-	router.GET(options.BaseURL+"/seal/:id", wrapper.GetSealId)
-	router.GET(options.BaseURL+"/seal/:id/says/:text", wrapper.GetSealIdSaysText)
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/seal", wrapper.GetApiSeal)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/seal/{id}", wrapper.GetApiSealId)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/stats", wrapper.GetApiStats)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/seal", wrapper.GetSeal)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/seal/says/{text}", wrapper.GetSealSaysText)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/seal/{id}", wrapper.GetSealId)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/seal/{id}/says/{text}", wrapper.GetSealIdSaysText)
+	})
+
+	return r
 }
 
 // Base64 encoded, gzipped, json marshaled Swagger object

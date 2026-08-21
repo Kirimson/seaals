@@ -2,6 +2,7 @@ package controller
 
 import (
 	"path/filepath"
+
 	"seaals/image"
 	"seaals/models"
 	"seaals/service"
@@ -35,6 +36,7 @@ func (sc *SealController) GetSealImage(seal *models.Seal, opts *image.Opts) (*Se
 	if err != nil {
 		return nil, err
 	}
+	defer img.Image.Close()
 
 	if err := image.ApplyEffects(img, opts.Filter); err != nil {
 		return nil, err
@@ -57,6 +59,7 @@ func (sc *SealController) GetSealSaying(seal *models.Seal, text string, opts *im
 	if err != nil {
 		return nil, err
 	}
+	defer img.Image.Close()
 	if err := image.ApplyEffects(img, opts.Filter); err != nil {
 		return nil, err
 	}
